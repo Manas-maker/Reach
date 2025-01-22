@@ -1,7 +1,7 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require('express');
 
-const uri = "mongodb+srv://<user>:<password>@cluster0.fyvos.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.MONGODB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -76,11 +76,6 @@ async function startServer() {
             name: 'Mayas Beauty Parlour',
             type: 'salon',
             tags: 'closetotemple, loudnoises, cute, opensometimes, closedothertimes'
-          },
-          {
-            name: 'Yakesh',
-            type: 'laundry',
-            tags: 'useless, rich, smoking, dumbass, rat, mouse, nikhilbehaviourhonestly'
           }
         ])
         res.status(200);
@@ -142,8 +137,77 @@ async function startServer() {
 
 
     //Bookmark Function
+    const bookmarks = {};
+    let bookmarkIdCounter = 1;
 
+    app.get('/bookmarks/:id', async(req, res) => {
+    try {
+      const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
+      const bookmarks = await bookmarksCollection.find().toArray();
 
+      res.status(200).json(bookmarks);
+      const { id } = req.id;
+      if (id) {
+        const bookmarkId = id;
+        const bookmark = bookmarks[bookmarkId];
+        if (bookmark) {
+          return res.status(200).json({ id: bookmarkId, ...bookmark });
+        }
+          return res.status(404).json({ error: "Bookmark not found" });
+        }
+        const allBookmarks = Object.entries(bookmarks).map(([id, data]) => ({ id: parseInt(id, 10), ...data }));
+        res.status(200).json(allBookmarks);
+    } catch (error) {
+        res.status(500).json({ error: "An error occurred while retrieving bookmarks" });
+    }
+});
+
+    app.post('/bookmarks', async(req, res) => {
+      try {
+        const { title, url, description = "" } = req.body;
+        if (!title || !url) {
+          return res.status(400).json({ error: "Invalid data" });
+        }
+        const bookmarkId = bookmarkIdCounter++;
+        bookmarks[bookmarkId] = { title, url, description };
+
+        res.status(201).json({ id: bookmarkId, ...bookmarks[bookmarkId] });
+    } catch (error) {
+      res.status(500).json({ error: "An error occurred while creating the bookmark" });
+    }
+});
+
+    app.patch('/bookmarks/:id', async(req, res) => {
+      try {
+        const bookmarkId = parseInt(req.params.id, 10);
+        const bookmark = bookmarks[bookmarkId];
+        if (!bookmark) {
+          return res.status(404).json({ error: "Bookmark not found" });
+        }
+        const { title, url, description } = req.body;
+
+        if (title) bookmark.title = title;
+        if (url) bookmark.url = url;
+        if (description) bookmark.description = description;
+
+        res.status(200).json({ id: bookmarkId, ...bookmark });
+    } catch (error) {
+        res.status(500).json({ error: "An error occurred while updating the bookmark" });
+    }
+});
+
+    app.delete('/bookmarks/:id', async(req, res) => {
+    try {
+        const bookmarkId = parseInt(req.params.id, 10);
+        if (bookmarks[bookmarkId]) {
+          delete bookmarks[bookmarkId];
+          return res.status(200).json({ message: "Bookmark deleted" });
+        }
+        res.status(404).json({ error: "Bookmark not found" });
+    } catch (error) {
+        res.status(500).json({ error: "An error occurred while deleting the bookmark" });
+    }
+});
   } catch (error) {
     console.error('Failed to connect to MongoDB:', error);
     process.exit(1);

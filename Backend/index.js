@@ -1,7 +1,7 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require('express');
 
-const uri = "mongodb+srv://<user>:<password>@cluster0.fyvos.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb+srv://ReachTestServer:V4RYk7AnUXGrT8b1@cluster0.fyvos.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -30,57 +30,17 @@ async function startServer() {
       res.status(200).send("chai peelo");
     });
     
-    app.get('/initialiseListings', async (req, res) => {
-        await client.db('ReachDB').collection('Listings').insertMany([
+    app.get('/initialiseBookmarks', async (req, res) => {
+        await client.db('ReachDB').collection('Bookmarks').insertMany([
           {
-            name: 'Bangalore Cafe',
-            type: 'restaurant',
-            tags: 'family, noUno, unoGamblingGame'
+            id: '123',
+            listings: ['676197c2c8ff98e20e791fa3','676197c2c8ff98e20e791fa4'],
+            title: 'food'
           },
           {
-            name: 'Koshy\'s',
-            type: 'restaurant',
-            tags: 'oldPeople, niceFood'
-          },
-          {
-            name: 'Tharavad',
-            type: 'restaurant',
-            tags: 'family, kerala, arabian'
-          },
-          {
-            name: 'Toit',
-            type: 'restaurant',
-            tags: 'beer, food, american'
-          },
-          {
-            name: 'Sapna',
-            type: 'grocery',
-            tags: 'fruits, vegetables,kerala'
-          },
-          {
-            name: 'Meridien Stays Girls PG',
-            type: 'pg',
-            tags: 'girls, nofirstfloor, nosmoking, maybe3ambreakins'
-          },
-          {
-            name: 'Sapna Magic Oven',
-            type: 'grocery',
-            tags: 'bakery, Puff Patisserie, smoodh',
-          },
-          {
-            name: 'Sherlock',
-            type: 'pg',
-            tags: 'boys, yesfirstfloor, nosmoking, maybe3ambreakins'
-          },
-          {
-            name: 'Mayas Beauty Parlour',
-            type: 'salon',
-            tags: 'closetotemple, loudnoises, cute, opensometimes, closedothertimes'
-          },
-          {
-            name: 'Yakesh',
-            type: 'laundry',
-            tags: 'useless, rich, smoking, dumbass, rat, mouse, nikhilbehaviourhonestly'
+            id: '124',
+            listings: ['676197c2c8ff98e20e791fa5','676197c2c8ff98e20e791fa6'],
+            title: 'yummy'
           }
         ])
         res.status(200);
@@ -121,7 +81,7 @@ async function startServer() {
     app.post('/Register', async (req, res) => {
        try {
             await client.db('ReachDB').insertOne(req);
-            res.status(200).send("Registration Successfull!");
+            res.status(200).send("Registration Successful!");
         } catch {
             console.error('Error registering user: ', error);
             res.status(500).json({error: 'Failed to register'})
@@ -135,20 +95,89 @@ async function startServer() {
         }
     })
     
-    //Listing Functions
+    //Listing Functions//
     
 
-    //Review Functions
+    //Review Functions//
 
 
-    //Bookmark Function
+    //Bookmark Function//
+    const bookmarks = {};
+    let bookmarkIdCounter = 1;
 
+    app.get('/bookmarks/:id', async(req, res) => {
+    try {
+      const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
+      const bookmarks = await bookmarksCollection.find().toArray();
 
+      res.status(200).json(bookmarks);
+      const { id } = req.id;
+      if (id) {
+        const bookmarkId = id;
+        const bookmark = bookmarks[bookmarkId];
+        if (bookmark) {
+          return res.status(200).json({ id: bookmarkId, ...bookmark });
+        }
+          return res.status(404).json({ error: "Bookmark not found" });
+        }
+        const allBookmarks = Object.entries(bookmarks).map(([id, data]) => ({ id: parseInt(id, 10), ...data }));
+        res.status(200).json(allBookmarks);
+    } catch (error) {
+        res.status(500).json({ error: "An error occurred while retrieving bookmarks" });
+    }
+});
+
+    app.post('/bookmarks', async(req, res) => {
+      try {
+        const { title, url, description = "" } = req.body;
+        if (!title || !url) {
+          return res.status(400).json({ error: "Invalid data" });
+        }
+        const bookmarkId = bookmarkIdCounter++;
+        bookmarks[bookmarkId] = { title, url, description };
+
+        res.status(201).json({ id: bookmarkId, ...bookmarks[bookmarkId] });
+    } catch (error) {
+      res.status(500).json({ error: "An error occurred while creating the bookmark" });
+    }
+});
+
+    app.patch('/bookmarks/:id', async(req, res) => {
+      try {
+        const bookmarkId = parseInt(req.params.id, 10);
+        const bookmark = bookmarks[bookmarkId];
+        if (!bookmark) {
+          return res.status(404).json({ error: "Bookmark not found" });
+        }
+        const { title, url, description } = req.body;
+
+        if (title) bookmark.title = title;
+        if (url) bookmark.url = url;
+        if (description) bookmark.description = description;
+
+        res.status(200).json({ id: bookmarkId, ...bookmark });
+    } catch (error) {
+        res.status(500).json({ error: "An error occurred while updating the bookmark" });
+    }
+});
+
+    app.delete('/bookmarks/:id', async(req, res) => {
+    try {
+        const bookmarkId = parseInt(req.params.id, 10);
+        if (bookmarks[bookmarkId]) {
+          delete bookmarks[bookmarkId];
+          return res.status(200).json({ message: "Bookmark deleted" });
+        }
+        res.status(404).json({ error: "Bookmark not found" });
+    } catch (error) {
+        res.status(500).json({ error: "An error occurred while deleting the bookmark" });
+    }
+});
   } catch (error) {
     console.error('Failed to connect to MongoDB:', error);
     process.exit(1);
   }
-}
+} 
 
 // Call the function to start the server
 startServer();

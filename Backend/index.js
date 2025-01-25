@@ -1,8 +1,9 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const dotenv = require('dotenv').config("/.env");
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
-console.log(process.env);
 const uri = process.env.MONGODB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version

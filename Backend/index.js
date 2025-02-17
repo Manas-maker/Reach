@@ -3,6 +3,7 @@ const express = require('express');
 const dotenv = require('dotenv').config("/.env");
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const cors = require('cors')
 
 const uri = process.env.MONGODB_URI;
 
@@ -23,6 +24,11 @@ const client = new MongoClient(uri, {
 const app = express();
 app.use(express.json());
 const PORT = 8000;
+
+app.use(cors({
+  origin: "http://localhost:5173", 
+  credentials: true
+}));
 
 async function startServer() {
   try {
@@ -128,8 +134,9 @@ async function startServer() {
     app.post('/Register', async (req, res) => {
        try {
           const { username, name, email, phoneNo, profilePhoto, password } = req.body
+          console.log(req)
           if (!username || !name || !password) {
-            return res.status(400).json({ error: 'Username, name, and password are required' })}
+            return res.status(400).json({ error: req })}
           const saltRounds = 10
           const passwordHash = await bcrypt.hash(password, saltRounds)
         
@@ -175,7 +182,7 @@ async function startServer() {
         
           res
             .status(200)
-            .send({ token, username: user.username, name: user.name })
+            .send({ token, username: user.username, name: user.name , id:user._id})
         } catch (error) {
             console.error('Error logging user in: ', error)
             res.status(500).json({error: 'Failed to login'})

@@ -1,0 +1,68 @@
+#formPopup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 594px;
+    height: 800px;
+    background-color: #c3e9e6;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    padding: 24px;
+    font-family: "Ysabeau Office";
+}
+
+h2{
+    font-size: 64px;
+    font-family: "Federant";
+    color: #021d0e;
+    margin: 0px;
+}
+h3{
+    font-size: 36px;
+    font-family: "Federant";
+    color: #021d0e;
+    margin: 0px;
+}
+#formPopup fieldset{
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#formPopup input{
+    background-color: #f1fef7;
+    color: black;
+    font-family: "Ysabeau Office";
+    width: 456px;
+    height: 59px;
+    border: none;
+    margin: 14px 0;
+    font-size: 150%;
+}
+
+#formPopup a{
+    color: #c63838;
+}
+
+#formPopup p{
+    margin: 27px auto;
+    color: black;
+    width: 372px;
+    text-align: center;
+}
+
+#formPopup button{
+    background-color: #c3e9e6;
+    border-style: solid;
+    border-color: #097b4e;
+    color: #021d0e;
+    font-size: 150%;
+    font-family: "Federant";
+    border-radius: 0px;
+    width: 178px;
+    height: 55px;
+}

@@ -1,15 +1,30 @@
 import "./header.css"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import Login from "./Login";
+import Register from "./Register";
 const Header =  ()=>{
-    const user = null;
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('')
+    const [openLogin, setOpenLogin] = useState(false)
+    const closeModalLogin = () => setOpenLogin(false)
+    const [openRegister, setOpenRegister] = useState(false)
+    const closeModalRegister = () => setOpenRegister(false)
+    const [user, setUser] = useState(null)
     const submitHandler = (e) =>{
         if (e.key === 'Enter' ){
             navigate(`/search?query=${searchQuery}`)
         }
     }
+    useEffect(() => {
+        const loggedUserJSON = window.localStorage.getItem('loggedUser')
+        if (loggedUserJSON) {
+          const user = JSON.parse(loggedUserJSON)
+          setUser(user)
+        }
+      }, [])
     return (
         <div id="headerContainer">
             <div id="headerLeft"><input 
@@ -21,8 +36,10 @@ const Header =  ()=>{
             </div>
             <ul id="headerRight">
                 <li>About Us</li>
-                {user === null?<><li>Login</li><li>Sign Up</li></>:<li>User</li>}
+                {(user === null)?<><li onClick={()=> setOpenLogin(o => !o)}>Login</li><li onClick={()=> setOpenRegister(o => !o)} >Sign Up</li></>:<li>{user.username}</li>}
             </ul>
+            <Popup open={openLogin} onClose={closeModalLogin} modal><Login open={openLogin} setOpen={setOpenLogin}/></Popup>
+            <Popup open={openRegister} onClose={closeModalRegister} modal><Register open={openRegister} setOpen={setOpenRegister}/></Popup>
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import './Register.css'
-const Register = () =>{
+const Register = ({ open, setOpen }) =>{
     const registerSubmit = async (e)=>{
         e.preventDefault();
         const formData = new FormData(e.target); 
@@ -16,6 +16,9 @@ const Register = () =>{
             },
             body: JSON.stringify(formDataObject), 
         });
+        if ( open !== null ){
+            setOpen(false);
+        }
     }
     return (
         <div id="formPopup">

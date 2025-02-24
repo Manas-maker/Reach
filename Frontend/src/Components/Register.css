@@ -5,15 +5,21 @@
     width: 594px;
     height: 800px;
     background-color: #ffc629;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     border: none;
     padding: 24px;
     font-family: "Ysabeau Office";
+    /*margin-left: -594px;
+    margin-bottom: -800px;*/
 }
 
+#formPopup form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.popup-overlay {
+    background: #34333386;
+}
 h2{
     font-size: 64px;
     font-family: "Federant";

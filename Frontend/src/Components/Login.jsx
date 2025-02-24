@@ -11,9 +11,11 @@ const Login = () =>{
             headers: {
                 "Content-Type": "application/json",
             },
-            body: {userName, password}, 
+            body: JSON.stringify({username, password}), 
         });
+        console.log()
     }
+    
     return (
         <div id="formPopup">
             <form onSubmit={ loginSubmit }>

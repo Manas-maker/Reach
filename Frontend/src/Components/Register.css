@@ -4,7 +4,7 @@
     align-items: center;
     width: 594px;
     height: 800px;
-    background-color: #c3e9e6;
+    background-color: #ffc629;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -17,13 +17,13 @@
 h2{
     font-size: 64px;
     font-family: "Federant";
-    color: #021d0e;
+    color: #343333;
     margin: 0px;
 }
 h3{
     font-size: 36px;
     font-family: "Federant";
-    color: #021d0e;
+    color: #343333;
     margin: 0px;
 }
 #formPopup fieldset{
@@ -34,7 +34,7 @@ h3{
 }
 
 #formPopup input{
-    background-color: #f1fef7;
+    background-color: #fbf9ef;
     color: black;
     font-family: "Ysabeau Office";
     width: 456px;
@@ -56,10 +56,10 @@ h3{
 }
 
 #formPopup button{
-    background-color: #c3e9e6;
+    background-color: #ffc629;
     border-style: solid;
-    border-color: #097b4e;
-    color: #021d0e;
+    border-color: #343333;
+    color: #343333;
     font-size: 150%;
     font-family: "Federant";
     border-radius: 0px;

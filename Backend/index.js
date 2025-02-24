@@ -161,7 +161,6 @@ async function startServer() {
     app.post('/Login', async (req, res) => {
         try {
           const { username, password } = req.body
-
           const user = await client.db("ReachDB").collection('Users').findOne({ username })
           const passwordCorrect = user === null
             ? false

@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-//const dotenv = require("dotenv").config("../../.env");
-//import env from "react-dotenv";
 
 const ImageUpload = ({ setImages, images }) => {
     const widgetRef = useRef(null);
@@ -9,7 +7,7 @@ const ImageUpload = ({ setImages, images }) => {
     useEffect(() => {
         if (!window.cloudinary) return;
         widgetRef.current = window.cloudinary.createUploadWidget(
-            {cloudName: process.env.CLOUDNAME, uploadPreset: process.env.UPLOADPRESET},
+            {cloudName: import.meta.env.CLOUDNAME, uploadPreset: import.meta.env.UPLOADPRESET},
             (error, result) => {
                 if (error) {
                     console.error("Upload Error:", error);

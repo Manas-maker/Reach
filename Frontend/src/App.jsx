@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import './App.css'
 import Listing from './Components/Listing'
+import Reviews from './Components/Reviews'
+import CreateReview from './Components/CreateReview'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <Router>
       <Routes>
@@ -14,9 +14,16 @@ function App() {
           path="/listings"
           element={<Listing />}
         />
+        <Route 
+          path="/reviews/:listingid"
+          element={<Reviews />}
+        />
+        <Route 
+          path="/create-review/:listingid" 
+          element={<CreateReview />} 
+        />
       </Routes>
     </Router>
   )
 }
-
 export default App

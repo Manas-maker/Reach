@@ -1,15 +1,16 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 
-const uri = "process.env.MONGODB_URI";
+const uri = process.env.MONGODB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   autoSelectFamily: false,
   serverApi: {
     version: ServerApiVersion.v1,
-    strict: true,
+    strict: false,
     deprecationErrors: true,
   },
   // Add these options to help with connection issues
@@ -18,9 +19,15 @@ const client = new MongoClient(uri, {
   serverSelectionTimeoutMS: 10000
 });
 
+
 const app = express();
 app.use(express.json());
 const PORT = 8000;
+
+app.use(cors({
+  origin: 'http://localhost:5173', // URL of your Vite React app
+  credentials: true, //cookies
+}));
 
 async function startServer() {
   try {
@@ -30,7 +37,7 @@ async function startServer() {
 
     // Define routes after successful connection
     app.get('/helloGuys', (req, res) => {
-      res.status(200).send("chai peelo");
+      res.status(200).json({message:"chai peelo"});
     });
 
     // Start the server
@@ -335,24 +342,76 @@ async function startServer() {
     })
     
     //Listing Functions
-    //add a listing    
+    //add a listing   
+    
+    app.post('/verifyListing',async(req,res)=>{
+
+        try{
+          const collection = await client.db("ReachDB").collection("Listings");
+          console.log(req.body)
+          const n = req.body.name;
+          const loc = req.body.coordinates;
+    
+          const docs = await collection.aggregate([
+            {
+             $search: {
+               "text": {
+               "query": n,
+               "path": "name",
+               "fuzzy":{
+                 "maxEdits":2
+               }
+               }
+             }
+  
+           }
+         ]).toArray()
+  
+          const result = await collection.find({
+              location: {
+                $near: {
+                  $geometry: {
+                     type: "Point",
+                     coordinates: loc
+                  },
+                  $maxDistance : 100
+              }
+            }
+          }
+          ).toArray()
+  
+          if (docs.length!=0 && result.length!=0){
+            res.status(400).send({result:'Listing Exists!'});
+            console.log("listing exists")
+          } else {
+            res.status(200).send({result:'Listing does not Exists!'});
+            console.log("listing does not exist");
+          }
+  
+        } catch (err){
+          console.log(err)
+        }
+        
+      }
+
+    );
+  
+  
     app.post('/newListing', async(req,res)=>{
       try {
-        const {name,location,type,desc,rating,tags} = req.body;
-        let check = "not found"; //verifyListing(n,loc);
-        if (check==="not found"){
-          await client.db('ReachDB').collection('Listings').insertOne({
+        const {name,location,address,type,hours,tags,phone,images} = req.body;
+        
+        await client.db('ReachDB').collection('Listings').insertOne({
             name: name,
             location: location,
+            address:address,
             type : type,
-            desc: desc,
-            rating: rating,
-            tags: tags
+            hours: hours,
+            tags: tags,
+            phone: phone,
+            images:images
           });
-          res.status(200).send('Listing Added!');
-        } else {
-          res.status(400).send('Listing Already Exists!');
-        }
+          res.status(200).send({result:'Listing Added!'});
         
       } catch (error) {
         console.error('Invalid Listing: ', error);
@@ -390,7 +449,7 @@ async function startServer() {
   app.get('/search/:type',async (req,res)=>{
     try{
       const list = await client.db('ReachDB').collection('Listings').find({type:req.params['type']}).toArray();
-      list.length!==0? res.status(200).send(list): res.status(400).send("Not Found");
+      list.length!==0? res.status(200).send(list): res.status(400).send([]);
     } catch (err){
       console.log('Failed to retrieve:',err)
       res.status(500).json({error: 'Something went wrong!'})
@@ -398,16 +457,19 @@ async function startServer() {
   })
 
   //view one listing
-  /*
-  app.get('/search/:id',async(req,res)=>{
+  
+  app.get('/listing/:id',async(req,res)=>{
     try{
-      const listing = client.db('ReachDB').collection('Listings').find({"_id":req.params['id']}).toArray();
-      listing.length===1?res.status(200).send(listing): res.status(400).send("Not Found")
-    } catch {
+      const {id} = req.params;
+      const validID = ObjectId.isValid(id) ? new ObjectId(id):null;
+
+      const listing = await client.db('ReachDB').collection('Listings').find({"_id":validID}).toArray();
+      listing.length===1?res.status(200).send(listing): res.status(404).send([])
+    } catch (error){
       console.error('Failed to retrieve: ', error);
       res.status(500).json({error: 'Something went wrong!'});
     }
-  })*/
+  })
 
   //search for listing - name, tags, type - 2 mistakes - verified
   app.get('/search',async (req,res)=>{ 
@@ -430,7 +492,7 @@ async function startServer() {
       }
     ]).toArray();
     console.log(docs);  
-    docs.length!==0?res.status(200).send(docs):res.status(400).send("Not found")
+    docs.length!==0?res.status(200).send(docs):res.status(400).send([])
           
    } catch (error) {
       console.error('Failed to retrieve: ', error);

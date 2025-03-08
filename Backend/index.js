@@ -3,10 +3,9 @@ const { ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const cors = require('cors');
 
 const uri = process.env.MONGODB_URI;
-
-
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   autoSelectFamily: false,
@@ -538,36 +537,25 @@ async function startServer() {
   })
 
 //Review Functions
-    /*
-    await client.db('ReachDB').collection('Reviews').insertMany([
-          {
-            user: 'Marissa M',
-            listing: 'Bangalore Cafe',
-            header: 'This place sucks',
-            body: 'This place is literally the worst',
-            rating: 1,
-            upvotes: null,
-            downvotes: null,
-            date: new Date()
-          },
-          {
-            userid: 'Nikhil',
-            listing: 'Maachiz',
-            header: 'Could it get any better',
-            body: 'Cheesy fries cheesy fries cheesy fries',
-            rating: 4,
-            upvotes: null,
-            downvotes: null,
-            date: new Date()
-          }
-        ])
-    */
-  // Create Reviews Function
+  
+  // Create Reviews
   const CreateReview =  async (req, res) => {
     try {
-      const { userid, listingid, header, body, rating } = req.body;
+      const { userid, header, body, rating, images } = req.body;
+      const { listingid } = req.params;
       if (!userid || !listingid || !rating) {
         return res.status(400).json({message: 'Fields must be entered!'});
+      }
+
+      const existingRev = await client.db('ReachDB').collection('Reviews').findOne({ listingid, userid });
+
+      if (existingRev) {
+        const updatedRev = await client.db('ReachDB').collection('Reviews').updateOne(
+            { _id: existingRev._id },
+            { $set: { header, body, rating, images: images || [], date: new Date() } }
+        );
+        console.log("Review Updated:", updatedRev);
+        return res.status(200).json({ message: "Review updated successfully!" });
       }
 
       const rev = {
@@ -576,11 +564,11 @@ async function startServer() {
         header: header,
         body: body,
         rating: rating,
+        images: images || [],
         upvotes: [],
         downvotes: [],
         date: new Date()
       };
-          
       await client.db('ReachDB').collection('Reviews').insertOne(rev);
       res.status(200).send("Review Created!");
     } catch (error){
@@ -588,29 +576,78 @@ async function startServer() {
       res.status(500).json({error: 'Failed to create review, try again later'});
     }
   }
-  app.post('/create-review', CreateReview);
+  app.post('/create-review/:listingid', CreateReview);
+
+  //Get listingid to create a review for that listing
+  app.get('/listings/:listingid', async (req, res) => {
+    try {
+        const { listingid } = req.params;
+        const listing = await client.db('ReachDB').collection('Listings').findOne({ _id: new ObjectId(listingid) });
+
+        if (!listing) {
+            return res.status(404).json({ error: "Listing not found" });
+        }
+
+        res.json({ listingName: listing.name });
+    } catch (error) {
+        console.error("Error fetching listing:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  //Check if review for a listing by a particular user already exists
+  app.get("/reviews/:listingid/user/:userid", async (req, res) => {
+    const { listingid, userid } = req.params;
+    try {
+        const review = await client.db('ReachDB').collection('Reviews').findOne({ listingid: listingid, userid: userid });
+        if (!review) {
+            return res.status(404).json({ message: "Review not found" });
+        }
+        res.json(review);
+    } catch (error) {
+        console.error("Error fetching review:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
 
   //Get Reviews
   const GetReview = async (req, res) => {
     try {
       let {listingid} = req.params;
-      
-      const result = await client.db('ReachDB').collection('Reviews').find({listingid: listingid}).toArray();
-      console.log(result);
-      res.status(200).send(result);
+      let objectlisId = '';
+
+      if (ObjectId.isValid(listingid)) {
+        objectlisId = ObjectId.createFromHexString(listingid);
+      } else {
+        return res.status(400).json({ error: "Invalid review ID provided" });
+      }
+
+      const listing = await client.db('ReachDB').collection('Listings').findOne({ _id: objectlisId });
+      if (!listing) {
+        return res.status(404).json({ error: "Listing not found" });
+      }
+
+      const reviews  = await client.db('ReachDB').collection('Reviews').find({listingid: listingid}).toArray();
+      console.log('Fetched Reviews:', reviews);
+
+      res.status(200).json({
+        listingName: listing.name,
+        reviews: reviews,
+      });
+
     } catch (error){
       console.error('Error getting reviews: ', error);
       res.status(500).json({error: 'Failed to get reviews, try again later'});
     }
   }
-  app.get('/:listingid/reviews', GetReview);
+  app.get('/reviews/:listingid', GetReview);
 
   //Update Review
   const UpdateReview = async (req, res) => {
     try {
       const {revid} = req.params;
       let objectrevId = "";
-      const { userid, listingid, header, body, rating } = req.body;
+      const { userid, listingid, header, body, rating, images } = req.body;
 
       if (ObjectId.isValid(revid)) {
         objectrevId = ObjectId.createFromHexString(revid);
@@ -628,6 +665,7 @@ async function startServer() {
         header: header,
         body: body,
         rating: rating,
+        images: images || [],
         upvotes: [], downvotes: [],
         date: new Date()
       };
@@ -643,12 +681,13 @@ async function startServer() {
       res.status(500).json({error: 'Failed to update review, try again later'});
     }
   }
-  app.patch('/:revid/update-review', UpdateReview);
+  app.patch('/update-review/:revid', UpdateReview);
 
   //Updating upvotes and downvotes
   const VoteUpdate =  async (req, res) => {
     try {
-      const revid = req.params;
+      const { revid } = req.params;
+
       const {userid, votetype} = req.body;
       let query = {};
 
@@ -678,8 +717,10 @@ async function startServer() {
           query = {$addToSet: { downvotes: userid }, $pull: { upvotes: userid }};
         }
       }
+
       await client.db('ReachDB').collection('Reviews').updateOne({ _id: objectrevId }, query);
-      res.status(200).send("Vote updated!");
+      const updatedReview = await client.db('ReachDB').collection('Reviews').findOne({ _id: objectrevId });
+      res.status(200).json(updatedReview);
       console.log("Received review ID:", revid);
     } catch (error) {
       console.error('Error updating vote: ', error);
@@ -691,7 +732,7 @@ async function startServer() {
   //Delete Review
   const DeleteReview = async (req, res) => {
     try {
-      const {revid} = req.body;
+      const {revid} = req.params;
       let objectrevId = "";
 
       if (ObjectId.isValid(revid)) {
@@ -713,16 +754,16 @@ async function startServer() {
       return res.status(500).json({error: 'Failed to delete review, try again later'});
     }
   }
-  app.delete('/delete-review', DeleteReview);
+
+  app.delete('/delete-review/:revid', DeleteReview);
 //Bookmark Functions
- //Bookmarks
+ 
  app.get('/:id/bookmarks', async (req, res) => {
   try {
       const { id } = req.params;
       const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
       const allBookmarks = await bookmarksCollection.find({userid:id}).toArray();
       allBookmarks.length!==0? res.status(200).send(allBookmarks): res.status(400).send("Not Found");
-
   } catch (error) {
       console.error("Error fetching bookmarks:", error);
       res.status(500).json({ error: "An error occurred while retrieving bookmarks" });
@@ -836,6 +877,46 @@ console.error('Failed to connect to MongoDB:', error);
 process.exit(1);
 }
 }
+
+//Miscellaneous Functions
+
+//To calculate rating of a listing
+const CalcRating = async (req, res) => {
+  try {
+    let {listingid} = req.body;
+    let objectlisId = '';
+
+    if (ObjectId.isValid(listingid)) {
+      objectlisId = ObjectId.createFromHexString(listingid);
+    } else {
+      return res.status(400).json({ error: "Invalid listing ID provided" });
+    }
+
+    const listing = await client.db('ReachDB').collection('Listings').findOne({ _id: objectlisId });
+    if (!listing) {
+      return res.status(404).json({ error: "Listing not found" });
+    }
+
+    const reviews  = await client.db('ReachDB').collection('Reviews').find({listingid: listingid}).toArray();
+    console.log('Fetched Reviews:', reviews);
+
+    const revCount = reviews.length;
+    const totRat = reviews.reduce((sum, review) => sum + (review.rating), 0);
+    const rating = revCount > 0 ? parseFloat((totRat / revCount).toFixed(1)) : 0;
+
+    const result = await client.db('ReachDB').collection('Listings').updateOne(
+      { _id: objectlisId },
+      { $set: { revCount, rating } }
+    );
+
+    res.status(200).json(result);
+
+  } catch (error){
+    console.error('Error calculating rating: ', error);
+    res.status(500).json({error: 'Failed to calculate rating'});
+  }
+}
+app.patch('/ratings', CalcRating);
 
 // Call the function to start the server
 startServer();

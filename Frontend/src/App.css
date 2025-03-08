@@ -1,3 +1,12 @@
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: initial;
+  background-color: #fbf9ef;
+}
+  
 .category {
     background-color: #FBF9EF;
     box-sizing: border-box;
@@ -8,7 +17,6 @@
     overflow:hidden;
     transition: all 0.4s ease-in-out;
     
-
 }
 
 .category h2 {
@@ -18,6 +26,7 @@
     color: #343333;
     transition: color 0.3s ease-out;
 }
+
 
 figure {
     margin: 0;
@@ -468,6 +477,7 @@ input[type=tel]{
   font-size: 30px;
 }
 
+
 .image-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr); 
@@ -569,4 +579,5 @@ h2{
 
 .close-btn{
   margin-left: 10px;
+
 }

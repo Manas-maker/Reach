@@ -1,96 +1,572 @@
 .category {
-  background-color: #FBF9EF;
-  box-sizing: border-box;
-  scale: 120%;
-  margin-left: 20rem;
-  margin-right: 20rem;
-  width:900px;
-  overflow:hidden;
-  transition: all 0.4s ease-in-out;
+    background-color: #FBF9EF;
+    box-sizing: border-box;
+    scale: 120%;
+    margin-left: 20rem;
+    margin-right: 20rem;
+    width:900px;
+    overflow:hidden;
+    transition: all 0.4s ease-in-out;
+    
+
 }
 
-ul{
-  list-style: none;
-}
 .category h2 {
-  margin: 0 0 18px 10px;
-  font-family: "Federant", serif;
-  font-size: 1.5rem;
-  color: #343333;
-  transition: color 0.3s ease-out;
+    margin: 0 0 18px 10px;
+    font-family: "Federant", serif;
+    font-size: 1.5rem;
+    color: #343333;
+    transition: color 0.3s ease-out;
 }
 
 figure {
-  margin: 0;
-  padding: 0;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-}
+    margin: 0;
+    padding: 0;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
 
 .category img{
-  max-width: 100%;
-  transform-origin: center;
-  transform: scale(var(--img-scale));
-  transition: transform 0.4s ease-in-out;
-
+    max-width: 100%;
+    transform-origin: center;
+    transform: scale(var(--img-scale));
+    transition: transform 0.4s ease-in-out;
+  
 } 
 
 #heads {
-  margin: 100px 10px 35px 22px;
-  background-color: #FBF9EF;
-  font-size: 40px;
-  position:relative;
-
+    margin: 100px 10px 35px 22px;
+    background-color: #FBF9EF;
+    font-size: 150%;
+    position:relative;
 }
 
 .tab {
-  margin-left: 40px;
-  display: inline-block;
+    margin-left: 40px;
+    display: inline-block;
 }
 
 .card:has(:hover, :focus) {
-  --img-scale: 1.1;
-  --link-icon-translate: 0;
-  --link-icon-opacity: 1;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-}
+    --img-scale: 1.1;
+    --link-icon-translate: 0;
+    --link-icon-opacity: 1;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  }
 
 .cardBody p{
-margin: 0 0 18px 10px;
-font-family: "Ysabeau Office";
-font-size: 90%;
-color: #343333;
+  margin: 0 0 18px 10px;
+  font-family: "Ysabeau Office";
+  font-size: 90%;
+  color: #343333;
 }
 
 *,
 *::before,
 *::after {
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-margin: 0;
-padding: 48px 0;
-line-height: 1.6rem;
-background-image: #D9D9D9;
-min-height: 100vh;
+  margin: 0;
+  padding: 48px 0;
+  line-height: 1.6rem;
+  background-image: #D9D9D9;
+  min-height: 100vh;
 }
 
 .card{
-  background-color: #FFC629;
+    background-color: #FFC629;
 }
 
 .cards {
-display: grid;
-max-width: 1200px;
-margin-inline: auto;
-padding-inline: 24px;
-grid-template-columns: repeat(2, 1fr);
-gap: 40px;
-background-color: #FBF9EF;
-text-decoration: none;
+  display: grid;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  background-color: #FBF9EF;
+  text-decoration: none;
 }
 
-#notFound{
+.listingLink{
+  text-decoration: none; 
+  color: #343333; 
+  font-family: "Federant", serif;
+  font-size: 120%;
+  transition: transform 0.4s ease-in-out; 
+}
+
+.listingLink:hover{
+  color: #FFC629;
+}
+
+
+@media screen and (max-width: 960px) {
+  #cards {
+    container: card/inline-size;
+  }
+  .cardBody p {
+    display: none;
+  }
+}
+
+@container card (min-width: 380px) {
+  #cards {
+    display: grid;
+    grid-template-columns: 75px 1fr;
+    gap: 16px;
+  }
+  .cardbody {
+    padding-left: 0;
+  }
+  figure {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+  figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.sr-only:not(:focus):not(:active) {
+  clip: rect(0 0 0 0); 
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap; 
+  width: 1px;
+}
+
+#listing{
+  background-color: #FBF9EF;
+  width: 95vw;
+}
+
+#listingTitle{
+  font-family: "Federant",serif;
+  color: #343333;
+  font-size: 50px;
+  margin-left: 180px;
+  margin-bottom: 0px;
+}
+
+#listingTags{
+  margin-bottom: 30px;
+
+}
+
+#listingAddress, #listingTags{
+  color: #343333;
+  font-family: "Ysabeau Office";
+  font-size: large;
+  margin: 0px 0px 0px 180px;
+}
+
+#listingAddress:hover{
+  text-decoration: underline;
+}
+
+.imageContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  max-width: 100%;
+  height: auto;
+  margin-left: 20px;
+  gap:15px;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.listingImage{
+  width: 300px;
+  height: auto;
+  aspect-ratio: 16/9;
+}
+
+
+
+.listingImageContainer{
+  position: relative;
+  width: 480px;
+  height: auto;
+}
+
+.listingImageContainer img {
+  display: block; 
+  width: 100%;
+  height: 100%;
+}
+
+.listingImageContainer::after{
+  pointer-events: none;
+  content:"View More";
+  background-color: black;
+  color: #FFC629;
+  opacity: 0.7;
+  font-family: "Ysabeau Office";
+  display: flex;
+  position: absolute;
+  left: 0;
+  top:0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  transition: 0.3s ease-in-out;
+}
+
+.listingImageContainer:hover::after{
+  font-size: 28px;
+  opacity: 0.8;
+}
+
+
+.listingCategories{
+  margin-left: 20px;
+  margin-top: 40px;
+  font-size: x-large;
+}
+
+.line{
+  border: none;
   background-color: #FFC629;
+  height: 2px;
+  margin: 20px 160px 15px 180px;
+}
+
+#searchTitle{
+  color: #343333;
+  font-family: "Ysabeau Office";
+  font-weight: 500;
+  font-size: 30px;
+  margin-left: 20px;
+  margin-top: 50px;
+}
+
+
+#notFound{
+  color: #343333;
+  font-family: "Ysabeau Office";
+  font-size: 22px;
+
+}
+
+#listingFormTitle{
+  font-family: "Federant",serif;
+  color: #343333;
+  font-size: 40px;
+  margin-left: 20rem;
+}
+
+label {
+  font-family: "Federant",serif;
+  color: #343333;
+  font-size: 20px;
+}
+
+#listingType{
+  color: #343333;
+  background-color: #FBF9EF;
+  font-family: "Ysabeau Office";
+  font-size: 15px;
+  margin-top: 10px;
+  width: 160px;
+  height:25px
+}
+
+#bigForm{
+  margin-left: 20rem;
+  margin-right: 20rem;
+  width:900px;
+}
+
+.form{
+  margin-top: 20px;
+  background-color: #FFC629;
+  border-radius: 10px;
+  min-height: 400px;
+
+}
+
+#listingFormName{
+  margin-top: 10px;
+}
+
+.margins{
+  margin-left: 20px;
+}
+
+input[type=text]{
+  color: #343333;
+  background-color: #FBF9EF;
+  font-family: "Ysabeau Office";
+  font-size: 15px;
+  padding: 3px;
+  border: 1px solid #343333ed;
+}
+
+input[type=text]:focus{
+  border: 1px solid #343333f7;
+}
+
+textarea{
+  color: #343333;
+  background-color: #FBF9EF;
+  font-family: "Ysabeau Office";
+  font-size: 15px;
+  padding: 3px;
+  border: 1px solid #343333ed;
+  width: 500px;
+  height: 100px;
+}
+
+textarea{
+  border: 1px solid #343333f7;
+}
+
+button{
+  color: #343333;
+  background-color: #FBF9EF;
+  font-family: "Ysabeau Office";
+  font-size: 15px;
+  border: 1px solid #343333ed;
+
+}
+
+button:hover{
+  color: #FFC629;
+  border: 1px solid #343333f7;
+  
+}
+
+.mapsButton{
+  color: #343333;
+  background-color: #FFC629;
+  font-family: "Ysabeau Office";
+  font-size: 15px;
+  border: 1px solid #343333ed;
+}
+
+.mapsButton:hover{
+  color: #FBF9EF;
+  border: 1px solid #343333f7;
+  
+}
+
+p{
+  color: #343333;
+  font-family: "Ysabeau Office";
+}
+
+#formButtons{
+  margin-top: 10px;
+  display: flex;
+}
+.submits{
+  margin-left: 20px;
+}
+
+.buttonNext{
+  margin-top: 10px;
+  margin-left: 820px;
+}
+
+.buttonSubmit{
+  margin-left: 710px;
+}
+h3{
+  font-family: "Federant",serif;
+  color: #343333;
+  font-size: 20px;
+}
+
+#hoursLabel{
+  margin-left: 20px;
+  color: #343333;
+  font-family: "Ysabeau Office";
+}
+
+#openTimings, #closeTimings {
+  color: #343333;
+  background-color: #FBF9EF;
+  font-family: "Ysabeau Office";
+  font-size: 13px;
+  margin-top: 10px;
+  margin-left: 10px;
+  width: 110px;
+  height:25px
+}
+
+input[type=checkbox]{
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #343333;
+  border-radius: 4px;
+  align-items: center;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type=checkbox]::after{
+  content: "";
+  color: #FFC629;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0; /* Initially hidden */
+}
+
+input[type=checkbox]:checked{
+  background-color: #343333;
+}
+
+input[type=checkbox]:checked::after{
+  content: "✔";
+  opacity: 1;
+}
+
+input[type=tel]{
+  color: #343333;
+  background-color: #FBF9EF;
+  font-family: "Ysabeau Office";
+  font-size: 15px;
+  padding: 3px;
+  border: 1px solid #343333ed;
+}
+
+.cloudinaryButton{
+  margin-left: 20px;
+  
+
+}
+
+.uploaded-listing-images img{
+  width: 400px;
+  margin: 40px 0px 10px 20px;
+  border-radius: 2px;
+}
+
+.remove-image-listing-button{
+  margin-left: 20px;
+}
+
+.successfulListing{
+  color: #343333;
+  font-family: "Federant",serif;
+  margin-left: 20px;
+  font-size: 30px;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 0.5rem;
+  margin-top: 1rem; 
+  
+}
+
+.image-grid img{
+  width: 100%; 
+  height: 80%;
+  margin-left: 20px;
+  margin-top: 30px; 
+  object-fit: cover; 
+  cursor: pointer; 
+  border-radius: 5px;
+ 
+}
+
+.modal-content {
+  background-color: #FBF9EF;
+  padding: 1rem;
+  border-radius: 0.5rem; 
+  width: 800px;
+  height: 400px;
+  overflow: scroll;
+  margin-top: 5rem;
+  align-items: center;
+  justify-items: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0; 
+  background-color: rgba(0, 0, 0, 0.8); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about {
+  margin-left: 180px;
+  font-family: "Federant",serif;
+  color: #343333;
+  font-size: 30px;
+}
+
+.hoursList, .phone{
+  margin-top: 5px;
+  color: #343333;
+  font-family: "Ysabeau Office";
+  margin-left: 140px;
+
+}
+
+h2{
+  color: #343333;
+  margin-left: 180px;
+  font-family: "Ysabeau Office";
+  margin-bottom: 0px;
+
+}
+
+.phone{
+  margin-left: 180px;
+}
+
+
+#bookmarksTitle{
+  font-family: "Federant",serif;
+  color: #343333;
+  font-size: 60px;
+  margin-left: 20px;
+}
+
+#bookmarkName{
+  font-family: "Federant",serif;
+  color: #343333;
+  font-size: 60px;
+}
+
+
+.addImagesButton{
+  margin-top: 20px;
+  margin-left: 1170px;
+}
+
+.bookmarkButton{
+  margin-left: 850px;
+}
+
+.bookmarkTitle{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100px;
+  min-width: 100px;
+  max-height: 40px;
+}
+
+.close-btn{
+  margin-left: 10px;
 }

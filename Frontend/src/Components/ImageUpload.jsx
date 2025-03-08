@@ -6,8 +6,9 @@ const ImageUpload = ({ setImages, images }) => {
 
     useEffect(() => {
         if (!window.cloudinary) return;
+
         widgetRef.current = window.cloudinary.createUploadWidget(
-            {cloudName: import.meta.env.CLOUDNAME, uploadPreset: import.meta.env.UPLOADPRESET},
+            { cloudName: import.meta.env.CLOUD_NAME, uploadPreset: import.meta.env.UPLOAD_LISTPRESET },
             (error, result) => {
                 if (error) {
                     console.error("Upload Error:", error);
@@ -15,8 +16,8 @@ const ImageUpload = ({ setImages, images }) => {
                 }
                 if (result.event === "success") {
                     setImages((prevImages) => {
-                        if (prevImages.length >= 3) {
-                            showAlert("You can only upload up to 3 images.", "warning");
+                        if (prevImages.length >= 15) {
+                            showAlert("You can only upload up to 15 images.", "warning");
                             return prevImages;
                         }
                         return [...prevImages, result.info.secure_url];
@@ -31,6 +32,39 @@ const ImageUpload = ({ setImages, images }) => {
         setTimeout(() => setAlert(null), 3000);
     };
 
+    const handleUploadClick = () => {
+        if (!widgetRef.current) {
+            widgetRef.current = window.cloudinary.createUploadWidget(
+                { cloudName: import.meta.env.CLOUD_NAME, uploadPreset: import.meta.env.UPLOAD_LISTPRESET },
+                (error, result) => {
+                    if (error) {
+                        console.error("Upload Error:", error);
+                        return;
+                    }
+                    if (result.event === "success") {
+                        setImages((prevImages) => {
+                            if (prevImages.length >= 15) {
+                                showAlert("You can only upload up to 15 images.", "warning");
+                                return prevImages;
+                            }
+                            return [...prevImages, result.info.secure_url];
+                        });
+                    }
+                }
+            );
+        }
+    
+        if (images.length >= 15) {
+            showAlert("A maximum of 15 images can be uploaded.", "warning");
+            return;
+        }
+    
+        // Open the widget so users can upload images
+        widgetRef.current.open();
+    };
+    
+    
+
     const handleDeleteImage = (index) => {
         setImages((prevImages) => prevImages.filter((_, i) => i !== index));
     };
@@ -39,24 +73,18 @@ const ImageUpload = ({ setImages, images }) => {
         <div>
             <button
                 type="button"
-                onClick={() => {
-                    if (images.length < 3) {
-                        widgetRef.current.open();
-                    } else {
-                        showAlert("A maximum of 3 images can be uploaded.", "warning");
-                    }
-                }}
-                className="cloudinary-button"
-                disabled={images.length >= 3}
+                onClick={handleUploadClick}
+                className="cloudinaryButton"
+                disabled={images.length >= 15}
             >
-                Upload
+                Upload Images
             </button>
 
-            <div className="uploaded-images">
+            <div className="uploaded-listing-images">
                 {images.map((url, index) => (
                     <div key={index} className="image-preview">
                         <img src={url} alt={`Uploaded ${index + 1}`} />
-                        <div className="remove-image-button">
+                        <div className="remove-image-listing-button">
                             <button onClick={() => handleDeleteImage(index)}>Remove</button>
                         </div>
                     </div>

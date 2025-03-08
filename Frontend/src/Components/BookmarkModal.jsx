@@ -93,7 +93,7 @@ const BookmarksModal = ({ collections, setCollections, listingid, userid, isOpen
         {collections.length > 0 ? (
           collections.map((collection) => (
             <li key={collection._id} className="collection-item">
-              <button onClick={() => handleCollectionClick(collection._id, collection.title, collection.listings)}>
+              <button className="bookmarkTitle" onClick={() => handleCollectionClick(collection._id, collection.title, collection.listings)}>
                 {collection.title}
               </button>
               <br/>

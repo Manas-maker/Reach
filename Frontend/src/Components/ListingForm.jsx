@@ -202,7 +202,7 @@ const ListingForm = () => {
                         <br/>
                         <label htmlFor='phone' className='margins'>Enter Business Contact: </label>
                         <br/>
-                        <input type='tel' id="phone" pattern="[0-9]{10}" className='margins' 
+                        <input type='tel' id="phone" length={10} className='margins' 
                         placeholder='Eg: 0123456789'
                         value={phone} 
                         onChange={(e)=> {setPhone(e.target.value)}}/>

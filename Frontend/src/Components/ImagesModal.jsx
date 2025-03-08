@@ -5,7 +5,6 @@ Modal.setAppElement("#root"); // Ensures accessibility
 
 
 const ImagesModal = ({ imageUrls, isOpen, onClose }) => {
-  console.log(isOpen);
   const openImage = (url) => {
     window.open(url, "_blank");
   };

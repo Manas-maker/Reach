@@ -534,3 +534,39 @@ h2{
 .phone{
   margin-left: 180px;
 }
+
+
+#bookmarksTitle{
+  font-family: "Federant",serif;
+  color: #343333;
+  font-size: 60px;
+  margin-left: 20px;
+}
+
+#bookmarkName{
+  font-family: "Federant",serif;
+  color: #343333;
+  font-size: 60px;
+}
+
+
+.addImagesButton{
+  margin-top: 20px;
+  margin-left: 1170px;
+}
+
+.bookmarkButton{
+  margin-left: 850px;
+}
+
+.bookmarkTitle{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100px;
+  min-width: 100px;
+  max-height: 40px;
+}
+
+.close-btn{
+  margin-left: 10px;
+}

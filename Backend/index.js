@@ -1,4 +1,5 @@
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const { ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -501,12 +502,12 @@ async function startServer() {
   })
 
   //update listing - verified
-  app.patch('/updateListing/:id',async (req,res)=>{
+  app.patch('/listing/:id',async (req,res)=>{
     try{
       let id = req.params['id']
       const validID = ObjectId.isValid(id) ? ObjectId.createFromHexString(id):null;
       console.log(req.body);
-      const {name, type, tags} = req.body;
+      const {images} = req.body;
       
 
       if (validID){
@@ -514,13 +515,11 @@ async function startServer() {
           {"_id":validID},
           {
             $set: {
-              name: name,
-              type: type,
-              tags: tags
+              images:images
             }
           }
         ); 
-        console.log("Updated");
+        res.status(200).send({result:"Images Updated!"})
         
       }else{
         res.status(400).send("Invalid ID");
@@ -711,63 +710,108 @@ async function startServer() {
   app.delete('/delete-review', DeleteReview);
 
   //Bookmarks
-      const bookmarks = {};
-        let bookmarkIdCounter = 1;
-
-        app.get('/bookmarks/:id', async(req, res) => {
+        app.get('/:id/bookmarks', async (req, res) => {
+          try {
+              const { id } = req.params;
+              const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
+              const allBookmarks = await bookmarksCollection.find({userid:id}).toArray();
+              allBookmarks.length!==0? res.status(200).send(allBookmarks): res.status(400).send("Not Found");
+      
+          } catch (error) {
+              console.error("Error fetching bookmarks:", error);
+              res.status(500).json({ error: "An error occurred while retrieving bookmarks" });
+          }
+      });
+      
+      app.get('/bookmarks/:id', async (req, res) => {
         try {
-          const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
-          const bookmarks = await bookmarksCollection.find().toArray();
-
-          res.status(200).json(bookmarks);
-          const { id } = req.id;
-          if (id) {
-            const bookmarkId = id;
-            const bookmark = bookmarks[bookmarkId];
-            if (bookmark) {
-              return res.status(200).json({ id: bookmarkId, ...bookmark });
+            const { id } = req.params;
+    
+            if (!ObjectId.isValid(id)) {
+                return res.status(400).json({ error: "Invalid Bookmark ID" });
             }
-              return res.status(404).json({ error: "Bookmark not found" });
-            }
-            const allBookmarks = Object.entries(bookmarks).map(([id, data]) => ({ id: parseInt(id, 10), ...data }));
-            res.status(200).json(allBookmarks);
-        } catch (error) {
-            res.status(500).json({ error: "An error occurred while retrieving bookmarks" });
-        }
-    });
+            const validID = new ObjectId(id);
+    
+            const bookmark = await client
+                .db('ReachDB')
+                .collection('Bookmarks')
+                .findOne({ _id: validID });
 
-        app.post('/bookmarks', async(req, res) => {
-          try {
-            const { title, url, description = "" } = req.body;
-            if (!title || !url) {
-              return res.status(400).json({ error: "Invalid data" });
-            }
-            const bookmarkId = bookmarkIdCounter++;
-            bookmarks[bookmarkId] = { title, url, description };
-
-            res.status(201).json({ id: bookmarkId, ...bookmarks[bookmarkId] });
-        } catch (error) {
-          res.status(500).json({ error: "An error occurred while creating the bookmark" });
-        }
-    });
-
-        app.patch('/bookmarks/:id', async(req, res) => {
-          try {
-            const bookmarkId = parseInt(req.params.id, 10);
-            const bookmark = bookmarks[bookmarkId];
+            console.log(bookmark)
+    
             if (!bookmark) {
-              return res.status(404).json({ error: "Bookmark not found" });
+                return res.status(404).json({ error: "Bookmark not found" });
             }
-            const { title, url, description } = req.body;
-
-            if (title) bookmark.title = title;
-            if (url) bookmark.url = url;
-            if (description) bookmark.description = description;
-
-            res.status(200).json({ id: bookmarkId, ...bookmark });
+    
+            const bookmarkTitle = bookmark.title;
+            const listingIds = bookmark.listings
+          .filter(id => ObjectId.isValid(id) || typeof id === 'object')
+          .map(id => {
+          if (typeof id === 'string') {
+            return new ObjectId(id);
+          } else {
+            return id; // Return the existing ObjectId object
+          }
+          });
+            console.log(listingIds);
+    
+            if (listingIds.length === 0) {
+                return res.json({ listings: [] });
+            }
+    
+            const listings = await client
+                .db('ReachDB')
+                .collection('Listings')
+                .find({ _id: { $in: listingIds } })
+                .toArray();
+            res.send({title:bookmarkTitle, listings});
+            console.log({title:bookmarkTitle, listings})
+    
         } catch (error) {
-            res.status(500).json({ error: "An error occurred while updating the bookmark" });
+            console.error("Error fetching listings:", error);
+            res.status(500).json({ error: "Internal Server Error" });
         }
+    });
+
+    app.post('/bookmarks', async (req, res) => {
+      try {
+          const { userid, title, listings } = req.body;
+    
+          const bookmarksCollection = client.db('ReachDB').collection('Bookmarks');
+          const existingBookmark = await bookmarksCollection.findOne({ userid, title });
+          if (existingBookmark) {
+              return res.status(400).json({ error: "Collection already exists!" });
+          }
+    
+          const newBookmark = await bookmarksCollection.insertOne({ userid, title, listings });
+          const createdBookmark = await bookmarksCollection.findOne({ _id: newBookmark.insertedId })
+    
+          res.status(201).json(createdBookmark);
+      } catch (error) {
+          console.error("Error creating bookmark:", error);
+          res.status(500).json({ error: "An error occurred while creating the bookmark" });
+      }
+    });
+
+    app.patch('/bookmarks/:id', async (req, res) => {
+      try {
+          const { id } = req.params;
+          const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
+          const validID = ObjectId.isValid(id) ? new ObjectId(id) : null;
+          const { title, listings} = req.body;
+    
+          const updatedBookmark = await bookmarksCollection.findOneAndUpdate(
+              { "_id": validID },
+              { $set: { title, listings } },
+              { returnDocument: 'after' }
+          );
+          console.log(updatedBookmark)
+    
+          res.status(200).json(updatedBookmark.value);
+      } catch (error) {
+          console.error("Error updating bookmark:", error);
+          res.status(500).json({ error: "An error occurred while updating the bookmark" });
+      }
     });
 
         app.delete('/bookmarks/:id', async(req, res) => {

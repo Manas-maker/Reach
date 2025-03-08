@@ -8,7 +8,7 @@ const ImageUpload = ({ setImages, images }) => {
         if (!window.cloudinary) return;
 
         widgetRef.current = window.cloudinary.createUploadWidget(
-            { cloudName: "dwhfhrczx", uploadPreset: "reach-review-images" },
+            { cloudName: import.meta.env.CLOUD_NAME, uploadPreset: import.meta.env.UPLOAD_LISTPRESET },
             (error, result) => {
                 if (error) {
                     console.error("Upload Error:", error);
@@ -35,7 +35,7 @@ const ImageUpload = ({ setImages, images }) => {
     const handleUploadClick = () => {
         if (!widgetRef.current) {
             widgetRef.current = window.cloudinary.createUploadWidget(
-                { cloudName: "dwhfhrczx", uploadPreset: "reach-listing-images" },
+                { cloudName: import.meta.env.CLOUD_NAME, uploadPreset: import.meta.env.UPLOAD_LISTPRESET },
                 (error, result) => {
                     if (error) {
                         console.error("Upload Error:", error);

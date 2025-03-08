@@ -1,10 +1,11 @@
-import { useState } from 'react'
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import './App.css'
 import {ViewCategories, ViewListing} from './Components/Listing'
 import SearchResults from './Components/SearchResults'
 import ListingForm from './Components/ListingForm'
 import SuccessPage from './Components/SuccessPage'
+import BookmarkList from "./Components/BookmarkList"
+import BookmarkCard from "./Components/BookmarkCard"
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
         <Route path="/search" element={<SearchResults/>}/>
         <Route path="/newListing" element={<ListingForm/>}/>
         <Route path="/success" element={<SuccessPage/>}/>
+        <Route path="/bookmarks/:id" element={<BookmarkList/>}/>
+        <Route path="/:id/bookmarks" element={<BookmarkCard/>}/>
       </Routes>
     </Router>
   )

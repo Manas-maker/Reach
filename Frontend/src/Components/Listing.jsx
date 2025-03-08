@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import ImagesModal from './ImagesModal';
+import BookmarkModal from './BookmarkModal';
+import AddImage from './AddImage';
 
 const ViewCategories = () =>{
     const { type } = useParams();
@@ -70,7 +72,8 @@ const ViewListing = () =>{
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImages, setSelectedImages] = useState([]);
     const [data, setData] = useState([]);
-
+    const [bookmarkResult, setBookmarkResult] = useState([]);
+    const [isBookmarkModalOpen, setIsBookmarkModalOpen] = useState(false)
     useEffect(() => {
         const fetchItems = async () => {
             try {
@@ -99,6 +102,18 @@ const ViewListing = () =>{
             </ol>
           );
     };
+
+    const viewBookmarks=async()=>{
+        try {
+            const response = await fetch(`http://localhost:8000/67bdd3903579e268ca94325d/bookmarks`);
+            const result = await response.json();
+            setBookmarkResult(result);
+            setIsBookmarkModalOpen(true);
+
+        } catch (error) {
+            console.error('Error fetching items:', error);
+        }
+    }
     
     return (
         <div id="listing">
@@ -110,9 +125,12 @@ const ViewListing = () =>{
                                 {item.name}
                             </h1>
                         </header>
+                        <div>
                         <a id="listingAddress" href={`https://www.google.com/maps?q=${item.location.coordinates[1]},${item.location.coordinates[0]}`}
                         target='blank'>⤷ {item.address}</a>
+                        <button type="button" className="submits, bookmarkButton" onClick={viewBookmarks}>Bookmark</button>
                         <p id="listingTags">{item.tags}</p>
+                        </div>
                         <hr className="line"/>
                         <div className="imageContainer" key={index}>
                             <img className="listingImage" src={item.images[0]}/>
@@ -121,8 +139,13 @@ const ViewListing = () =>{
                                 <img className="listingImage" src={item.images[2]} onClick={() => viewMore(item.images)}/>
                             </div>
                         </div>
+                        <AddImage listingid={id} onUploadSuccess={() => {
+                                fetch(`http://localhost:8000/listing/${id}`)
+                                .then(response => response.json())
+                                .then(result => setData(result))
+                                .catch(error => console.error("Error refetching listing", error))
+                            }}/>
                         <hr className="line"/>
-
                         <h3 className="about">About</h3>
                         <h2>Business Hours</h2>
                         {businessHours(item.hours)}
@@ -136,6 +159,7 @@ const ViewListing = () =>{
                 )}
 
                 <ImagesModal imageUrls={selectedImages} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+                <BookmarkModal collections={bookmarkResult} setCollections={setBookmarkResult} listingid={id} userid={"67bdd3903579e268ca94325d"} isOpen={isBookmarkModalOpen} onClose={() => setIsBookmarkModalOpen(false)} />    
                 
         </div>
 

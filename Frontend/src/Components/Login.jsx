@@ -5,7 +5,7 @@ import './Register.css'
 const Login = ({ open, setOpen }) =>{
     const [password, setPassword] = useState('')
     const [username, setUserName] = useState('')
-    const [user, setUser] = useState(null)
+
     const loginSubmit = async (e)=>{
         e.preventDefault();
         try {
@@ -16,7 +16,6 @@ const Login = ({ open, setOpen }) =>{
                 },
                 body: JSON.stringify({username, password}), 
             }).then((res) => res.json());
-            setUser(user)
             if ( (open !== null) && (user.username != null)){
                 window.localStorage.setItem('loggedUser', JSON.stringify(user))
                 setOpen(false);
@@ -28,9 +27,9 @@ const Login = ({ open, setOpen }) =>{
     }
     
     return (
-        <div id='formPopup'>
+        <div id='userForm'>
             <form onSubmit={ loginSubmit }>
-                <h2>Login</h2>
+                <h2>User Name</h2>
                 <fieldset>
                     <input type="text" placeholder="User Name*" value={ username } onChange={({target})=>setUserName(target.value)} name="username" />
                     <input type="text" placeholder="Password*" value={ password } onChange={({target})=>setPassword(target.value)}name="password" />

@@ -17,7 +17,9 @@ const Register = ({ open, setOpen }) =>{
             body: JSON.stringify(formDataObject), 
         });
         if ( open !== null ){
+            window.localStorage.setItem('loggedUser', JSON.stringify(user))
             setOpen(false);
+            console.log(user)
         }
     }
     return (

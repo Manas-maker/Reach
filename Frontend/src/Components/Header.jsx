@@ -1,6 +1,7 @@
-import "./header.css"
+import "./Header.css"
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './services/AuthProvider'
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import Login from "./Login";
@@ -12,19 +13,20 @@ const Header =  ()=>{
     const closeModalLogin = () => setOpenLogin(false)
     const [openRegister, setOpenRegister] = useState(false)
     const closeModalRegister = () => setOpenRegister(false)
-    const [user, setUser] = useState(null)
+    const user = useAuth();
+    
     const submitHandler = (e) =>{
         if (e.key === 'Enter' ){
             navigate(`/search?query=${searchQuery}`)
         }
     }
-    useEffect(() => {
+    /*useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedUser')
         if (loggedUserJSON) {
           const user = JSON.parse(loggedUserJSON)
           setUser(user)
         }
-      }, [])
+      }, [])*/
     return (
         <div id="headerContainer">
             <div id="headerLeft"><input 

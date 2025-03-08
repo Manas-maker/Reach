@@ -4,22 +4,28 @@ import './App.css'
 import Listing from './Components/Listing'
 import Register from './Components/Register'
 import Login from './Components/Login'
+import User from './Components/User'
+import Landing from './Components/Landing'
+import { AuthProvider } from './Components/services/AuthProvider'
 
 function App() {
   const [count, setCount] = useState(0)
   const [errorMessage, setErrorMessage] = useState(null)
   return (
+    <AuthProvider>
     <Router>
       <Routes>
-        <Route path="/" element={<h1>REACH</h1>} />
+        <Route path="/" element={<Landing/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/user" element={<User />} />
         <Route 
           path="/listings"
           element={<Listing />}
         />
       </Routes>
     </Router>
+    </AuthProvider>
   )
 }
 

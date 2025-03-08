@@ -12,7 +12,7 @@
     margin-bottom: -800px;*/
 }
 
-#formPopup form{
+#formPopup {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -28,6 +28,12 @@ h2{
 }
 h3{
     font-size: 36px;
+    font-family: "Federant";
+    color: #343333;
+    margin: 0px;
+}
+h4{
+    font-size: 28px;
     font-family: "Federant";
     color: #343333;
     margin: 0px;
@@ -48,6 +54,7 @@ h3{
     border: none;
     margin: 14px 0;
     font-size: 150%;
+    padding-left: 6px;
 }
 
 #formPopup a{

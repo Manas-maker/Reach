@@ -1,0 +1,30 @@
+#hero h1{
+    font-size: 96px;
+    font-family: "Federant";
+    color: #343333;
+    margin: 0px;
+    margin-top: 100px;
+}
+
+#hero p {
+    color: #343333;
+    font-family: "Ysabeau Office";
+    font-size: 32px;
+    margin: 0px;
+}
+
+
+#hero {
+    margin-bottom: 128px;
+    height: 20vh;
+}
+#categoryCarousel {
+    display: flex;
+    gap: 49px;
+}
+.carouselItem {
+    width: 15vw;
+    height: 40vh;
+    background-color: #343333;
+}
+

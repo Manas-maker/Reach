@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const uri = process.env.MONGODB_URI;
 
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   autoSelectFamily: false,
@@ -22,8 +23,13 @@ const client = new MongoClient(uri, {
 
 
 const app = express();
+app.use(cors({
+  origin: "http://localhost:5173", // React Vite frontend
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 app.use(cors({
   origin: 'http://localhost:5173', // URL of your Vite React app
@@ -700,136 +706,135 @@ async function startServer() {
         return res.status(404).json({ error: "Review not found" });
       }
       console.log("Review deleted:", result);
-      res.status(200).send("Review deleted successfully");
+      return res.status(200).send("Review deleted successfully");
 
     } catch (error){
       console.error('Error deleting review: ', error);
-      res.status(500).json({error: 'Failed to delete review, try again later'});
+      return res.status(500).json({error: 'Failed to delete review, try again later'});
     }
   }
   app.delete('/delete-review', DeleteReview);
+//Bookmark Functions
+ //Bookmarks
+ app.get('/:id/bookmarks', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
+      const allBookmarks = await bookmarksCollection.find({userid:id}).toArray();
+      allBookmarks.length!==0? res.status(200).send(allBookmarks): res.status(400).send("Not Found");
 
-  //Bookmarks
-        app.get('/:id/bookmarks', async (req, res) => {
-          try {
-              const { id } = req.params;
-              const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
-              const allBookmarks = await bookmarksCollection.find({userid:id}).toArray();
-              allBookmarks.length!==0? res.status(200).send(allBookmarks): res.status(400).send("Not Found");
-      
-          } catch (error) {
-              console.error("Error fetching bookmarks:", error);
-              res.status(500).json({ error: "An error occurred while retrieving bookmarks" });
-          }
-      });
-      
-      app.get('/bookmarks/:id', async (req, res) => {
-        try {
-            const { id } = req.params;
-    
-            if (!ObjectId.isValid(id)) {
-                return res.status(400).json({ error: "Invalid Bookmark ID" });
-            }
-            const validID = new ObjectId(id);
-    
-            const bookmark = await client
-                .db('ReachDB')
-                .collection('Bookmarks')
-                .findOne({ _id: validID });
-
-            console.log(bookmark)
-    
-            if (!bookmark) {
-                return res.status(404).json({ error: "Bookmark not found" });
-            }
-    
-            const bookmarkTitle = bookmark.title;
-            const listingIds = bookmark.listings
-          .filter(id => ObjectId.isValid(id) || typeof id === 'object')
-          .map(id => {
-          if (typeof id === 'string') {
-            return new ObjectId(id);
-          } else {
-            return id; // Return the existing ObjectId object
-          }
-          });
-            console.log(listingIds);
-    
-            if (listingIds.length === 0) {
-                return res.json({ listings: [] });
-            }
-    
-            const listings = await client
-                .db('ReachDB')
-                .collection('Listings')
-                .find({ _id: { $in: listingIds } })
-                .toArray();
-            res.send({title:bookmarkTitle, listings});
-            console.log({title:bookmarkTitle, listings})
-    
-        } catch (error) {
-            console.error("Error fetching listings:", error);
-            res.status(500).json({ error: "Internal Server Error" });
-        }
-    });
-
-    app.post('/bookmarks', async (req, res) => {
-      try {
-          const { userid, title, listings } = req.body;
-    
-          const bookmarksCollection = client.db('ReachDB').collection('Bookmarks');
-          const existingBookmark = await bookmarksCollection.findOne({ userid, title });
-          if (existingBookmark) {
-              return res.status(400).json({ error: "Collection already exists!" });
-          }
-    
-          const newBookmark = await bookmarksCollection.insertOne({ userid, title, listings });
-          const createdBookmark = await bookmarksCollection.findOne({ _id: newBookmark.insertedId })
-    
-          res.status(201).json(createdBookmark);
-      } catch (error) {
-          console.error("Error creating bookmark:", error);
-          res.status(500).json({ error: "An error occurred while creating the bookmark" });
-      }
-    });
-
-    app.patch('/bookmarks/:id', async (req, res) => {
-      try {
-          const { id } = req.params;
-          const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
-          const validID = ObjectId.isValid(id) ? new ObjectId(id) : null;
-          const { title, listings} = req.body;
-    
-          const updatedBookmark = await bookmarksCollection.findOneAndUpdate(
-              { "_id": validID },
-              { $set: { title, listings } },
-              { returnDocument: 'after' }
-          );
-          console.log(updatedBookmark)
-    
-          res.status(200).json(updatedBookmark.value);
-      } catch (error) {
-          console.error("Error updating bookmark:", error);
-          res.status(500).json({ error: "An error occurred while updating the bookmark" });
-      }
-    });
-
-        app.delete('/bookmarks/:id', async(req, res) => {
-        try {
-            const bookmarkId = parseInt(req.params.id, 10);
-            if (bookmarks[bookmarkId]) {
-              delete bookmarks[bookmarkId];
-              return res.status(200).json({ message: "Bookmark deleted" });
-            }
-            res.status(404).json({ error: "Bookmark not found" });
-        } catch (error) {
-            res.status(500).json({ error: "An error occurred while deleting the bookmark" });
-        }
-    });
   } catch (error) {
-    console.error('Failed to connect to MongoDB:', error);
-    process.exit(1);
+      console.error("Error fetching bookmarks:", error);
+      res.status(500).json({ error: "An error occurred while retrieving bookmarks" });
   }
+});
+
+app.get('/bookmarks/:id', async (req, res) => {
+try {
+    const { id } = req.params;
+
+    if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid Bookmark ID" });
+    }
+    const validID = new ObjectId(id);
+
+    const bookmark = await client
+        .db('ReachDB')
+        .collection('Bookmarks')
+        .findOne({ _id: validID });
+
+    console.log(bookmark)
+
+    if (!bookmark) {
+        return res.status(404).json({ error: "Bookmark not found" });
+    }
+
+    const bookmarkTitle = bookmark.title;
+    const listingIds = bookmark.listings
+  .filter(id => ObjectId.isValid(id) || typeof id === 'object')
+  .map(id => {
+  if (typeof id === 'string') {
+    return new ObjectId(id);
+  } else {
+    return id; 
+  }
+  });
+    console.log(listingIds);
+    if (listingIds.length === 0) {
+        return res.json({ listings: [] });
+    }
+
+    const listings = await client
+        .db('ReachDB')
+        .collection('Listings')
+        .find({ _id: { $in: listingIds } })
+        .toArray();
+    res.send({title:bookmarkTitle, listings});
+    console.log({title:bookmarkTitle, listings})
+
+} catch (error) {
+    console.error("Error fetching listings:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+}
+});
+
+app.post('/bookmarks', async (req, res) => {
+try {
+  const { userid, title, listings } = req.body;
+
+  const bookmarksCollection = client.db('ReachDB').collection('Bookmarks');
+  const existingBookmark = await bookmarksCollection.findOne({ userid, title });
+  if (existingBookmark) {
+      return res.status(400).json({ error: "Collection already exists!" });
+  }
+
+  const newBookmark = await bookmarksCollection.insertOne({ userid, title, listings });
+  const createdBookmark = await bookmarksCollection.findOne({ _id: newBookmark.insertedId })
+
+  res.status(201).json(createdBookmark);
+} catch (error) {
+  console.error("Error creating bookmark:", error);
+  res.status(500).json({ error: "An error occurred while creating the bookmark" });
+}
+});
+
+app.patch('/bookmarks/:id', async (req, res) => {
+try {
+  const { id } = req.params;
+  const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
+  const validID = ObjectId.isValid(id) ? new ObjectId(id) : null;
+  const { title, listings} = req.body;
+
+  const updatedBookmark = await bookmarksCollection.findOneAndUpdate(
+      { "_id": validID },
+      { $set: { title, listings } },
+      { returnDocument: 'after' }
+  );
+  console.log(updatedBookmark)
+
+  res.status(200).json(updatedBookmark.value);
+} catch (error) {
+  console.error("Error updating bookmark:", error);
+  res.status(500).json({ error: "An error occurred while updating the bookmark" });
+}
+});
+
+app.delete('/bookmarks/:id', async(req, res) => {
+try {
+    const bookmarkId = parseInt(req.params.id, 10);
+    if (bookmarks[bookmarkId]) {
+      delete bookmarks[bookmarkId];
+      return res.status(200).json({ message: "Bookmark deleted" });
+    }
+    res.status(404).json({ error: "Bookmark not found" });
+} catch (error) {
+    res.status(500).json({ error: "An error occurred while deleting the bookmark" });
+}
+});
+} catch (error) {
+console.error('Failed to connect to MongoDB:', error);
+process.exit(1);
+}
 }
 
 // Call the function to start the server

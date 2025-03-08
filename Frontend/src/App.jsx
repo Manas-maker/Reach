@@ -7,11 +7,13 @@ import SuccessPage from './Components/SuccessPage'
 import BookmarkList from "./Components/BookmarkList"
 import BookmarkCard from "./Components/BookmarkCard"
 
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<h1>REACH</h1>} />
+
         <Route path="/search/:type" element={<ViewCategories/>}/>
         <Route path="/listing/:id" element={<ViewListing/>}/>
         <Route path="/search" element={<SearchResults/>}/>
@@ -21,7 +23,7 @@ function App() {
         <Route path="/:id/bookmarks" element={<BookmarkCard/>}/>
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

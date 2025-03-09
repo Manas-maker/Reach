@@ -1,5 +1,7 @@
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const { ObjectId } = require('mongodb');
 const express = require('express');
+
 const dotenv = require('dotenv').config("/.env");
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
@@ -13,7 +15,7 @@ const client = new MongoClient(uri, {
   autoSelectFamily: false,
   serverApi: {
     version: ServerApiVersion.v1,
-    strict: true,
+    strict: false,
     deprecationErrors: true,
   },
   // Add these options to help with connection issues
@@ -22,9 +24,20 @@ const client = new MongoClient(uri, {
   serverSelectionTimeoutMS: 10000
 });
 
+
 const app = express();
+app.use(cors({
+  origin: "http://localhost:5173", // React Vite frontend
+  methods: ["GET", "POST", "PUT", "PATCH","DELETE"],
+  credentials: true
+}));
 app.use(express.json());
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
+
+app.use(cors({
+  origin: 'http://localhost:5173', // URL of your Vite React app
+  credentials: true, //cookies
+}));
 
 app.use(cors({
   origin: "http://localhost:5173", 
@@ -39,7 +52,7 @@ async function startServer() {
 
     // Define routes after successful connection
     app.get('/helloGuys', (req, res) => {
-      res.status(200).send("chai peelo");
+      res.status(200).json({message:"chai peelo"});
     });
 
     // Start the server
@@ -344,24 +357,77 @@ async function startServer() {
     })
     
     //Listing Functions
-    //add a listing    
+    //add a listing   
+    
+    app.post('/verifyListing',async(req,res)=>{
+
+        try{
+          const collection = await client.db("ReachDB").collection("Listings");
+          console.log(req.body)
+          const n = req.body.name;
+          const loc = req.body.coordinates;
+    
+          const docs = await collection.aggregate([
+            {
+             $search: {
+               "text": {
+               "query": n,
+               "path": "name",
+               "fuzzy":{
+                 "maxEdits":2
+               }
+               }
+             }
+  
+           }
+         ]).toArray()
+  
+          const result = await collection.find({
+              location: {
+                $near: {
+                  $geometry: {
+                     type: "Point",
+                     coordinates: loc
+                  },
+                  $maxDistance : 100
+              }
+            }
+          }
+          ).toArray()
+  
+          if (docs.length!=0 && result.length!=0){
+            res.status(400).send({result:'Listing Exists!'});
+            console.log("listing exists")
+          } else {
+            res.status(200).send({result:'Listing does not Exists!'});
+            console.log("listing does not exist");
+          }
+  
+        } catch (err){
+          console.log(err)
+        }
+        
+      }
+
+    );
+  
+  
     app.post('/newListing', async(req,res)=>{
       try {
-        const {name,location,type,desc,rating,tags} = req.body;
-        let check = "not found"; //verifyListing(n,loc);
-        if (check==="not found"){
-          await client.db('ReachDB').collection('Listings').insertOne({
+        const {name,location,address,type,hours,tags,phone,images} = req.body;
+        
+        await client.db('ReachDB').collection('Listings').insertOne({
             name: name,
             location: location,
+            address:address,
             type : type,
-            desc: desc,
-            rating: rating,
-            tags: tags
+            hours: hours,
+            tags: tags,
+            phone: phone,
+            images:images,
+            rating:0
           });
-          res.status(200).send('Listing Added!');
-        } else {
-          res.status(400).send('Listing Already Exists!');
-        }
+          res.status(200).send({result:'Listing Added!'});
         
       } catch (error) {
         console.error('Invalid Listing: ', error);
@@ -399,7 +465,7 @@ async function startServer() {
   app.get('/search/:type',async (req,res)=>{
     try{
       const list = await client.db('ReachDB').collection('Listings').find({type:req.params['type']}).toArray();
-      list.length!==0? res.status(200).send(list): res.status(400).send("Not Found");
+      list.length!==0? res.status(200).send(list): res.status(400).send([]);
     } catch (err){
       console.log('Failed to retrieve:',err)
       res.status(500).json({error: 'Something went wrong!'})
@@ -407,16 +473,19 @@ async function startServer() {
   })
 
   //view one listing
-  /*
-  app.get('/search/:id',async(req,res)=>{
+  
+  app.get('/listing/:id',async(req,res)=>{
     try{
-      const listing = client.db('ReachDB').collection('Listings').find({"_id":req.params['id']}).toArray();
-      listing.length===1?res.status(200).send(listing): res.status(400).send("Not Found")
-    } catch {
+      const {id} = req.params;
+      const validID = ObjectId.isValid(id) ? new ObjectId(id):null;
+
+      const listing = await client.db('ReachDB').collection('Listings').find({"_id":validID}).toArray();
+      listing.length===1?res.status(200).send(listing): res.status(404).send([])
+    } catch (error){
       console.error('Failed to retrieve: ', error);
       res.status(500).json({error: 'Something went wrong!'});
     }
-  })*/
+  })
 
   //search for listing - name, tags, type - 2 mistakes - verified
   app.get('/search',async (req,res)=>{ 
@@ -439,7 +508,7 @@ async function startServer() {
       }
     ]).toArray();
     console.log(docs);  
-    docs.length!==0?res.status(200).send(docs):res.status(400).send("Not found")
+    docs.length!==0?res.status(200).send(docs):res.status(400).send([])
           
    } catch (error) {
       console.error('Failed to retrieve: ', error);
@@ -448,12 +517,12 @@ async function startServer() {
   })
 
   //update listing - verified
-  app.patch('/updateListing/:id',async (req,res)=>{
+  app.patch('/listing/:id',async (req,res)=>{
     try{
       let id = req.params['id']
       const validID = ObjectId.isValid(id) ? ObjectId.createFromHexString(id):null;
       console.log(req.body);
-      const {name, type, tags} = req.body;
+      const {images} = req.body;
       
 
       if (validID){
@@ -461,13 +530,40 @@ async function startServer() {
           {"_id":validID},
           {
             $set: {
-              name: name,
-              type: type,
-              tags: tags
+              images:images
             }
           }
         ); 
-        console.log("Updated");
+        res.status(200).send({result:"Images Updated!"})
+        
+      }else{
+        res.status(400).send("Invalid ID");
+      }
+      
+    } catch (err){
+      console.log('Unable to Update:',err)
+      res.status(500).json({error: 'Something went wrong!'})
+    }
+  })
+
+  app.patch('/updateRating/:id',async (req,res)=>{
+    try{
+      let id = req.params['id']
+      const validID = ObjectId.isValid(id) ? ObjectId.createFromHexString(id):null;
+      console.log(req.body);
+      const {rating} = req.body;
+      
+
+      if (validID){
+        const result = await client.db('ReachDB').collection('Listings').updateOne(
+          {"_id":validID},
+          {
+            $set: {
+              rating:rating.averageRating
+            }
+          }
+        ); 
+        res.status(200).send({result:"Rating Updated!"})
         
       }else{
         res.status(400).send("Invalid ID");
@@ -480,36 +576,25 @@ async function startServer() {
   })
 
 //Review Functions
-    /*
-    await client.db('ReachDB').collection('Reviews').insertMany([
-          {
-            user: 'Marissa M',
-            listing: 'Bangalore Cafe',
-            header: 'This place sucks',
-            body: 'This place is literally the worst',
-            rating: 1,
-            upvotes: null,
-            downvotes: null,
-            date: new Date()
-          },
-          {
-            userid: 'Nikhil',
-            listing: 'Maachiz',
-            header: 'Could it get any better',
-            body: 'Cheesy fries cheesy fries cheesy fries',
-            rating: 4,
-            upvotes: null,
-            downvotes: null,
-            date: new Date()
-          }
-        ])
-    */
-  // Create Reviews Function
+  
+  // Create Reviews
   const CreateReview =  async (req, res) => {
     try {
-      const { userid, listingid, header, body, rating } = req.body;
+      const { userid, header, body, rating, images } = req.body;
+      const { listingid } = req.params;
       if (!userid || !listingid || !rating) {
         return res.status(400).json({message: 'Fields must be entered!'});
+      }
+
+      const existingRev = await client.db('ReachDB').collection('Reviews').findOne({ listingid, userid });
+
+      if (existingRev) {
+        const updatedRev = await client.db('ReachDB').collection('Reviews').updateOne(
+            { _id: existingRev._id },
+            { $set: { header, body, rating, images: images || [], date: new Date() } }
+        );
+        console.log("Review Updated:", updatedRev);
+        return res.status(200).json({ message: "Review updated successfully!" });
       }
 
       const rev = {
@@ -518,11 +603,11 @@ async function startServer() {
         header: header,
         body: body,
         rating: rating,
+        images: images || [],
         upvotes: [],
         downvotes: [],
         date: new Date()
       };
-          
       await client.db('ReachDB').collection('Reviews').insertOne(rev);
       res.status(200).send("Review Created!");
     } catch (error){
@@ -530,29 +615,79 @@ async function startServer() {
       res.status(500).json({error: 'Failed to create review, try again later'});
     }
   }
-  app.post('/create-review', CreateReview);
+  app.post('/create-review/:listingid', CreateReview);
+
+  //Get listingid to create a review for that listing
+  app.get('/listings/:listingid', async (req, res) => {
+    try {
+        const { listingid } = req.params;
+        const listing = await client.db('ReachDB').collection('Listings').findOne({ _id: new ObjectId(listingid) });
+
+        if (!listing) {
+            return res.status(404).json({ error: "Listing not found" });
+        }
+
+        res.json({ listingName: listing.name });
+    } catch (error) {
+        console.error("Error fetching listing:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  //Check if review for a listing by a particular user already exists
+  app.get("/reviews/:listingid/user/:userid", async (req, res) => {
+    const { listingid, userid } = req.params;
+    try {
+        const review = await client.db('ReachDB').collection('Reviews').findOne({ listingid: listingid, userid: userid });
+        if (!review) {
+            return res.status(404).json({ message: "Review not found" });
+        }
+        res.json(review);
+    } catch (error) {
+        console.error("Error fetching review:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
 
   //Get Reviews
   const GetReview = async (req, res) => {
     try {
       let {listingid} = req.params;
-      
-      const result = await client.db('ReachDB').collection('Reviews').find({listingid: listingid}).toArray();
-      console.log(result);
-      res.status(200).send(result);
+      let objectlisId = '';
+
+      if (ObjectId.isValid(listingid)) {
+        objectlisId = ObjectId.createFromHexString(listingid);
+      } else {
+        return res.status(400).json({ error: "Invalid review ID provided" });
+      }
+
+      const listing = await client.db('ReachDB').collection('Listings').findOne({ _id: objectlisId });
+      if (!listing) {
+        return res.status(404).json({ error: "Listing not found" });
+      }
+
+      const reviews  = await client.db('ReachDB').collection('Reviews').find({listingid: listingid}).toArray();
+      console.log('Fetched Reviews:', reviews);
+
+      res.status(200).json({
+        listingName: listing.name,
+        listingAddress: listing.address,
+        reviews: reviews,
+      });
+
     } catch (error){
       console.error('Error getting reviews: ', error);
       res.status(500).json({error: 'Failed to get reviews, try again later'});
     }
   }
-  app.get('/:listingid/reviews', GetReview);
+  app.get('/reviews/:listingid', GetReview);
 
   //Update Review
   const UpdateReview = async (req, res) => {
     try {
       const {revid} = req.params;
       let objectrevId = "";
-      const { userid, listingid, header, body, rating } = req.body;
+      const { userid, listingid, header, body, rating, images } = req.body;
 
       if (ObjectId.isValid(revid)) {
         objectrevId = ObjectId.createFromHexString(revid);
@@ -570,6 +705,7 @@ async function startServer() {
         header: header,
         body: body,
         rating: rating,
+        images: images || [],
         upvotes: [], downvotes: [],
         date: new Date()
       };
@@ -585,12 +721,13 @@ async function startServer() {
       res.status(500).json({error: 'Failed to update review, try again later'});
     }
   }
-  app.patch('/:revid/update-review', UpdateReview);
+  app.patch('/update-review/:revid', UpdateReview);
 
   //Updating upvotes and downvotes
   const VoteUpdate =  async (req, res) => {
     try {
-      const revid = req.params;
+      const { revid } = req.params;
+
       const {userid, votetype} = req.body;
       let query = {};
 
@@ -620,8 +757,10 @@ async function startServer() {
           query = {$addToSet: { downvotes: userid }, $pull: { upvotes: userid }};
         }
       }
+
       await client.db('ReachDB').collection('Reviews').updateOne({ _id: objectrevId }, query);
-      res.status(200).send("Vote updated!");
+      const updatedReview = await client.db('ReachDB').collection('Reviews').findOne({ _id: objectrevId });
+      res.status(200).json(updatedReview);
       console.log("Received review ID:", revid);
     } catch (error) {
       console.error('Error updating vote: ', error);
@@ -633,7 +772,7 @@ async function startServer() {
   //Delete Review
   const DeleteReview = async (req, res) => {
     try {
-      const {revid} = req.body;
+      const {revid} = req.params;
       let objectrevId = "";
 
       if (ObjectId.isValid(revid)) {
@@ -648,92 +787,176 @@ async function startServer() {
         return res.status(404).json({ error: "Review not found" });
       }
       console.log("Review deleted:", result);
-      res.status(200).send("Review deleted successfully");
+      return res.status(200).send("Review deleted successfully");
 
     } catch (error){
       console.error('Error deleting review: ', error);
-      res.status(500).json({error: 'Failed to delete review, try again later'});
+      return res.status(500).json({error: 'Failed to delete review, try again later'});
     }
   }
-  app.delete('/delete-review', DeleteReview);
 
-  //Bookmarks
-      const bookmarks = {};
-        let bookmarkIdCounter = 1;
-
-        app.get('/bookmarks/:id', async(req, res) => {
-        try {
-          const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
-          const bookmarks = await bookmarksCollection.find().toArray();
-
-          res.status(200).json(bookmarks);
-          const { id } = req.id;
-          if (id) {
-            const bookmarkId = id;
-            const bookmark = bookmarks[bookmarkId];
-            if (bookmark) {
-              return res.status(200).json({ id: bookmarkId, ...bookmark });
-            }
-              return res.status(404).json({ error: "Bookmark not found" });
-            }
-            const allBookmarks = Object.entries(bookmarks).map(([id, data]) => ({ id: parseInt(id, 10), ...data }));
-            res.status(200).json(allBookmarks);
-        } catch (error) {
-            res.status(500).json({ error: "An error occurred while retrieving bookmarks" });
-        }
-    });
-
-        app.post('/bookmarks', async(req, res) => {
-          try {
-            const { title, url, description = "" } = req.body;
-            if (!title || !url) {
-              return res.status(400).json({ error: "Invalid data" });
-            }
-            const bookmarkId = bookmarkIdCounter++;
-            bookmarks[bookmarkId] = { title, url, description };
-
-            res.status(201).json({ id: bookmarkId, ...bookmarks[bookmarkId] });
-        } catch (error) {
-          res.status(500).json({ error: "An error occurred while creating the bookmark" });
-        }
-    });
-
-        app.patch('/bookmarks/:id', async(req, res) => {
-          try {
-            const bookmarkId = parseInt(req.params.id, 10);
-            const bookmark = bookmarks[bookmarkId];
-            if (!bookmark) {
-              return res.status(404).json({ error: "Bookmark not found" });
-            }
-            const { title, url, description } = req.body;
-
-            if (title) bookmark.title = title;
-            if (url) bookmark.url = url;
-            if (description) bookmark.description = description;
-
-            res.status(200).json({ id: bookmarkId, ...bookmark });
-        } catch (error) {
-            res.status(500).json({ error: "An error occurred while updating the bookmark" });
-        }
-    });
-
-        app.delete('/bookmarks/:id', async(req, res) => {
-        try {
-            const bookmarkId = parseInt(req.params.id, 10);
-            if (bookmarks[bookmarkId]) {
-              delete bookmarks[bookmarkId];
-              return res.status(200).json({ message: "Bookmark deleted" });
-            }
-            res.status(404).json({ error: "Bookmark not found" });
-        } catch (error) {
-            res.status(500).json({ error: "An error occurred while deleting the bookmark" });
-        }
-    });
+  app.delete('/delete-review/:revid', DeleteReview);
+//Bookmark Functions
+ 
+ app.get('/:id/bookmarks', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
+      const allBookmarks = await bookmarksCollection.find({userid:id}).toArray();
+      allBookmarks.length!==0? res.status(200).send(allBookmarks): res.status(400).send("Not Found");
   } catch (error) {
-    console.error('Failed to connect to MongoDB:', error);
-    process.exit(1);
+      console.error("Error fetching bookmarks:", error);
+      res.status(500).json({ error: "An error occurred while retrieving bookmarks" });
+  }
+});
+
+app.get('/bookmarks/:id', async (req, res) => {
+try {
+    const { id } = req.params;
+
+    if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid Bookmark ID" });
+    }
+    const validID = new ObjectId(id);
+
+    const bookmark = await client
+        .db('ReachDB')
+        .collection('Bookmarks')
+        .findOne({ _id: validID });
+
+    console.log(bookmark)
+
+    if (!bookmark) {
+        return res.status(404).json({ error: "Bookmark not found" });
+    }
+
+    const bookmarkTitle = bookmark.title;
+    const listingIds = bookmark.listings
+  .filter(id => ObjectId.isValid(id) || typeof id === 'object')
+  .map(id => {
+  if (typeof id === 'string') {
+    return new ObjectId(id);
+  } else {
+    return id; 
+  }
+  });
+    console.log(listingIds);
+    if (listingIds.length === 0) {
+        return res.json({ listings: [] });
+    }
+
+    const listings = await client
+        .db('ReachDB')
+        .collection('Listings')
+        .find({ _id: { $in: listingIds } })
+        .toArray();
+    res.send({title:bookmarkTitle, listings});
+    console.log({title:bookmarkTitle, listings})
+
+} catch (error) {
+    console.error("Error fetching listings:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+}
+});
+
+app.post('/bookmarks', async (req, res) => {
+try {
+  const { userid, title, listings } = req.body;
+
+  const bookmarksCollection = client.db('ReachDB').collection('Bookmarks');
+  const existingBookmark = await bookmarksCollection.findOne({ userid, title });
+  if (existingBookmark) {
+      return res.status(400).json({ error: "Collection already exists!" });
+  }
+
+  const newBookmark = await bookmarksCollection.insertOne({ userid, title, listings });
+  const createdBookmark = await bookmarksCollection.findOne({ _id: newBookmark.insertedId })
+
+  res.status(201).json(createdBookmark);
+} catch (error) {
+  console.error("Error creating bookmark:", error);
+  res.status(500).json({ error: "An error occurred while creating the bookmark" });
+}
+});
+
+app.patch('/bookmarks/:id', async (req, res) => {
+try {
+  const { id } = req.params;
+  const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
+  const validID = ObjectId.isValid(id) ? new ObjectId(id) : null;
+  const { title, listings} = req.body;
+
+  const updatedBookmark = await bookmarksCollection.findOneAndUpdate(
+      { "_id": validID },
+      { $set: { title, listings } },
+      { returnDocument: 'after' }
+  );
+  console.log(updatedBookmark)
+
+  res.status(200).json(updatedBookmark.value);
+} catch (error) {
+  console.error("Error updating bookmark:", error);
+  res.status(500).json({ error: "An error occurred while updating the bookmark" });
+}
+});
+
+app.delete('/bookmarks/:id', async(req, res) => {
+try {
+    const bookmarkId = parseInt(req.params.id, 10);
+    if (bookmarks[bookmarkId]) {
+      delete bookmarks[bookmarkId];
+      return res.status(200).json({ message: "Bookmark deleted" });
+    }
+    res.status(404).json({ error: "Bookmark not found" });
+} catch (error) {
+    res.status(500).json({ error: "An error occurred while deleting the bookmark" });
+}
+});
+} catch (error) {
+console.error('Failed to connect to MongoDB:', error);
+process.exit(1);
+}
+}
+
+//Miscellaneous Functions
+
+//To calculate rating of a listing
+const CalcRating = async (req, res) => {
+  try {
+    let {listingid} = req.body;
+    let objectlisId = '';
+
+    if (ObjectId.isValid(listingid)) {
+      objectlisId = ObjectId.createFromHexString(listingid);
+    } else {
+      return res.status(400).json({ error: "Invalid listing ID provided" });
+    }
+
+    const listing = await client.db('ReachDB').collection('Listings').findOne({ _id: objectlisId });
+    if (!listing) {
+      return res.status(404).json({ error: "Listing not found" });
+    }
+
+    const reviews  = await client.db('ReachDB').collection('Reviews').find({listingid: listingid}).toArray();
+    console.log('Fetched Reviews:', reviews);
+
+    const revCount = reviews.length;
+    const totRat = reviews.reduce((sum, review) => sum + (review.rating), 0);
+    const rating = revCount > 0 ? parseFloat((totRat / revCount).toFixed(1)) : 0;
+
+    const result = await client.db('ReachDB').collection('Listings').updateOne(
+      { _id: objectlisId },
+      { $set: { revCount, rating } }
+    );
+
+    res.status(200).json(result);
+
+  } catch (error){
+    console.error('Error calculating rating: ', error);
+    res.status(500).json({error: 'Failed to calculate rating'});
   }
 }
+app.patch('/ratings', CalcRating);
 
 // Call the function to start the server
 startServer();

@@ -37,7 +37,10 @@ const SearchResults = () =>{
                             <img src="/restaurant.jpg"/>
                         </figure>
                         <div className="cardBody">
-                            <h2 className='listingh2'>{item.name}</h2> 
+                        <div className='listingTop'>
+                                <h2 className="listingh2">{item.name}</h2> 
+                                <span className='spanRating'>{item.rating?`${item.rating}★`:"--"}</span>
+                                </div>
                             <p className='listingParagraph'> {item.tags} </p>
                         </div>
                     </a>

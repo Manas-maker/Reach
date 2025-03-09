@@ -1,10 +1,15 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const { ObjectId } = require('mongodb');
 const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
+
+const dotenv = require('dotenv').config("/.env");
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const cors = require('cors')
 
 const uri = process.env.MONGODB_URI;
+
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   autoSelectFamily: false,
@@ -32,6 +37,11 @@ const PORT = process.env.PORT || 8000;
 app.use(cors({
   origin: 'http://localhost:5173', // URL of your Vite React app
   credentials: true, //cookies
+}));
+
+app.use(cors({
+  origin: "http://localhost:5173", 
+  credentials: true
 }));
 
 async function startServer() {
@@ -138,8 +148,9 @@ async function startServer() {
     app.post('/Register', async (req, res) => {
        try {
           const { username, name, email, phoneNo, profilePhoto, password } = req.body
+          console.log(req)
           if (!username || !name || !password) {
-            return res.status(400).json({ error: 'Username, name, and password are required' })}
+            return res.status(400).json({ error: req })}
           const saltRounds = 10
           const passwordHash = await bcrypt.hash(password, saltRounds)
         
@@ -164,7 +175,6 @@ async function startServer() {
     app.post('/Login', async (req, res) => {
         try {
           const { username, password } = req.body
-
           const user = await client.db("ReachDB").collection('Users').findOne({ username })
           const passwordCorrect = user === null
             ? false
@@ -185,7 +195,7 @@ async function startServer() {
         
           res
             .status(200)
-            .send({ token, username: user.username, name: user.name })
+            .send({ token, username: user.username, name: user.name , id:user._id, phoneNo:user.phoneNo, email: user.email})
         } catch (error) {
             console.error('Error logging user in: ', error)
             res.status(500).json({error: 'Failed to login'})
@@ -285,7 +295,7 @@ async function startServer() {
       }
     })
 
-    app.put('/users',
+    app.patch('/users',
       authenticateToken,
       authorize({ checkOwnership: true }),
        async (req, res) => {

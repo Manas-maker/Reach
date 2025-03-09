@@ -1,0 +1,81 @@
+#formPopup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 594px;
+    height: 800px;
+    background-color: #ffc629;
+    border: none;
+    padding: 24px;
+    font-family: "Ysabeau Office";
+    /*margin-left: -594px;
+    margin-bottom: -800px;*/
+}
+
+#formPopup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.popup-overlay {
+    background: #34333386;
+}
+h2{
+    font-size: 64px;
+    font-family: "Federant";
+    color: #343333;
+    margin: 0px;
+}
+h3{
+    font-size: 36px;
+    font-family: "Federant";
+    color: #343333;
+    margin: 0px;
+}
+h4{
+    font-size: 28px;
+    font-family: "Federant";
+    color: #343333;
+    margin: 0px;
+}
+#formPopup fieldset{
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#formPopup input{
+    background-color: #fbf9ef;
+    color: black;
+    font-family: "Ysabeau Office";
+    width: 456px;
+    height: 59px;
+    border: none;
+    margin: 14px 0;
+    font-size: 150%;
+    padding-left: 6px;
+}
+
+#formPopup a{
+    color: #c63838;
+}
+
+#formPopup p{
+    margin: 27px auto;
+    color: black;
+    width: 372px;
+    text-align: center;
+}
+
+#formPopup button{
+    background-color: #ffc629;
+    border-style: solid;
+    border-color: #343333;
+    color: #343333;
+    font-size: 150%;
+    font-family: "Federant";
+    border-radius: 0px;
+    width: 178px;
+    height: 55px;
+}

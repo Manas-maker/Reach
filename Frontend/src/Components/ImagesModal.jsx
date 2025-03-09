@@ -17,7 +17,7 @@ const ImagesModal = ({ imageUrls, isOpen, onClose }) => {
         className="modal-content"
         overlayClassName="modal-overlay"
       >
-        <button onClick={onClose} style={{ float: "right", cursor: "pointer" }} className="mapsButton">Close</button>
+        <button onClick={onClose} style={{ float: "right", cursor: "pointer" }} className="listbutton mapsButton">Close</button>
         <div className="image-grid">
           {imageUrls.map((url, index) => (
             <img

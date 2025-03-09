@@ -30,11 +30,11 @@ const BookmarkCard = () => {
                         data.map((item, index) => (
                             <li className="card" key={index}>
                                 <a href={`/bookmarks/${encodeURIComponent(item._id)}`} id={item._id}>
-                                    <figure>
+                                    <figure className="listingFigure">
                                         <img src='/restaurant.jpg' alt="Bookmark" />
                                     </figure>
                                     <div className="cardBody">
-                                        <h2>{item.title}</h2>
+                                        <h2 className='listingh2'>{item.title}</h2>
                                     </div>
                                 </a>
                             </li>

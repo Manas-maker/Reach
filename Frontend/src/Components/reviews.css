@@ -1,8 +1,47 @@
-body {
+.listname, .rev-h3{
   font-family: "Federant", serif;
   margin: 0;
   padding: 0;
   background-color: #fbf9ef;
+  color: #333;
+  margin-left: 100px;
+}
+
+.rev-h2{
+  font-family: "Federant", serif;
+  margin-top: 35px;
+  padding: 0;
+  background-color: #fbf9ef;
+  color: #333;
+}
+
+.rev-p{
+  font-family: "Ysabeau", serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fbf9ef;
+  color: #333;
+  margin-right: 105px;
+}
+
+.filter{
+  font-family: "Ysabeau", serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fbf9ef;
+  color: #333;
+  margin-left: 5px;
+}
+
+.rev-cards-h3{
+  font-family: "Federant", serif;
+  background-color: #ffffff;
+  color: #333;
+}
+
+.rev-cards-h4, .rev-cards-p{
+  font-family: "Ysabeau", serif;
+  background-color: #ffffff;
   color: #333;
 }
 
@@ -24,28 +63,6 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: left;
-  background-color: #fbf9ef;
-  padding: 15px 30px;
-  border-bottom: 2px solid #fbf9ef;
-}
-
-header a {
-  text-decoration: none;
-  color: #fbf9ef;
-  font-weight: bold;
-  margin: 0 10px;
-}
-
-header input[type="text"] {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
 .main {
@@ -80,6 +97,7 @@ header input[type="text"] {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  font-family: "Federant", serif;
 }
 
 .rating-bar-info {
@@ -105,6 +123,7 @@ header input[type="text"] {
   border-radius: 8px;
   cursor: pointer;
   max-width: 30%;
+  font-family: "Federant", serif;
 }
 
 .review-button:hover {
@@ -204,6 +223,8 @@ header input[type="text"] {
   align-items: center;
   gap: 10px;
   margin-left: auto;
+  font-family: "Federant", serif;
+  margin-right: 105px;
 }
 
 .rating-box {
@@ -215,10 +236,6 @@ header input[type="text"] {
   min-width: 50px;
   text-align: center;
   font-size: 1.1em;
-}
-
-.listing-header h1, .listing-header h3, .listing-header p {
-  margin: 0;
 }
 
 .listing-header h2{
@@ -271,7 +288,7 @@ header input[type="text"] {
   margin-top: 15px;
 }
 
-.review-card .votes button {
+.vote-button{
   background: transparent;
   border-radius: 5px;
   border-color: rgb(52, 51, 51);
@@ -281,11 +298,14 @@ header input[type="text"] {
   font-weight: bold;
   width: 8%;
   max-width: 8%;
+  font-family: "Federant", serif;
+  font-size: 16px;
+  border: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
-
-.review-card .votes button:hover {
-  background-color: rgb(52, 51, 51);
-  color: rgb(251, 249, 239);
+.vote-button:hover {
+  background-color: #343333;
+  color: #ffc629;
 }
 
 @media (max-width: 768px) {
@@ -301,4 +321,10 @@ header input[type="text"] {
       flex-direction: column;
       align-items: flex-start;
   }
+}
+
+.listing-review-card{
+  margin-left: 180px;
+  margin-top: 20px;
+  max-width: 1150px;
 }

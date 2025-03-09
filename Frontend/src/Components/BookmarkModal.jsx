@@ -88,12 +88,12 @@ const BookmarksModal = ({ collections, setCollections, listingid, userid, isOpen
       className="modal-content"
       overlayClassName="modal-overlay"
     >
-      <h2>Save to</h2>
+      <h2 id="bookmarkSaving" className="listingh2">Save to</h2>
       <ul className="collection-list">
         {collections.length > 0 ? (
           collections.map((collection) => (
             <li key={collection._id} className="collection-item">
-              <button className="bookmarkTitle" onClick={() => handleCollectionClick(collection._id, collection.title, collection.listings)}>
+              <button className="listbutton bookmarkTitle" onClick={() => handleCollectionClick(collection._id, collection.title, collection.listings)}>
                 {collection.title}
               </button>
               <br/>
@@ -104,8 +104,8 @@ const BookmarksModal = ({ collections, setCollections, listingid, userid, isOpen
           <p>No collections found.</p>
         )}
       </ul>
-      <button onClick={handleAddCollection}>+Add Collection</button>
-      <button onClick={onClose} className="close-btn">Close</button>
+      <button onClick={handleAddCollection} className="listbutton">+Add Collection</button>
+      <button onClick={onClose} className="listbutton close-btn">Close</button>
     </Modal>
   );
 };

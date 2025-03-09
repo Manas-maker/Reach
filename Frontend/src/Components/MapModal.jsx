@@ -28,7 +28,7 @@ const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
         },
       }}
     >
-      <button onClick={onClose} style={{ float: "right", cursor: "pointer" }} className="mapsButton">
+      <button onClick={onClose} style={{ float: "right", cursor: "pointer" }} className="listbutton mapsButton">
         Close
       </button>
       <LoadScriptNext googleMapsApiKey="AIzaSyACoHZjNSJdT7Im2_8m2rbCoDoMn3ErmxU">
@@ -37,13 +37,13 @@ const MapModal = ({ isOpen, onClose, onSelectLocation }) => {
                 {selectedPosition && <Marker position={selectedPosition} />}
             </GoogleMap>
             {selectedPosition && (
-                <p>
+                <p className='listingParagraph'>
                 Selected Coordinates: {selectedPosition.lat}, {selectedPosition.lng}
                 </p>
             )}
       </LoadScriptNext>
       <br/>
-      <button onClick={onClose} className="mapsButton">Submit</button>
+      <button onClick={onClose} className="listbutton mapsButton">Submit</button>
     </Modal>
   );
 };

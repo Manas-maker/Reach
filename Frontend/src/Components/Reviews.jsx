@@ -70,6 +70,7 @@ const Reviews = () =>{
     const navigate = useNavigate();
     const [reviews, setReviews] = useState([]);
     const [listingName, setListingName] = useState('');
+    const [listingAddress, setListingAddress] = useState('')
     const [loading, setLoading] = useState(true);
     const [ratings, setRatings] = useState({});
     const [filter, setFilter] = useState('most-helpful');
@@ -81,24 +82,25 @@ const Reviews = () =>{
         navigate(`/create-review/${listingid}`);
 
     };
-
+        
     useEffect(() => {
         const fetchReviews = async () => {
             try {
                 const res = await fetch(`http://localhost:8000/reviews/${listingid}`);
                 const data = await res.json();
-                console.log("Fetched data:", data); 
-                
+                console.log("Fetched data:", data);
+    
                 setListingName(data.listingName);
+                setListingAddress(data.listingAddress);
                 setReviews(data.reviews);
-
+    
                 const starDistribution = calcStar(data.reviews);
                 setRatings(starDistribution);
-
+    
                 const { averageRating, totalVotes } = calcRating(data.reviews);
                 setAverageRating(averageRating);
                 setTotalVotes(totalVotes);
-
+    
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching reviews:', error);
@@ -106,7 +108,9 @@ const Reviews = () =>{
             }
         };
     
-    fetchReviews();}, [listingid]);
+        fetchReviews();
+    }, [listingid]);
+    
 
     if (loading) {
         return <h3 className='loader'>Reaching reviews...</h3>;
@@ -119,7 +123,7 @@ const Reviews = () =>{
             <div className='reviews-page'>
                 <div className="listing-header">
                     <div className="row">
-                        <h1>{listingName}</h1>
+                        <h1 className='listname'>{listingName}</h1>
                         <div className="rating-container">
                             <span className="rating-box" style={{ backgroundColor: getRatingColour(averageRating) }}>
                                 {averageRating}
@@ -127,10 +131,10 @@ const Reviews = () =>{
                         </div>
                     </div>
                     <div className="row">
-                        <h3>St. Marks Road, Bangalore</h3>
-                        <p>{totalVotes} votes</p>
+                        <h3 className='rev-h3'>{listingAddress}</h3>
+                        <p className='rev-p'>{totalVotes} votes</p>
                     </div>
-                    <h2>Reviews</h2>
+                    <h2 className='rev-h2'>Reviews</h2>
                 </div>
 
                 <div className="rating-summary">
@@ -157,7 +161,7 @@ const Reviews = () =>{
 
                 <div className="reviews">
                     <div className="filter-menu">
-                        <p>Filter by</p>
+                        <p className='filter'>Filter by</p>
                         <select value={filter} onChange={(e) => setFilter(e.target.value)}>
                             <option value="most-helpful">Most Helpful</option>
                             <option value="highest-rating">Highest Rating</option>
@@ -172,17 +176,17 @@ const Reviews = () =>{
                                 <div className="user-avatar">
                                     <FontAwesomeIcon icon={faUser} size="2x" />
                                 </div>
-                                <div>
-                                    <h3>{review.userid}</h3>
-                                    <p>{new Date(review.date).toLocaleDateString()}</p>
+                                <div className='rev-cards'>
+                                    <h3 className='rev-cards-h3'>{review.userid}</h3>
+                                    <p className='rev-cards-p'>{new Date(review.date).toLocaleDateString()}</p>
                                     <div className="rating-stars">
                                         {[...Array(5)].map((_, index) => (
                                             <span key={index} className={index < review.rating ? 'filled-star' : 'empty-star'}> ★ </span>
                                         ))}
                                     </div>
                                     <div className='review-box'>
-                                        <h4>{review.header || ""}</h4>
-                                        <p>{review.body || ""}</p>
+                                        <h4 className='rev-cards-h4'>{review.header || ""}</h4>
+                                        <p className='rev-cards-p'>{review.body || ""}</p>
                                         {review.images?.length > 0 && (
                                             <div className="image-container">
                                             {review.images.map((imgSrc, index) => (
@@ -190,7 +194,7 @@ const Reviews = () =>{
                                                     key={index} 
                                                     src={imgSrc} 
                                                     alt={`Review image ${index + 1}`} 
-                                                    onClick={() => window.open(imgSrc, "_blank")} // Opens in new tab
+                                                    onClick={() => window.open(imgSrc, "_blank")}
                                                 />
                                             ))}
                                         </div>
@@ -199,10 +203,10 @@ const Reviews = () =>{
                                 </div>
                             </div>
                             <div className="votes">
-                                <button onClick={() => Vote(review._id, "upvote", userid, setReviews)}>
+                                <button className='vote-button' onClick={() => Vote(review._id, "upvote", userid, setReviews)}>
                                     👍 {review.upvotes.length}
                                 </button>
-                                <button onClick={() => Vote(review._id, "downvote", userid, setReviews)}>
+                                <button className='vote-button' onClick={() => Vote(review._id, "downvote", userid, setReviews)}>
                                     👎 {review.downvotes.length}
                                 </button>
                             </div>
@@ -210,7 +214,6 @@ const Reviews = () =>{
                     ))}
                 </div>
             </div>
-            
         );
     }
 };

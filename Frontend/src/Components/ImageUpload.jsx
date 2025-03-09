@@ -8,7 +8,7 @@ const ImageUpload = ({ setImages, images }) => {
         if (!window.cloudinary) return;
 
         widgetRef.current = window.cloudinary.createUploadWidget(
-            { cloudName: import.meta.env.CLOUD_NAME, uploadPreset: import.meta.env.UPLOAD_LISTPRESET },
+            { cloudName: "dwhfhrczx", uploadPreset: "reach-listing-images" },
             (error, result) => {
                 if (error) {
                     console.error("Upload Error:", error);
@@ -35,7 +35,7 @@ const ImageUpload = ({ setImages, images }) => {
     const handleUploadClick = () => {
         if (!widgetRef.current) {
             widgetRef.current = window.cloudinary.createUploadWidget(
-                { cloudName: import.meta.env.CLOUD_NAME, uploadPreset: import.meta.env.UPLOAD_LISTPRESET },
+                { cloudName: "dwhfhrczx", uploadPreset: "reach-listing-images" },
                 (error, result) => {
                     if (error) {
                         console.error("Upload Error:", error);
@@ -74,7 +74,7 @@ const ImageUpload = ({ setImages, images }) => {
             <button
                 type="button"
                 onClick={handleUploadClick}
-                className="cloudinaryButton"
+                className="listbutton listcloudinaryButton"
                 disabled={images.length >= 15}
             >
                 Upload Images
@@ -84,7 +84,7 @@ const ImageUpload = ({ setImages, images }) => {
                 {images.map((url, index) => (
                     <div key={index} className="image-preview">
                         <img src={url} alt={`Uploaded ${index + 1}`} />
-                        <div className="remove-image-listing-button">
+                        <div className="listbutton remove-image-listing-button">
                             <button onClick={() => handleDeleteImage(index)}>Remove</button>
                         </div>
                     </div>

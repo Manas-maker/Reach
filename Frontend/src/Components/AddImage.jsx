@@ -74,7 +74,7 @@ const AddImage = ({ listingid, onUploadSuccess }) => {
             <button
                 type="button"
                 onClick={handleUploadClick}
-                className="cloudinaryButton addImagesButton"
+                className="listbutton cloudinaryButton addImagesButton"
             >
                 Add Images
             </button>

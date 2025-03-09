@@ -78,12 +78,12 @@ const ListingForm = () => {
                     <div className="form">
                         <br/>
                         <br/>
-                        <label htmlFor="listingFormName" className="margins">Enter {selectedOption} name:</label>
+                        <label htmlFor="listingFormName" className="listingLabel margins">Enter {selectedOption} name:</label>
                         <br/>
                         <input 
                             type="text" 
                             id="listingFormName" 
-                            className="margins"  
+                            className="listingInputText margins"  
                             value={listingName} 
                             onChange={(e) => {
                                 console.log("Setting listing name to:", e.target.value);
@@ -92,11 +92,11 @@ const ListingForm = () => {
                         />
                         <br/>
                         <br/>
-                        <label htmlFor="listingFormAddress" className="margins">Enter Address:</label>
+                        <label htmlFor="listingFormAddress" className="listingLabel margins">Enter Address:</label>
                         <br/>
                         <textarea 
                             id="listingFormAddress" 
-                            className="margins" 
+                            className="listingTextarea margins" 
                             placeholder='Maximum 200 characters' 
                             maxLength={200} 
                             required
@@ -105,10 +105,10 @@ const ListingForm = () => {
                         ></textarea>
                         <br/>
                         <br/>
-                        <button type="button" className="margins" onClick={() => setModalOpen(true)}>Select Location</button>
+                        <button type="button" className="margins listbutton" onClick={() => setModalOpen(true)}>Select Location</button>
                         <MapModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSelectLocation={handleLocationSelect} />
                         <br/>
-                        <p className="margins">
+                        <p className="listingParagraph margins">
                             {selectedCoordinates.lat && selectedCoordinates.lng ? "Selected Coordinates are:"+
                                 `${selectedCoordinates.lat}, ${selectedCoordinates.lng}` : ""}
                         </p>
@@ -119,11 +119,11 @@ const ListingForm = () => {
                     <div className="form">
                         <br/>
                         <br/>
-                        <label htmlFor="restaurantTags" className="margins">Enter Tags:</label>
+                        <label htmlFor="restaurantTags" className="listingLabel margins">Enter Tags:</label>
                         <br/>
                         <textarea 
                             id="restaurantTags" 
-                            className="margins" 
+                            className="listingTextarea margins" 
                             placeholder='Eg: Italian, Outdoor Seating, Great Ambience' 
                             maxLength={200} 
                             required
@@ -134,9 +134,9 @@ const ListingForm = () => {
 
                         <BusinessHoursSelector onChange={handleBusinessHoursChange} />
                         <br/>
-                        <label htmlFor='phone' className='margins'>Enter Business Contact: </label>
+                        <label htmlFor='phone' className='listingLabel margins'>Enter Business Contact: </label>
                         <br/>
-                        <input type='tel' id="phone" pattern="[0-9]{10}" className='margins' 
+                        <input type='tel' id="phone" pattern="[0-9]{10}" className='listingInputPhone margins' 
                         placeholder='Eg: 0123456789'
                         value={phone} 
                         onChange={(e)=> {setPhone(e.target.value)}}/>
@@ -152,11 +152,11 @@ const ListingForm = () => {
                     <div className="form">
                         <br/>
                         <br/>
-                        <label htmlFor="groceryTags" className="margins">Enter Tags:</label>
+                        <label htmlFor="groceryTags" className="listingLabel margins">Enter Tags:</label>
                         <br/>
                         <textarea 
                             id="groceryTags" 
-                            className="margins" 
+                            className="listingTextarea margins" 
                             placeholder='Eg: Vegetables, MRP, Drinks' 
                             maxLength={200} 
                             required
@@ -167,9 +167,9 @@ const ListingForm = () => {
 
                         <BusinessHoursSelector onChange={handleBusinessHoursChange} />
                         <br/>
-                        <label htmlFor='phone' className='margins'>Enter Business Contact: </label>
+                        <label htmlFor='phone' className='listingLabel margins'>Enter Business Contact: </label>
                         <br/>
-                        <input type='tel' id="phone" pattern="[0-9]{10}" className='margins' 
+                        <input type='tel' id="phone" pattern="[0-9]{10}" className='listingInputPhone margins' 
                         placeholder='Eg: 0123456789'
                         value={phone} 
                         onChange={(e)=> {setPhone(e.target.value)}}/>
@@ -185,11 +185,11 @@ const ListingForm = () => {
                     <div className="form">
                         <br/>
                         <br/>
-                        <label htmlFor="laundromatTags" className="margins">Enter Tags:</label>
+                        <label htmlFor="laundromatTags" className="listingLabel margins">Enter Tags:</label>
                         <br/>
                         <textarea 
                                 id="laundromatTags" 
-                                className="margins" 
+                                className="listingTextarea margins" 
                                 placeholder='Eg: Dry Cleaning, Stain Removal, Affordable' 
                                 maxLength={200} 
                                 required
@@ -200,9 +200,9 @@ const ListingForm = () => {
     
                         <BusinessHoursSelector onChange={handleBusinessHoursChange} />
                         <br/>
-                        <label htmlFor='phone' className='margins'>Enter Business Contact: </label>
+                        <label htmlFor='phone' className='listingLabel margins'>Enter Business Contact: </label>
                         <br/>
-                        <input type='tel' id="phone" length={10} className='margins' 
+                        <input type='tel' id="phone" length={10} className='listingInputPhone margins' 
                         placeholder='Eg: 0123456789'
                         value={phone} 
                         onChange={(e)=> {setPhone(e.target.value)}}/>
@@ -219,11 +219,11 @@ const ListingForm = () => {
                     <div className="form">
                         <br/>
                         <br/>
-                        <label htmlFor="pgTags" className="margins">Enter Tags:</label>
+                        <label htmlFor="pgTags" className="listingLabel margins">Enter Tags:</label>
                         <br/>
                         <textarea 
                             id="pgTags" 
-                            className="margins" 
+                            className="listingTextarea margins" 
                             placeholder='Eg: Girls, No Smoking, Double Sharing' 
                             maxLength={200} 
                             required
@@ -234,9 +234,9 @@ const ListingForm = () => {
         
                         <BusinessHoursSelector onChange={handleBusinessHoursChange} />
                         <br/>
-                        <label htmlFor='phone' className='margins'>Enter Business Contact: </label>
+                        <label htmlFor='phone' className='listingLabel margins'>Enter Business Contact: </label>
                         <br/>
-                        <input type='tel' id="phone" pattern="[0-9]{10}" className='margins' 
+                        <input type='tel' id="phone" pattern="[0-9]{10}" className='listingInputPhone margins' 
                         placeholder='Eg: 0123456789'
                         value={phone} 
                         onChange={(e)=> {setPhone(e.target.value)}}/>
@@ -252,11 +252,11 @@ const ListingForm = () => {
                     <div className="form">
                         <br/>
                         <br/>
-                        <label htmlFor="salonTags" className="margins">Enter Tags:</label>
+                        <label htmlFor="salonTags" className="listingLabel margins">Enter Tags:</label>
                         <br/>
                         <textarea 
                             id="salonTags" 
-                            className="margins" 
+                            className="listingTextarea margins" 
                             placeholder='Eg: Haircut, Waxing, Manicure' 
                             maxLength={200} 
                             required
@@ -267,9 +267,9 @@ const ListingForm = () => {
             
                         <BusinessHoursSelector onChange={handleBusinessHoursChange} />
                         <br/>
-                        <label htmlFor='phone' className='margins'>Enter Business Contact: </label>
+                        <label htmlFor='phone' className='listingLabel margins'>Enter Business Contact: </label>
                         <br/>
-                        <input type='tel' id="phone" pattern="[0-9]{10}" className='margins' 
+                        <input type='tel' id="phone" pattern="[0-9]{10}" className='listingInputPhone margins' 
                         placeholder='Eg: 0123456789'
                         value={phone} 
                         onChange={(e)=> {setPhone(e.target.value)}}/>
@@ -328,7 +328,7 @@ const ListingForm = () => {
         <>
             <h1 id='listingFormTitle'>Create a Listing</h1>
             <form id="bigForm" onSubmit={handleSubmit}>
-                <label htmlFor="listingType" className="labels">Select type of listing: </label>
+                <label htmlFor="listingType" className="listingLabel">Select type of listing: </label>
                 <br/>
                 <select 
                     id="listingType" 
@@ -348,14 +348,13 @@ const ListingForm = () => {
                         {renderFormContent()}
                         {pageNumber === 1 && (
                             <>
-                            <button className="buttonNext" type="submit" onClick={submitAddress}>Next</button>
+                            <button className="listbutton buttonNext" type="submit" onClick={submitAddress}>Next</button>
                             </>
                         )}
                         {pageNumber > 1 && (
                             <div id="formButtons">
-                            <button className="submits" type="button" onClick={()=>setPageNumber(1)}>Prev</button>
-                            <button className="buttonSubmit" type="submit">Submit</button>
-
+                            <button className="submits listbutton" type="button" onClick={()=>setPageNumber(1)}>Prev</button>
+                            <button className="buttonSubmit listbutton" type="submit">Submit</button>
                             </div>
                         )}
                     </>

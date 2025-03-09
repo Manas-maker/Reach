@@ -1,7 +1,6 @@
 
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
+  width: 1280px;
   padding: 2rem;
   text-align: initial;
   background-color: #fbf9ef;
@@ -28,7 +27,7 @@
 }
 
 
-figure {
+.listingFigure {
     margin: 0;
     padding: 0;
     aspect-ratio: 16 / 9;
@@ -73,14 +72,6 @@ figure {
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 48px 0;
-  line-height: 1.6rem;
-  background-image: #D9D9D9;
-  min-height: 100vh;
 }
 
 .card{
@@ -200,7 +191,6 @@ body {
 }
 
 
-
 .listingImageContainer{
   position: relative;
   width: 480px;
@@ -275,7 +265,7 @@ body {
   margin-left: 20rem;
 }
 
-label {
+.listingLabel {
   font-family: "Federant",serif;
   color: #343333;
   font-size: 20px;
@@ -313,7 +303,7 @@ label {
   margin-left: 20px;
 }
 
-input[type=text]{
+.listingInputText{
   color: #343333;
   background-color: #FBF9EF;
   font-family: "Ysabeau Office";
@@ -322,11 +312,11 @@ input[type=text]{
   border: 1px solid #343333ed;
 }
 
-input[type=text]:focus{
+.listingInputText:focus{
   border: 1px solid #343333f7;
 }
 
-textarea{
+.listingTextarea{
   color: #343333;
   background-color: #FBF9EF;
   font-family: "Ysabeau Office";
@@ -337,12 +327,12 @@ textarea{
   height: 100px;
 }
 
-textarea{
-  border: 1px solid #343333f7;
-}
-
-button{
+.listbutton{
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
   color: #343333;
+  cursor: pointer;
   background-color: #FBF9EF;
   font-family: "Ysabeau Office";
   font-size: 15px;
@@ -350,18 +340,14 @@ button{
 
 }
 
-button:hover{
+.listbutton:hover{
   color: #FFC629;
   border: 1px solid #343333f7;
   
 }
 
 .mapsButton{
-  color: #343333;
   background-color: #FFC629;
-  font-family: "Ysabeau Office";
-  font-size: 15px;
-  border: 1px solid #343333ed;
 }
 
 .mapsButton:hover{
@@ -370,7 +356,7 @@ button:hover{
   
 }
 
-p{
+.listingParagraph{
   color: #343333;
   font-family: "Ysabeau Office";
 }
@@ -391,7 +377,7 @@ p{
 .buttonSubmit{
   margin-left: 710px;
 }
-h3{
+.listingh3{
   font-family: "Federant",serif;
   color: #343333;
   font-size: 20px;
@@ -414,7 +400,7 @@ h3{
   height:25px
 }
 
-input[type=checkbox]{
+.inputTypeCheckbox{
   appearance: none;
   width: 20px;
   height: 20px;
@@ -426,7 +412,7 @@ input[type=checkbox]{
   cursor: pointer;
 }
 
-input[type=checkbox]::after{
+.inputTypeCheckbox::after{
   content: "";
   color: #FFC629;
   position: absolute;
@@ -436,16 +422,16 @@ input[type=checkbox]::after{
   opacity: 0; /* Initially hidden */
 }
 
-input[type=checkbox]:checked{
+.inputTypeCheckbox:checked{
   background-color: #343333;
 }
 
-input[type=checkbox]:checked::after{
+.inputTypeCheckbox:checked::after{
   content: "✔";
   opacity: 1;
 }
 
-input[type=tel]{
+.listingInputPhone{
   color: #343333;
   background-color: #FBF9EF;
   font-family: "Ysabeau Office";
@@ -454,10 +440,8 @@ input[type=tel]{
   border: 1px solid #343333ed;
 }
 
-.cloudinaryButton{
+.listcloudinaryButton{
   margin-left: 20px;
-  
-
 }
 
 .uploaded-listing-images img{
@@ -533,7 +517,7 @@ input[type=tel]{
 
 }
 
-h2{
+.listingh2{
   color: #343333;
   margin-left: 180px;
   font-family: "Ysabeau Office";
@@ -580,4 +564,35 @@ h2{
 .close-btn{
   margin-left: 10px;
 
+}
+
+#bookmarkSaving{
+  margin: 5px 0px 0px 30px;
+}
+
+.listReviewButtons{
+  display: flex;
+  margin-left: 180px;
+  max-width: 1150px;
+  justify-content: space-between;
+
+}
+
+
+#titleRating{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1280px;
+}
+
+.listingTop{
+  display: flex;
+  justify-content: space-between;
+  padding-right: 20px;
+}
+
+.spanRating{
+  font-family: "Ysabeau Office";
+  color: #343333;
 }

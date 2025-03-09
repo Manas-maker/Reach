@@ -3,7 +3,6 @@ const { ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const cors = require('cors');
 
 const uri = process.env.MONGODB_URI;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -24,7 +23,7 @@ const client = new MongoClient(uri, {
 const app = express();
 app.use(cors({
   origin: "http://localhost:5173", // React Vite frontend
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "PATCH","DELETE"],
   credentials: true
 }));
 app.use(express.json());
@@ -415,7 +414,8 @@ async function startServer() {
             hours: hours,
             tags: tags,
             phone: phone,
-            images:images
+            images:images,
+            rating:0
           });
           res.status(200).send({result:'Listing Added!'});
         
@@ -536,6 +536,35 @@ async function startServer() {
     }
   })
 
+  app.patch('/updateRating/:id',async (req,res)=>{
+    try{
+      let id = req.params['id']
+      const validID = ObjectId.isValid(id) ? ObjectId.createFromHexString(id):null;
+      console.log(req.body);
+      const {rating} = req.body;
+      
+
+      if (validID){
+        const result = await client.db('ReachDB').collection('Listings').updateOne(
+          {"_id":validID},
+          {
+            $set: {
+              rating:rating.averageRating
+            }
+          }
+        ); 
+        res.status(200).send({result:"Rating Updated!"})
+        
+      }else{
+        res.status(400).send("Invalid ID");
+      }
+      
+    } catch (err){
+      console.log('Unable to Update:',err)
+      res.status(500).json({error: 'Something went wrong!'})
+    }
+  })
+
 //Review Functions
   
   // Create Reviews
@@ -632,6 +661,7 @@ async function startServer() {
 
       res.status(200).json({
         listingName: listing.name,
+        listingAddress: listing.address,
         reviews: reviews,
       });
 

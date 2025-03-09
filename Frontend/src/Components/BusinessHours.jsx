@@ -31,12 +31,13 @@ const BusinessHoursSelector = ({ onChange }) => {
 
   return (
     <div>
-      <h3 className="margins">Set Business Hours:</h3>
+      <h3 className="listingh3 margins">Set Business Hours:</h3>
       {Object.keys(businessHours).map((day) => (
         <div key={day} >
-          <label id="hoursLabel">
+          <label id="hoursLabel" className="listingLabel">
             <input
               type="checkbox"
+              className="inputTypeCheckbox"
               checked={businessHours[day].isOpen}
               onChange={() => handleCheckboxChange(day)}
             />

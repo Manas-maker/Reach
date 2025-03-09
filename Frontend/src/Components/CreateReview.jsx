@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Popup } from "reactjs-popup";
 import './create-rev.css';
-import ImageUpload from "./ImageUpload";
-
+import RevImageUpload from "./RevImageUpload";
 
 const CreateReview = () => {
     const user = {
-        userid: "67b756a5e134b05a975f413e",
-        username: "eshana123",
-        name: "eshana raj"
+        userid: "67bdd50e3579e268ca94325e",
+        username: "marissa345",
+        name: "Marissa"
     };
     const { listingid } = useParams();
     const navigate = useNavigate();
@@ -43,14 +42,14 @@ const CreateReview = () => {
                 const res = await fetch(`http://localhost:8000/reviews/${listingid}/user/${user.username}`);
                 if (res.ok) {
                     const review = await res.json();
-                    console.log("Fetched review:", review); // ✅ Check if images are there
+                    console.log("Fetched review:", review);
                     
                     setRating(review.rating);
                     setHeader(review.header);
                     setBody(review.body);
                     setExistingReviewId(review._id);
                     
-                    setImages(review.images || []); // ✅ Always set images (even if empty)
+                    setImages(review.images || []);
                 }
             } catch (error) {
                 console.error("Error fetching user review:", error);
@@ -78,6 +77,13 @@ const CreateReview = () => {
         setRating(value);
     };
 
+    const calcRating = (reviews) => {
+        const totalVotes = reviews.length;
+        const totalRating = reviews.reduce((sum, review) => sum + (review.rating || 0), 0);
+        const averageRating = totalVotes > 0 ? (totalRating / totalVotes).toFixed(1) : 0;
+        return { averageRating };
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!agree) {
@@ -94,9 +100,10 @@ const CreateReview = () => {
             rating
         };
     
-        console.log("Final review data:", reviewData); // 🔍 Check if images are present
+        console.log("Final review data:", reviewData);
     
         try {
+
             const url = existingReviewId
                 ? `http://localhost:8000/update-review/${existingReviewId}`
                 : `http://localhost:8000/create-review/${listingid}`;
@@ -111,6 +118,18 @@ const CreateReview = () => {
     
             if (response.ok) {
                 showAlert(existingReviewId ? "Review Updated" : "Review Posted");
+                const res = await fetch(`http://localhost:8000/reviews/${listingid}`);
+                const data = await res.json();
+                console.log("Fetched data:", data);
+                const averageRating = calcRating(data.reviews);
+
+                const updateResponse = await fetch(`http://localhost:8000/updateRating/${listingid}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ rating: averageRating}),
+                });
                 setTimeout(() => {
                     navigate(`/reviews/${listingid}`);
                 }, 2000);
@@ -157,32 +176,34 @@ const CreateReview = () => {
         <div className="review-container">
             <form className="review-form" onSubmit={handleSubmit}>
                 <h1 className="title">{listingName || "Listing"}</h1>
-                <h3>Rate your experience *</h3>
+                <h3 className="cre-rev-h3">Rate your experience *</h3>
                 <div className="stars">
                     {[1, 2, 3, 4, 5].map((star) => (
                         <span key={star} className={star <= rating ? "filled" : ""} onClick={() => handleRating(star)}>★</span>
                     ))}
                 </div>
 
-                <h3>Title Your Review</h3>
+                <h3 className="cre-rev-h3">Title Your Review</h3>
                 <input
                     type="text"
                     placeholder="Reach your review heading here..."
                     value={header}
                     onChange={(e) => setHeader(e.target.value)}
+                    className="cre-rev-input"
                 />
 
-                <h3>Write Your Review</h3>
+                <h3 className="cre-rev-h3">Write Your Review</h3>
                 <textarea
                     placeholder="Reach your review body here (maximum 250 characters)..."
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
                     maxLength={250}
+                    className="cre-rev-textarea"
                 ></textarea>
 
                 <div className="image-upload">
-                    <h3>Add Images (Up to 3)</h3>
-                    <ImageUpload setImages={setImages} images={images} />
+                    <h3 className="cre-rev-h3">Add Images (Up to 3)</h3>
+                    <RevImageUpload setImages={setImages} images={images} />
                     
                 </div>
 
@@ -201,17 +222,17 @@ const CreateReview = () => {
                         </span>
                         <Popup trigger= {<a href="#">Reach's review guidelines</a>} position="right center">
                             <div className="guidelines">
-                                <h2>Reach's Review Guidelines: </h2>
-                                <h3>1. Reach relevance!</h3>
-                                <p>
+                                <h2 className="rev-gui-h2">Reach's Review Guidelines: </h2>
+                                <h3 className="rev-gui-h3">1. Reach relevance!</h3>
+                                <p className="cre-rev-p">
                                     Accounts placing irrelevant, inappropriate or promotional content, reviews with server names, reviews with similar digital signatures that spam listings or are based on any already disclaimed or informed policies and practices of a listing may be deleted without notice.
                                 </p>
-                                <h3>2. Reach cleanliness!</h3>
-                                <p>
+                                <h3 className="rev-gui-h3">2. Reach cleanliness!</h3>
+                                <p className="cre-rev-p">
                                     Keep foul/abusive/hateful language and threats out of your review. This also includes derogatory comments or indication of a personal vendetta against a business and its associates.
                                 </p>
-                                <h3>3. Reach realness!</h3>
-                                <p>
+                                <h3 className="rev-gui-h3">3. Reach realness!</h3>
+                                <p className="cre-rev-p">
                                     Only one review per listing can be submitted. Kindly don't exaggerate or falsify your experience. Copying others' reviews or photos from Reach or other platforms, will not be tolerated and may be removed/ moderated.
                                 </p>
                             </div>
@@ -220,19 +241,18 @@ const CreateReview = () => {
                 </div>
                 {existingReviewId ? (
                     <div className="button-group">
-                        <button type="submit">UPDATE REVIEW</button>
+                        <button className="cre-rev-button" type="submit">UPDATE REVIEW</button>
                         <button type="button" onClick={handleDelete} className="delete-button">DELETE REVIEW</button>
                     </div>
                 ) : (
-                    <button type="submit">POST REVIEW</button>
+                    <button className="cre-rev-button" type="submit">POST REVIEW</button>
                 )}
             </form>
             <Popup open={showPopup} onClose={() => setShowPopup(false)}>
                 <div className="delete-popup">
-                    <p>Are you sure you want to delete your review? <br /> We'll be sad to see it go!</p>
-                    <button onClick={confirmDelete}>Yes</button>
-
-                    <button onClick={() => setShowPopup(false)}>No</button>
+                    <p className="cre-rev-p">Are you sure you want to delete your review? <br /> We'll be sad to see it go!</p>
+                    <button className="del-sure" onClick={confirmDelete}>Yes</button>
+                    <button className="del-sure" onClick={() => setShowPopup(false)}>No</button>
                 </div>
             </Popup>
             <div className="alert-box">

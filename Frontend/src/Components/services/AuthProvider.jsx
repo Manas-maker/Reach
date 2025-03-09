@@ -37,12 +37,12 @@ export const AuthProvider = ({ children }) => {
   
   // Auth methods
   const login = userData => {
-    localStorage.setItem('loggedUser', JSON.stringify(userData));
+    window.localStorage.setItem('loggedUser', JSON.stringify(userData));
     setUser(userData);
   };
   
   const logout = () => {
-    localStorage.removeItem('loggedUser');
+    window.localStorage.removeItem('loggedUser');
     setUser(null);
   };
 

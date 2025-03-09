@@ -4,8 +4,10 @@ import ImagesModal from './ImagesModal';
 import BookmarkModal from './BookmarkModal';
 import AddImage from './AddImage';
 import ListingReviews from './ListingReviews';
+import { useAuth } from './services/AuthProvider'
 
 const ViewCategories = () =>{
+    
     const { type } = useParams();
 
     const [data, setData] = useState([]);
@@ -72,6 +74,7 @@ const ViewCategories = () =>{
 }
 
 const ViewListing = () =>{
+    const { user } = useAuth();
     const { id } = useParams();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImages, setSelectedImages] = useState([]);
@@ -110,7 +113,7 @@ const ViewListing = () =>{
 
     const viewBookmarks=async()=>{
         try {
-            const response = await fetch(`http://localhost:8000/67bdd3903579e268ca94325d/bookmarks`);
+            const response = await fetch(`http://localhost:8000/${user.id}/bookmarks`);
             const result = await response.json();
             setBookmarkResult(result);
             setIsBookmarkModalOpen(true);

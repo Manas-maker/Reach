@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useAuth } from './services/AuthProvider'
 
 const BookmarkCard = () => {
+    const { user } = useAuth();
     const { id: userid } = useParams();
     const [data, setData] = useState([]);
 

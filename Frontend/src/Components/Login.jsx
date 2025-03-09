@@ -2,9 +2,11 @@ import { useState } from 'react'
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import './Register.css'
+import { useAuth } from './services/AuthProvider'
 const Login = ({ open, setOpen }) =>{
     const [password, setPassword] = useState('')
     const [username, setUserName] = useState('')
+    const { login } = useAuth();
 
     const loginSubmit = async (e)=>{
         e.preventDefault();
@@ -17,7 +19,8 @@ const Login = ({ open, setOpen }) =>{
                 body: JSON.stringify({username, password}), 
             }).then((res) => res.json());
             if ( (open !== null) && (user.username != null)){
-                window.localStorage.setItem('loggedUser', JSON.stringify(user))
+                //window.localStorage.setItem('loggedUser', JSON.stringify(user))
+                login(user)
                 setOpen(false);
                 console.log(user)
             }
@@ -27,9 +30,9 @@ const Login = ({ open, setOpen }) =>{
     }
     
     return (
-        <div id='userForm'>
+        <div id='formPopup' className="loginForm">
             <form onSubmit={ loginSubmit }>
-                <h2>User Name</h2>
+                <h2>Login</h2>
                 <fieldset>
                     <input type="text" placeholder="User Name*" value={ username } onChange={({target})=>setUserName(target.value)} name="username" />
                     <input type="text" placeholder="Password*" value={ password } onChange={({target})=>setPassword(target.value)}name="password" />

@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 const User = ({ open, setOpen }) =>{
     const navigate = useNavigate()
-    const {user, loading} = useAuth();
+    const {user, loading, login} = useAuth();
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [phoneNo, setPhoneNo] = useState('')
@@ -32,19 +32,19 @@ const User = ({ open, setOpen }) =>{
 
     const userUpdate = async (e)=>{
         e.preventDefault();
+        const token = user.token
+        console.log(JSON.stringify({name, email, phoneNo, currentPassword, newPassword, token}))
         try {
-            const user = await fetch("http://localhost:8000/User", {
+            const user = await fetch("http://localhost:8000/users", {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({name, email, phoneNo, currentPassword, newPassword}), 
+                body: JSON.stringify({name, email, phoneNo, currentPassword, newPassword, token}), 
             }).then((res) => res.json());
-            if ( (open !== null) && (user.username != null)){
-                window.localStorage.setItem('loggedUser', JSON.stringify(user))
-                setOpen(false);
-                console.log(user)
-            }
+            login(user)
+            navigate('/');
         } catch (exception) {
             console.log(exception)
         }
@@ -59,7 +59,7 @@ const User = ({ open, setOpen }) =>{
                     <label htmlFor="userFullName">First and Last Name</label>
                     <input type="text" value={ name } onChange={({target})=>setName(target.value)} name="userFullName" />
                     <label htmlFor="userEmail">Email</label>
-                    <input type="text" placeholder="Email" value={ email } onChange={({target})=>setEmail(target.value)}name="userEmail" />
+                    <input type="text" placeholder="Email" value={ email } onChange={({target})=>setEmail(target.value)} name="userEmail" />
                     <label htmlFor="userPhone">Phone No.</label>
                     <input type="text" placeholder="Phone No." value={ phoneNo } onChange={({target})=>setPhoneNo(target.value)}name="userPhone" />
                 </fieldset>
@@ -71,7 +71,7 @@ const User = ({ open, setOpen }) =>{
                     <input type="password" name="newPassword" value={ newPassword } onChange={({target})=>setNewPassword(target.value)} id="newPassword" />
                 </fieldset></div><div id='userFormRight'><div className='imagePlaceholder' ></div></div>
                 </div>
-                <button type="click">Update User</button>
+                <button type="click" onClick={userUpdate}>Update User</button>
 
             </form>
         </div>

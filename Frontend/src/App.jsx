@@ -35,7 +35,7 @@ function App() {
         <Route path="/newListing" element={<ListingForm/>}/>
         <Route path="/success" element={<SuccessPage/>}/>
         <Route path="/bookmarks/:id" element={<BookmarkList/>}/>
-        <Route path="/:id/bookmarks" element={<BookmarkCard/>}/>
+        <Route path="/bookmarks" element={<BookmarkCard/>}/>
       </Routes>
     </Router>
     </AuthProvider>

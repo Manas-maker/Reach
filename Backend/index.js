@@ -165,8 +165,15 @@ async function startServer() {
           }
         
           const savedUser = await client.db("ReachDB").collection('Users').insertOne(user)
+          const userMongo = await client.db("ReachDB").collection('Users').findOne({username})
+          const blankBookmarks = await client.db("ReachDB").collection('Bookmarks').insertOne({
+            title: "Saved",
+            userid: userMongo._id.toString(),
+            listings: []
+          })
         
           res.status(201).json(savedUser)
+          console.log(savedUser)
         } catch (error) {
             console.error('Error registering user: ', error);
             res.status(500).json({error: 'Failed to register'})
@@ -277,7 +284,6 @@ async function startServer() {
     })
     app.delete('/users',
       authenticateToken,
-      authorize({ checkOwnership: true, requiredPermissions: ['manage_users'] }),
       async (req, res) => {
       try {
         const userId = req.user.id
@@ -297,17 +303,18 @@ async function startServer() {
 
     app.patch('/users',
       authenticateToken,
-      authorize({ checkOwnership: true }),
        async (req, res) => {
       try {
-        const userId = req.user.id
+        const authHeader = req.headers['authorization']
+        const token = authHeader && authHeader.split(' ')[1]
+        const username = req.user.username
         const { name, email, phoneNo, profilePhoto, currentPassword, newPassword } = req.body
-        
+        //const useridObj = ObjectId.isValid(id) ? ObjectId.createFromHexString(id):null;
         // Find the current user
         const user = await client
           .db("ReachDB")
           .collection('Users')
-          .findOne({ _id: new ObjectId(userId) })
+          .findOne({ username})
     
         if (!user) {
           return res.status(404).json({ error: 'User not found' })
@@ -332,24 +339,29 @@ async function startServer() {
           ...(newPassword && { passwordHash })
         }
     
+        console.log(updateData)
+        console.log({username})
         // Only update if there are changes
         if (Object.keys(updateData).length === 0) {
           return res.status(400).json({ error: 'No update data provided' })
         }
-    
+        
         const result = await client
           .db("ReachDB")
           .collection('Users')
           .updateOne(
-            { _id: new ObjectId(userId) },
+            { username },
             { $set: updateData }
           )
+          console.log(result)
     
         if (result.matchedCount === 0) {
           return res.status(404).json({ error: 'User not found' })
         }
     
-        res.status(200).json({ message: 'User updated successfully' })
+        res
+        .status(200)
+        .send({ token, username: user.username, name: user.name , id:user._id, phoneNo:user.phoneNo, email: user.email})
       } catch (error) {
         console.error('Error updating user: ', error)
         res.status(500).json({ error: 'Failed to update user' })

@@ -16,6 +16,14 @@
     font-size: 23px;
 }
 
+#headerContainer a{
+    text-decoration: none;
+    color: #343333;
+}
+
+a:-webkit-any-link:active{
+    color: #343333;
+}
 html .popup-content {
     background-color: transparent;
     border: none;
@@ -41,6 +49,7 @@ ul {
     list-style: none;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 16px;
     color: #343333;
 }

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useSearchParams } from 'react-router-dom';
+import Header from './Header'
 
 const SearchResults = () =>{
 
@@ -24,6 +25,7 @@ const SearchResults = () =>{
 
     return (
         <div className="category">
+        <Header />
         <header>
             <h1 id="searchTitle"> Search results for "{query}"</h1>
         </header>

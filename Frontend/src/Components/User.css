@@ -25,10 +25,6 @@
     margin-top: 20px;
 }
 
-html {
-    max-height: 99vh;
-    overflow: hidden;
-}
 
 label {
     text-align: left;

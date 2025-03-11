@@ -24,8 +24,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Landing/>} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/user" element={<User />} />
         <Route path="/reviews/:listingid" element={<Reviews />}/>
         <Route path="/create-review/:listingid" element={<CreateReview />}/>

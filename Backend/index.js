@@ -627,7 +627,7 @@ async function startServer() {
       res.status(500).json({error: 'Failed to create review, try again later'});
     }
   }
-  app.post('/create-review/:listingid', CreateReview);
+  app.post('/create-review/:listingid', authenticateToken, CreateReview);
 
   //Get listingid to create a review for that listing
   app.get('/listings/:listingid', async (req, res) => {
@@ -733,7 +733,7 @@ async function startServer() {
       res.status(500).json({error: 'Failed to update review, try again later'});
     }
   }
-  app.patch('/update-review/:revid', UpdateReview);
+  app.patch('/update-review/:revid', authenticateToken, UpdateReview);
 
   //Updating upvotes and downvotes
   const VoteUpdate =  async (req, res) => {

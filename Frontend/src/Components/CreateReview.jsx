@@ -3,13 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Popup } from "reactjs-popup";
 import './create-rev.css';
 import RevImageUpload from "./RevImageUpload";
+import { useAuth } from './services/AuthProvider'
+import Header from './Header'
 
 const CreateReview = () => {
-    const user = {
+    const { user } = useAuth()
+    /*const user = {
         userid: "67bdd50e3579e268ca94325e",
         username: "marissa345",
         name: "Marissa"
-    };
+    };*/
     const { listingid } = useParams();
     const navigate = useNavigate();
     const [listingName, setListingName] = useState('');
@@ -85,6 +88,7 @@ const CreateReview = () => {
     };
 
     const handleSubmit = async (e) => {
+        console.log(e)
         e.preventDefault();
         if (!agree) {
             showAlert("You must agree to the review guidelines.", "warning");
@@ -92,7 +96,8 @@ const CreateReview = () => {
         }
     
         const reviewData = {
-            userid: user.username,
+            userid: user.id,
+            username: user.username,
             listingid: listingid,
             header,
             body,
@@ -112,7 +117,7 @@ const CreateReview = () => {
     
             const response = await fetch(url, {
                 method,
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${user.token}` },
                 body: JSON.stringify(reviewData),
             });
     
@@ -174,6 +179,7 @@ const CreateReview = () => {
 
     return (
         <div className="review-container">
+            <Header />
             <form className="review-form" onSubmit={handleSubmit}>
                 <h1 className="title">{listingName || "Listing"}</h1>
                 <h3 className="cre-rev-h3">Rate your experience *</h3>
@@ -220,7 +226,7 @@ const CreateReview = () => {
                         <span>
                             I certify that my review follows <span style= {{width : "1px"}}/>
                         </span>
-                        <Popup trigger= {<a href="#">Reach's review guidelines</a>} position="right center">
+                        <Popup className="guide-pop" trigger= {<a href="#">Reach's review guidelines</a>} position="right center">
                             <div className="guidelines">
                                 <h2 className="rev-gui-h2">Reach's Review Guidelines: </h2>
                                 <h3 className="rev-gui-h3">1. Reach relevance!</h3>

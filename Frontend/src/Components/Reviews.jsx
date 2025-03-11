@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import './reviews.css';
+import Header from './Header'
 
 const calcRating = (reviews) => {
     const totalVotes = reviews.length;
@@ -117,10 +118,16 @@ const Reviews = () =>{
     }
     
     if (reviews.length === 0) {
-        return <p>No reviews to reach! </p>;
+        return (
+            <>
+            <Header />
+            <p>No reviews to reach! </p>;
+            </>
+        )
     } else {
         return (
             <div className='reviews-page'>
+                <Header />
                 <div className="listing-header">
                     <div className="row">
                         <h1 className='listname'>{listingName}</h1>
@@ -177,7 +184,7 @@ const Reviews = () =>{
                                     <FontAwesomeIcon icon={faUser} size="2x" />
                                 </div>
                                 <div className='rev-cards'>
-                                    <h3 className='rev-cards-h3'>{review.userid}</h3>
+                                    <h3 className='rev-cards-h3'>{review.username}</h3>
                                     <p className='rev-cards-p'>{new Date(review.date).toLocaleDateString()}</p>
                                     <div className="rating-stars">
                                         {[...Array(5)].map((_, index) => (

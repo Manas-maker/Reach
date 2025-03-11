@@ -57,7 +57,10 @@ const RevImageUpload = ({ setImages, images }) => {
                     <div key={index} className="image-preview">
                         <img src={url} alt={`Uploaded ${index + 1}`} />
                         <div className="remove-image-button">
-                            <button onClick={() => handleDeleteImage(index)} className="cre-rev-rem-button">Remove</button>
+                            <button onClick={(e) => {
+                                e.preventDefault()
+                                handleDeleteImage(index)
+                            }} className="cre-rev-rem-button" type="Button">Remove</button>
                         </div>
                     </div>
                 ))}

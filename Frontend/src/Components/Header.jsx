@@ -37,8 +37,8 @@ const Header =  ()=>{
                             onKeyUp={submitHandler}/>
             </div>
             <ul id="headerRight">
-                <li>About Us</li>
-                {(user === null)?<><li onClick={()=> setOpenLogin(o => !o)}>Login</li><li onClick={()=> setOpenRegister(o => !o)} >Sign Up</li></>:<><li><a href="/user">{user.username}</a></li><li onClick={()=> logout()}>Logout</li></>}
+                <li><a href="/">Home</a></li>
+                {(user === null)?<><li onClick={()=> setOpenLogin(o => !o)}><a>Login</a></li><li onClick={()=> setOpenRegister(o => !o)} ><a>Sign Up</a></li></>:<><li><a href="/user">{user.username}</a></li><li onClick={()=> logout()}><a>Logout</a></li></>}
             </ul>
             <Popup open={openLogin} onClose={closeModalLogin} modal><Login open={openLogin} setOpen={setOpenLogin}/></Popup>
             <Popup open={openRegister} onClose={closeModalRegister} modal><Register open={openRegister} setOpen={setOpenRegister}/></Popup>

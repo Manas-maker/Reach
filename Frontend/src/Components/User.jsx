@@ -5,6 +5,8 @@ import './Register.css'
 import './User.css'
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from './Header'
+
 const User = ({ open, setOpen }) =>{
     const navigate = useNavigate()
     const {user, loading, login} = useAuth();
@@ -51,6 +53,8 @@ const User = ({ open, setOpen }) =>{
     }
     
     return (
+        <>
+        <Header />
         <div id='formPopup'>
             <form onSubmit={ userUpdate }>
                 <div className="userFormCont"><div>
@@ -75,7 +79,7 @@ const User = ({ open, setOpen }) =>{
 
             </form>
         </div>
-
+        </>
     )
 }
 

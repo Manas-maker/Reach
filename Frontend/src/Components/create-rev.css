@@ -133,10 +133,10 @@
   
 .guidelines{
     top:10%;
-    width:35em;
-    height:33em;
+    width:40em;
+    height:35em;
     margin-top: -3em;
-    margin-left: -23em;
+    margin-left: -26em;
     border: 1px solid #343333;
     border-radius: 25px;
     padding: 10px;
@@ -146,7 +146,7 @@
     position: fixed;
 }
 
-.popup-overlay {
+.guide-pop .popup-overlay {
   background: #34333386;
 }
 
@@ -254,7 +254,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 95vw;
+  /*width: 95vw;*/
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;

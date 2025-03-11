@@ -35,7 +35,7 @@ const Login = ({ open, setOpen }) =>{
                 <h2>Login</h2>
                 <fieldset>
                     <input type="text" placeholder="User Name*" value={ username } onChange={({target})=>setUserName(target.value)} name="username" />
-                    <input type="text" placeholder="Password*" value={ password } onChange={({target})=>setPassword(target.value)}name="password" />
+                    <input type="password" placeholder="Password*" value={ password } onChange={({target})=>setPassword(target.value)}name="password" />
                 </fieldset>
                 <p className="formDisclaimer">By signing up, confirm that you've read and accepted our <span className="redLink"><a>terms of service</a></span> and <span className="redLink"><a>privacy policy</a></span></p>
                 <button type="click" >Login</button>

@@ -5,6 +5,7 @@ import BookmarkModal from './BookmarkModal';
 import AddImage from './AddImage';
 import ListingReviews from './ListingReviews';
 import { useAuth } from './services/AuthProvider'
+import Header from './Header'
 
 const ViewCategories = () =>{
     
@@ -28,6 +29,8 @@ const ViewCategories = () =>{
  
 
     return (
+        <>
+        <Header/>
         <div className="category">
             <header id="heads">
                 <h1 className="listingCats">
@@ -68,6 +71,7 @@ const ViewCategories = () =>{
             </ul>
             </article>
         </div>
+        </>
 
         )
 
@@ -147,9 +151,10 @@ const ViewListing = () =>{
     
     return (
         <div id="listing">
+            <Header/>
             {data && data.length > 0 ? (
                     data.map((item, index) => (
-                        <div key={index}>
+                        <div style={{display:"flex", flexDirection:"column"}} key={index}>
                         <header>
                             <div id='titleRating'>
                             <h1 id="listingTitle">
@@ -166,6 +171,7 @@ const ViewListing = () =>{
                         <button type="button" className="listbutton submits bookmarkButton" onClick={viewBookmarks}>Bookmark</button>
                         <p id="listingTags">{item.tags}</p>
                         </div>
+                        <div className='imageSection'>
                         <hr className="line"/>
                         <div className="imageContainer" key={index}>
                             <img className="listingImage" src={item.images[0]}/>
@@ -181,6 +187,7 @@ const ViewListing = () =>{
                                 .catch(error => console.error("Error refetching listing", error))
                             }}/>
                         <hr className="line"/>
+                        </div>
                         <h3 className="about">About</h3>
                         <h2 className='listingh2'>Business Hours</h2>
                         {businessHours(item.hours)}

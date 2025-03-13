@@ -1,11 +1,9 @@
 #headerContainer{
-    position: fixed;
     top:0;
     left: 50%;
-    transform: translateX(-50%);
     margin: 16px auto;
     display: flex;
-    width: 86%;
+    width: 80vw;
     align-items: center;
     justify-content: space-between;
     padding: 16px 24px;
@@ -14,6 +12,10 @@
     box-sizing: content-box;
     height: 50px;
     font-size: 23px;
+    /*
+    position: fixed;
+    transform: translateX(-50%);
+    */
 }
 
 #headerContainer a{

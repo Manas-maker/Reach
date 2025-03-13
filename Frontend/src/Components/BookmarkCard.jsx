@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from './services/AuthProvider'
+import Header from './Header'
 
 const BookmarkCard = () => {
     const { user } = useAuth();
@@ -22,6 +23,7 @@ const BookmarkCard = () => {
 
     return (
       <>
+      <Header/>
         <div className="category">
             <header >
                 <h1 id="bookmarksTitle">Bookmarks</h1>

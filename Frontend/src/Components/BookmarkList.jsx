@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-
+import Header from './Header'
 
 const BookmarkList = () => {
   const { id } = useParams();
@@ -22,6 +22,7 @@ const BookmarkList = () => {
 
   return (
     <div className="category">
+        <Header />
           <header id="heads">
           {data.title && <h1 id="bookmarkName">{data.title}</h1>}
           </header>

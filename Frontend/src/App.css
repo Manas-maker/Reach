@@ -1,7 +1,5 @@
-
 #root {
   width: 1280px;
-  padding: 2rem;
   text-align: initial;
   background-color: #FBF9EF;
 }
@@ -9,12 +7,8 @@
 .category {
     background-color: #FBF9EF;
     box-sizing: border-box;
-    margin-left: 20rem;
-    margin-right: 20rem;
-    width:900px;
     overflow:hidden;
     transition: all 0.4s ease-in-out;
-    
 }
 
 .category h2 {
@@ -144,19 +138,18 @@
 
 #listing{
   background-color: #FBF9EF;
-  width: 95vw;
 }
 
 #listingTitle{
   font-family: "Federant",serif;
   color: #343333;
   font-size: 50px;
-  margin-left: 180px;
   margin-bottom: 0px;
 }
 
 #listingTags{
   margin-bottom: 30px;
+  margin-top: 0px;
 
 }
 
@@ -164,7 +157,6 @@
   color: #343333;
   font-family: "Ysabeau Office";
   font-size: large;
-  margin: 0px 0px 0px 180px;
 }
 
 #listingAddress:hover{
@@ -177,7 +169,6 @@
   justify-content: space-evenly;
   max-width: 100%;
   height: auto;
-  margin-left: 20px;
   gap:15px;
   overflow: hidden;
   justify-content: center;
@@ -228,7 +219,6 @@
 
 
 .listingCategories{
-  margin-left: 20px;
   margin-top: 40px;
   font-size: x-large;
 }
@@ -237,7 +227,7 @@
   border: none;
   background-color: #FFC629;
   height: 2px;
-  margin: 20px 160px 15px 180px;
+  width: 100%;
 }
 
 #searchTitle{
@@ -245,7 +235,6 @@
   font-family: "Ysabeau Office";
   font-weight: 500;
   font-size: 30px;
-  margin-left: 20px;
   margin-top: 50px;
 }
 
@@ -261,7 +250,6 @@
   font-family: "Federant",serif;
   color: #343333;
   font-size: 40px;
-  margin-left: 20rem;
 }
 
 .listingLabel {
@@ -281,8 +269,6 @@
 }
 
 #bigForm{
-  margin-left: 20rem;
-  margin-right: 20rem;
   width:900px;
 }
 
@@ -298,9 +284,9 @@
   margin-top: 10px;
 }
 
-.margins{
+/*.margins{
   margin-left: 20px;
-}
+}*/
 
 .listingInputText{
   color: #343333;
@@ -364,9 +350,9 @@
   margin-top: 10px;
   display: flex;
 }
-.submits{
+/*.submits{
   margin-left: 20px;
-}
+}*/
 
 .buttonNext{
   margin-top: 10px;
@@ -502,7 +488,7 @@
 }
 
 .about {
-  margin-left: 180px;
+  /*margin-left: 180px;*/
   font-family: "Federant",serif;
   color: #343333;
   font-size: 30px;
@@ -512,21 +498,21 @@
   margin-top: 5px;
   color: #343333;
   font-family: "Ysabeau Office";
-  margin-left: 140px;
+  /*margin-left: 140px;*/
 
 }
 
 .listingh2{
   color: #343333;
-  margin-left: 180px;
+  /*margin-left: 180px;*/
   font-family: "Ysabeau Office";
   margin-bottom: 0px;
 
 }
 
-.phone{
+/*.phone{
   margin-left: 180px;
-}
+}*/
 
 
 #bookmarksTitle{
@@ -545,7 +531,6 @@
 
 .addImagesButton{
   margin-top: 20px;
-  margin-left: 1170px;
 }
 
 .bookmarkButton{
@@ -569,9 +554,17 @@
   margin: 5px 0px 0px 30px;
 }
 
+.imageSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  width: fit-content;
+  align-self: center;
+}
 .listReviewButtons{
   display: flex;
-  margin-left: 180px;
+  /*margin-left: 180px;*/
   max-width: 1150px;
   justify-content: space-between;
 

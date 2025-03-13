@@ -78,9 +78,6 @@ const AddImage = ({ listingid, onUploadSuccess }) => {
             >
                 Add Images
             </button>
-            <div className="alert-box">
-                {alert && <div className={`alert ${alert.type}`}>{alert.message}</div>}
-            </div>
         </div>
     );
 };

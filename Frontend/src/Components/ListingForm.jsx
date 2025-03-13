@@ -326,6 +326,7 @@ const ListingForm = () => {
 
     return (
         <>
+            <Header />
             <h1 id='listingFormTitle'>Create a Listing</h1>
             <form id="bigForm" onSubmit={handleSubmit}>
                 <label htmlFor="listingType" className="listingLabel">Select type of listing: </label>

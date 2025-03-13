@@ -64,8 +64,6 @@ const getRatingColour = (rating) => {
     return `hsl(${h1 + t * (h2 - h1)}, 100%, ${l1 + t * (l2 - l1)}%)`;
 };
 
-
-
 const Reviews = () =>{
     const { listingid } = useParams();
     const navigate = useNavigate();
@@ -83,6 +81,19 @@ const Reviews = () =>{
         navigate(`/create-review/${listingid}`);
 
     };
+
+    const sortedReviews = [...reviews].sort((a, b) => {
+        if (filter === "most-helpful") {
+            return b.upvotes.length - a.upvotes.length || new Date(b.date) - new Date(a.date);
+        }
+        if (filter === "highest-rating") {
+            return b.rating - a.rating || new Date(b.date) - new Date(a.date);
+        }
+        if (filter === "lowest-rating") {
+            return a.rating - b.rating || new Date(b.date) - new Date(a.date);
+        }
+        if (filter === "most-recent") return new Date(b.date) - new Date(a.date);
+    });    
         
     useEffect(() => {
         const fetchReviews = async () => {
@@ -177,7 +188,7 @@ const Reviews = () =>{
                         </select>
                     </div>
 
-                    {reviews.map((review) => (
+                    {sortedReviews.map(review => (
                         <div key={`${review._id}-${review.upvotes.length}-${review.downvotes.length}`} className="review-card">
                             <div className="user-info">
                                 <div className="user-avatar">

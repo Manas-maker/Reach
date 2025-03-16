@@ -4,15 +4,22 @@
   padding: 0;
   background-color: #fbf9ef;
   color: #333;
-  margin-left: 100px;
+  margin-left: 134px;
+  margin-top: 3%;
+  font-size: 250%;
 }
 
-.rev-h2{
-  font-family: "Federant", serif;
-  margin-top: 35px;
-  padding: 0;
-  background-color: #fbf9ef;
-  color: #333;
+.rating-box {
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-left: 10%;
+  margin-right: 40px;
+  font-weight: bold;
+  color: white;
+  min-width: 50px;
+  text-align: center;
+  font-size: 1.1em;
+  margin-top: 3%;
 }
 
 .rev-p{
@@ -21,7 +28,17 @@
   padding: 0;
   background-color: #fbf9ef;
   color: #333;
-  margin-right: 105px;
+  margin-right: 140px;
+  margin-top: -2em;
+}
+
+.rev-h2{
+  font-family: "Federant", serif;
+  margin-top: 35px;
+  padding: 0;
+  background-color: #fbf9ef;
+  color: #333;
+  margin-left: 174px;
 }
 
 .filter{
@@ -206,7 +223,6 @@
 .listing-header {
   display: flex;
   flex-direction: column;
-  gap: 2px;
   padding: 10px 20px;
 }
 
@@ -225,22 +241,6 @@
   margin-left: auto;
   font-family: "Federant", serif;
   margin-right: 105px;
-}
-
-.rating-box {
-  padding: 8px 10px;
-  border-radius: 10px;
-  margin-left: 10%;
-  font-weight: bold;
-  color: white;
-  min-width: 50px;
-  text-align: center;
-  font-size: 1.1em;
-}
-
-.listing-header h2{
-  margin-left: 11%;
-  margin-bottom: 0;
 }
 
 .filter-menu {

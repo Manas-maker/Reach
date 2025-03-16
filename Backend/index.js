@@ -657,16 +657,14 @@ async function startServer() {
 
   });
 //Review Functions
-  
   // Create Reviews
   const CreateReview =  async (req, res) => {
     try {
-      const { userid, header, body, rating, images } = req.body;
+      const { userid, username, header, body, rating, images } = req.body;
       const { listingid } = req.params;
-      if (!userid || !listingid || !rating) {
+      if (!userid || !username || !listingid || !rating) {
         return res.status(400).json({message: 'Fields must be entered!'});
       }
-
       const existingRev = await client.db('ReachDB').collection('Reviews').findOne({ listingid, userid });
 
       if (existingRev) {
@@ -679,6 +677,7 @@ async function startServer() {
       }
 
       const rev = {
+        username: username,
         userid: userid,
         listingid: listingid,
         header: header,
@@ -689,6 +688,7 @@ async function startServer() {
         downvotes: [],
         date: new Date()
       };
+
       await client.db('ReachDB').collection('Reviews').insertOne(rev);
       res.status(200).send("Review Created!");
     } catch (error){
@@ -718,6 +718,7 @@ async function startServer() {
   //Check if review for a listing by a particular user already exists
   app.get("/reviews/:listingid/user/:userid", async (req, res) => {
     const { listingid, userid } = req.params;
+    console.log(userid, listingid);
     try {
         const review = await client.db('ReachDB').collection('Reviews').findOne({ listingid: listingid, userid: userid });
         if (!review) {
@@ -768,7 +769,7 @@ async function startServer() {
     try {
       const {revid} = req.params;
       let objectrevId = "";
-      const { userid, listingid, header, body, rating, images } = req.body;
+      const { userid, username, listingid, header, body, rating, images } = req.body;
 
       if (ObjectId.isValid(revid)) {
         objectrevId = ObjectId.createFromHexString(revid);
@@ -776,12 +777,13 @@ async function startServer() {
         return res.status(400).json({ error: "Invalid review ID provided" });
       }
 
-      if (!userid || !listingid || !rating) {
+      if (!userid || !username || !listingid || !rating) {
         return res.status(400).json({error: 'Fields must be entered!'});
       }
 
       const newrev = {
         userid: userid,
+        username: username,
         listingid: listingid,
         header: header,
         body: body,
@@ -877,8 +879,8 @@ async function startServer() {
   }
 
   app.delete('/delete-review/:revid', DeleteReview);
-//Bookmark Functions
- 
+
+  //Bookmark Functions 
  app.get('/:id/bookmarks', async (req, res) => {
   try {
       const { id } = req.params;

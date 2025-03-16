@@ -11,6 +11,7 @@ const BusinessHoursSelector = ({ onChange }) => {
     Sunday: { open: "", close: "", isOpen: false },
   });
 
+
   const handleCheckboxChange = (day) => {
     const updatedHours = {
       ...businessHours,

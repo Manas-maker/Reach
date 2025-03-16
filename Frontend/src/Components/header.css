@@ -21,6 +21,7 @@
 #headerContainer a{
     text-decoration: none;
     color: #343333;
+    cursor: pointer;
 }
 
 a:-webkit-any-link:active{

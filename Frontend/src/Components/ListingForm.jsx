@@ -1,11 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import Header from './Header';
 import MapModal from './MapModal';
 import BusinessHoursSelector from './BusinessHours';
 import { useNavigate } from "react-router-dom";
 import ImageUpload from './ImageUpload';
+import { useAuth } from './services/AuthProvider'
 
 const ListingForm = () => {
     const navigate = useNavigate();
+    const {user, loading} = useAuth();
     const [selectedOption, setSelectedOption] = useState("");
     const [pageNumber, setPageNumber] = useState(1);
 
@@ -18,6 +21,12 @@ const ListingForm = () => {
     const [businessHours, setBusinessHours] = useState({});
     const [phone, setPhone] = useState("");
     const [images, setImages] = useState([]);
+
+    useEffect(() => {
+        if (!loading && user === null) {
+            navigate('/'); // Redirect to landing page
+        }
+    }, [user, loading, navigate]);
 
     const handleLocationSelect = (coords) => {
         setSelectedCoordinates(coords);
@@ -37,7 +46,8 @@ const ListingForm = () => {
             const verified = await fetch("http://localhost:8000/verifyListing", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`
                 },
                 body: JSON.stringify({
                     name: listingName,
@@ -301,7 +311,8 @@ const ListingForm = () => {
             const verified = await fetch("http://localhost:8000/newListing", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`
                 },
                 body: JSON.stringify({
                     name: listingName,
@@ -314,7 +325,8 @@ const ListingForm = () => {
                     hours:extractedHours,
                     tags:tags,
                     phone:phone,
-                    images:images
+                    images:images,
+                    creator: user.id
                 })
             }).then((res) => res.json());
 

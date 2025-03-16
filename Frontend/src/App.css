@@ -488,7 +488,7 @@
 }
 
 .about {
-  /*margin-left: 180px;*/
+  margin-bottom: 0px;
   font-family: "Federant",serif;
   color: #343333;
   font-size: 30px;
@@ -587,4 +587,16 @@
 .spanRating{
   font-family: "Ysabeau Office";
   color: #343333;
+}
+
+.verifyButton{
+  border-radius: 8px;
+  padding: 0.6em 1.2em;
+  color: #343333;
+  cursor: pointer;
+  background-color: #FFC629;
+  font-family: "Ysabeau Office";
+  font-size: 15px;
+  margin-top: 15px;
+  border: 1px solid #343333ed;
 }

@@ -1,11 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 import ImagesModal from './ImagesModal';
 import BookmarkModal from './BookmarkModal';
 import AddImage from './AddImage';
 import ListingReviews from './ListingReviews';
 import { useAuth } from './services/AuthProvider'
 import Header from './Header'
+import Verification from './Verification';
+import Login from "./Login";
+import Popup from 'reactjs-popup';
 
 const ViewCategories = () =>{
     
@@ -78,19 +81,24 @@ const ViewCategories = () =>{
 }
 
 const ViewListing = () =>{
-    const { user } = useAuth();
-    const { id } = useParams();
+    const navigate = useNavigate();
+    const { user,loading } = useAuth();
+    const { listid } = useParams();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImages, setSelectedImages] = useState([]);
     const [data, setData] = useState([]);
     const [bookmarkResult, setBookmarkResult] = useState([]);
-    const [isBookmarkModalOpen, setIsBookmarkModalOpen] = useState(false)
+    const [isBookmarkModalOpen, setIsBookmarkModalOpen] = useState(false);
+    const [openLogin, setOpenLogin] = useState(false)
+    
 
     useEffect(()=>{
+        console.log(typeof(listid));
         const fetchItems = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/listing/${id}`);
+                const response = await fetch(`http://localhost:8000/listing/${listid}`);
                 const result = await response.json();
+                console.log(result)
                 setData(result);
             } catch (error) {
                 console.error('Error fetching items:', error);
@@ -115,17 +123,23 @@ const ViewListing = () =>{
           );
     };
 
-    const viewBookmarks=async()=>{
+    const viewBookmarks = async (e) => {
+        e.preventDefault();
+        if (loading) return;
+        if (!user) {
+            setOpenLogin(true); // Open login popup
+            return;
+        }
         try {
             const response = await fetch(`http://localhost:8000/${user.id}/bookmarks`);
             const result = await response.json();
             setBookmarkResult(result);
             setIsBookmarkModalOpen(true);
-
         } catch (error) {
             console.error('Error fetching items:', error);
         }
-    }
+    };
+    
 
     const getRatingColour = (rating) => {
         const stops = [
@@ -144,11 +158,28 @@ const ViewListing = () =>{
                 break;
             }
         }
+
     
         const t = (rating - r1) / (r2 - r1 || 1);
         return `hsl(${h1 + t * (h2 - h1)}, 100%, ${l1 + t * (l2 - l1)}%)`;
     };
-    
+
+    const handleAddReviewClick = () => {
+        if (!user) {
+            setOpenLogin(true);
+        } else {
+            window.open(`/create-review/${listid}`, '_blank');
+        }
+    };
+
+    const handleSuggestChange = () => {
+        if (!user) {
+            setOpenLogin(true);
+        } else {
+            navigate(`/updateListing/${listid}`);
+        }
+    }
+
     return (
         <div id="listing">
             <Header/>
@@ -166,10 +197,16 @@ const ViewListing = () =>{
                             </div>
                         </header>
                         <div>
+                            <div style={{display:"flex", justifyContent:"space-between"}}>
                         <a id="listingAddress" href={`https://www.google.com/maps?q=${item.location.coordinates[1]},${item.location.coordinates[0]}`}
                         target='blank'>⤷ {item.address}</a>
                         <button type="button" className="listbutton submits bookmarkButton" onClick={viewBookmarks}>Bookmark</button>
+                            </div>
+                            <div style={{display:"flex", justifyContent:"space-between"}}>
                         <p id="listingTags">{item.tags}</p>
+                        <Verification verifiedCounter={item.verified} listingid={listid}/>
+                        <button className='verifyButton' onClick={handleSuggestChange}>Suggest a change</button>
+                            </div>
                         </div>
                         <div className='imageSection'>
                         <hr className="line"/>
@@ -180,8 +217,8 @@ const ViewListing = () =>{
                                 <img className="listingImage" src={item.images[2]} onClick={() => viewMore(item.images)}/>
                             </div>
                         </div>
-                        <AddImage listingid={id} onUploadSuccess={() => {
-                                fetch(`http://localhost:8000/listing/${id}`)
+                        <AddImage listingid={listid} onUploadSuccess={() => {
+                                fetch(`http://localhost:8000/listing/${listid}`)
                                 .then(response => response.json())
                                 .then(result => setData(result))
                                 .catch(error => console.error("Error refetching listing", error))
@@ -194,13 +231,13 @@ const ViewListing = () =>{
                         <h2 className='listingh2'>Business Contact</h2>
                         <p className="listingParagraph phone">+91 {item.phone}</p>
                         <h2 className='listingh2'>Reviews</h2>
-                        <ListingReviews listingid={id}/>
+                        <ListingReviews listingid={listid}/>
                         <br/>
                         <div className='listReviewButtons'>
                         <button type='button' className='listbutton listAddReview' 
-                        onClick={() => window.open(`/create-review/${id}`, '_blank')}>Add a review</button>
+                        onClick={handleAddReviewClick}>Add a review</button>
                         <button type='button' className='listbutton' 
-                        onClick={() => window.open(`/reviews/${id}`, '_blank')}>Reach more reviews</button>
+                        onClick={() => window.open(`/reviews/${listid}`, '_blank')}>Reach more reviews</button>
                         </div>
                         </div>
                         
@@ -210,7 +247,11 @@ const ViewListing = () =>{
                 )}
 
                 <ImagesModal imageUrls={selectedImages} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-                <BookmarkModal collections={bookmarkResult} setCollections={setBookmarkResult} listingid={id} userid={"67bdd3903579e268ca94325d"} isOpen={isBookmarkModalOpen} onClose={() => setIsBookmarkModalOpen(false)} />    
+                <BookmarkModal collections={bookmarkResult} setCollections={setBookmarkResult} listingid={listid} isOpen={isBookmarkModalOpen} onClose={() => setIsBookmarkModalOpen(false)} />   
+                <Popup open={openLogin} onClose={() => setOpenLogin(false)} modal>
+                    <Login open={openLogin} setOpen={setOpenLogin}/>
+                </Popup>
+     
                 
         </div>
 

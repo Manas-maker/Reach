@@ -19,9 +19,10 @@ const User = ({ open, setOpen }) =>{
         // Redirect if user is null and not loading
         useEffect(() => {
             if (!loading && user === null) {
-                navigate('/'); // Redirect to landing page
+                console.log("Redirecting due to null user");
+                    navigate('/'); 
             }
-        }, [user, loading, navigate]);
+        }, [loading, user,navigate]);
     
         // Set form values once user data is available
         useEffect(() => {
@@ -67,6 +68,12 @@ const User = ({ open, setOpen }) =>{
                     <label htmlFor="userPhone">Phone No.</label>
                     <input type="text" placeholder="Phone No." value={ phoneNo } onChange={({target})=>setPhoneNo(target.value)}name="userPhone" />
                 </fieldset>
+                <button onClick={(e) => {
+                    e.preventDefault();
+                    if (user && user.id) {
+                        navigate(`/${user.id}/bookmarks`);
+                    }
+                }}>View Bookmarks</button>
                 <fieldset>
                     <h4>Change Password</h4>
                     <label htmlFor="currentPassword">Current Password</label>

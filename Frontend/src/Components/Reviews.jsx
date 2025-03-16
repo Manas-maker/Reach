@@ -22,12 +22,12 @@ const calcStar = (reviews) => {
     return distribution;
 };
 
-const Vote = async (reviewId, voteType, userid, setReviews) => {
+const Vote = async (reviewId, voteType, username, setReviews) => {
     try {
         const res = await fetch(`http://localhost:8000/${reviewId}/update-votes`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userid: userid, votetype: voteType }),
+            body: JSON.stringify({ username: username, votetype: voteType }),
         });
 
         if (res.ok) {
@@ -49,9 +49,7 @@ const getRatingColour = (rating) => {
         [3.5, 50, 50],// Yellow
         [5, 147, 33]  // Green
     ]; 
-
     let [r1, h1, l1] = stops[0], [r2, h2, l2] = stops.at(-1);
-
     for (let i = 0; i < stops.length - 1; i++) {
         if (rating <= stops[i + 1][0]) {
             [r1, h1, l1] = stops[i];
@@ -59,7 +57,6 @@ const getRatingColour = (rating) => {
             break;
         }
     }
-
     const t = (rating - r1) / (r2 - r1 || 1);
     return `hsl(${h1 + t * (h2 - h1)}, 100%, ${l1 + t * (l2 - l1)}%)`;
 };
@@ -75,11 +72,11 @@ const Reviews = () =>{
     const [filter, setFilter] = useState('most-helpful');
     const [averageRating, setAverageRating] = useState(0);
     const [totalVotes, setTotalVotes] = useState(0);
-    const [userid, setUserId] = useState('');
+    const [username, setUserName] = useState('');
 
+    
     const handleReviewClick = async () => {
         navigate(`/create-review/${listingid}`);
-
     };
 
     const sortedReviews = [...reviews].sort((a, b) => {
@@ -221,10 +218,10 @@ const Reviews = () =>{
                                 </div>
                             </div>
                             <div className="votes">
-                                <button className='vote-button' onClick={() => Vote(review._id, "upvote", userid, setReviews)}>
+                                <button className='vote-button' onClick={() => Vote(review._id, "upvote", username, setReviews)}>
                                     👍 {review.upvotes.length}
                                 </button>
-                                <button className='vote-button' onClick={() => Vote(review._id, "downvote", userid, setReviews)}>
+                                <button className='vote-button' onClick={() => Vote(review._id, "downvote", username, setReviews)}>
                                     👎 {review.downvotes.length}
                                 </button>
                             </div>

@@ -1,13 +1,33 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const { ObjectId } = require('mongodb');
+const { GridFSBucket, ObjectId } = require('mongodb');
 const express = require('express');
-
+const multer = require('multer');
 const dotenv = require('dotenv').config("/.env");
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const cors = require('cors')
 
 const uri = process.env.MONGODB_URI;
+const fs = require('fs');
+const path = require('path');
+
+// Set up multer for file uploading
+const storage = multer.memoryStorage(); // Store files in memory temporarily
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept only image files
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
+
 
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -23,6 +43,7 @@ const client = new MongoClient(uri, {
   socketTimeoutMS: 45000,
   serverSelectionTimeoutMS: 10000
 });
+let gfsBucket;
 
 
 const app = express();
@@ -49,6 +70,11 @@ async function startServer() {
     // Connect to the database
     await client.connect();
     console.log('Connected to MongoDB');
+    gfsBucket = new GridFSBucket(client.db("ReachDB"), {
+      bucketName: 'profileImages'
+    });
+    
+    console.log('GridFS bucket initialized');
 
     // Define routes after successful connection
     app.get('/helloGuys', (req, res) => {
@@ -148,32 +174,38 @@ async function startServer() {
     app.post('/Register', async (req, res) => {
        try {
           const { username, name, email, phoneNo, profilePhoto, password } = req.body
-          console.log(req)
           if (!username || !name || !password) {
             return res.status(400).json({ error: req })}
-          const saltRounds = 10
-          const passwordHash = await bcrypt.hash(password, saltRounds)
-        
-          const user = {
-            username: username,
-            name: name,
-            passwordHash: passwordHash,
-            role: 'user',
-            ...(email && { email }),
-            ...(phoneNo && { phoneNo }),
-            ...(profilePhoto && { profilePhoto })
+          const valid = await client.db("ReachDB").collection('Users').findOne({username})
+          console.log(valid)
+          if ( valid != null) {
+            console.log("user already exists")
+            return res.status(204).json("User already exists")
+          } else {
+            const saltRounds = 10
+            const passwordHash = await bcrypt.hash(password, saltRounds)
+          
+            const user = {
+              username: username,
+              name: name,
+              passwordHash: passwordHash,
+              role: 'user',
+              ...(email && { email }),
+              ...(phoneNo && { phoneNo }),
+              ...(profilePhoto && { profilePhoto })
+            }
+          
+            const savedUser = await client.db("ReachDB").collection('Users').insertOne(user)
+            const userMongo = await client.db("ReachDB").collection('Users').findOne({username})
+            const blankBookmarks = await client.db("ReachDB").collection('Bookmarks').insertOne({
+              title: "Saved",
+              userid: userMongo._id.toString(),
+              listings: []
+            })
+          
+            res.status(201).json(savedUser)
+            console.log(savedUser)
           }
-        
-          const savedUser = await client.db("ReachDB").collection('Users').insertOne(user)
-          const userMongo = await client.db("ReachDB").collection('Users').findOne({username})
-          const blankBookmarks = await client.db("ReachDB").collection('Bookmarks').insertOne({
-            title: "Saved",
-            userid: userMongo._id.toString(),
-            listings: []
-          })
-        
-          res.status(201).json(savedUser)
-          console.log(savedUser)
         } catch (error) {
             console.error('Error registering user: ', error);
             res.status(500).json({error: 'Failed to register'})
@@ -193,20 +225,20 @@ async function startServer() {
             })
           }
         
-          const userForToken = {
-            username: user.username,
-            id: user._id,
-          }
-        
-          const token = jwt.sign(userForToken, process.env.SECRET)
-        
-          res
-            .status(200)
-            .send({ token, username: user.username, name: user.name , id:user._id, phoneNo:user.phoneNo, email: user.email})
-        } catch (error) {
-            console.error('Error logging user in: ', error)
-            res.status(500).json({error: 'Failed to login'})
-        }
+              const userForToken = {
+                username: user.username,
+                id: user._id,
+              }
+            
+              const token = jwt.sign(userForToken, process.env.SECRET)
+            
+              res
+                .status(200)
+                .send({ token, username: user.username, name: user.name , id:user._id, phoneNo:user.phoneNo, email: user.email})
+            } catch (error) {
+                console.error('Error logging user in: ', error)
+                res.status(500).json({error: 'Failed to login'})
+            }
     })
 
     app.get('/users/:userId', 
@@ -286,9 +318,8 @@ async function startServer() {
       authenticateToken,
       async (req, res) => {
       try {
-        const userId = req.user.id
-    
-        const result = await client.db("ReachDB").collection('Users').deleteOne({ _id: new ObjectId(userId) })
+        const { username } = req.body
+        const result = await client.db("ReachDB").collection('Users').deleteOne({ username })
     
         if (result.deletedCount === 0) {
           return res.status(404).json({ error: 'User not found' })
@@ -303,71 +334,148 @@ async function startServer() {
 
     app.patch('/users',
       authenticateToken,
-       async (req, res) => {
-      try {
-        const authHeader = req.headers['authorization']
-        const token = authHeader && authHeader.split(' ')[1]
-        const username = req.user.username
-        const { name, email, phoneNo, profilePhoto, currentPassword, newPassword } = req.body
-        //const useridObj = ObjectId.isValid(id) ? ObjectId.createFromHexString(id):null;
-        // Find the current user
-        const user = await client
-          .db("ReachDB")
-          .collection('Users')
-          .findOne({ username})
+      upload.single('profileImage'), // 'profileImage' is the name of the file input field
+      async (req, res) => {
+        try {
+          const authHeader = req.headers['authorization'];
+          const token = authHeader && authHeader.split(' ')[1];
+          const username = req.user.username;
+          const { name, email, phoneNo, currentPassword, newPassword } = req.body;
     
-        if (!user) {
-          return res.status(404).json({ error: 'User not found' })
-        }
+          // Find the current user
+          const user = await client
+            .db("ReachDB")
+            .collection('Users')
+            .findOne({ username });
     
-        // If password change is requested, verify current password
-        let passwordHash = user.passwordHash
-        if (currentPassword && newPassword) {
-          const passwordCorrect = await bcrypt.compare(currentPassword, user.passwordHash)
-          if (!passwordCorrect) {
-            return res.status(401).json({ error: 'Current password is incorrect' })
+          if (!user) {
+            return res.status(404).json({ error: 'User not found' });
           }
-          passwordHash = await bcrypt.hash(newPassword, 10)
-        }
     
-        // Create update object with only provided fields
-        const updateData = {
-          ...(name && { name }),
-          ...(email && { email }),
-          ...(phoneNo && { phoneNo }),
-          ...(profilePhoto && { profilePhoto }),
-          ...(newPassword && { passwordHash })
-        }
+          // If password change is requested, verify current password
+          let passwordHash = user.passwordHash;
+          if (currentPassword && newPassword) {
+            const passwordCorrect = await bcrypt.compare(currentPassword, user.passwordHash);
+            if (!passwordCorrect) {
+              return res.status(401).json({ error: 'Current password is incorrect' });
+            }
+            passwordHash = await bcrypt.hash(newPassword, 10);
+          }
     
-        console.log(updateData)
-        console.log({username})
-        // Only update if there are changes
-        if (Object.keys(updateData).length === 0) {
-          return res.status(400).json({ error: 'No update data provided' })
-        }
-        
-        const result = await client
-          .db("ReachDB")
-          .collection('Users')
-          .updateOne(
-            { username },
-            { $set: updateData }
-          )
-          console.log(result)
+          // Create update object with only provided fields
+          const updateData = {
+            ...(name && { name }),
+            ...(email && { email }),
+            ...(phoneNo && { phoneNo }),
+            ...(newPassword && { passwordHash })
+          };
     
-        if (result.matchedCount === 0) {
-          return res.status(404).json({ error: 'User not found' })
-        }
+          // Handle profile image upload if present
+          if (req.file) {
+            // If user already has a profile image, delete the old one
+            if (user.profileImageId) {
+              try {
+                await gfsBucket.delete(new ObjectId(user.profileImageId));
+              } catch (error) {
+                console.error("Error deleting old profile image:", error);
+                // Continue with the update even if deletion fails
+              }
+            }
     
-        res
-        .status(200)
-        .send({ token, username: user.username, name: user.name , id:user._id, phoneNo:user.phoneNo, email: user.email})
-      } catch (error) {
-        console.error('Error updating user: ', error)
-        res.status(500).json({ error: 'Failed to update user' })
+            // Create a unique filename
+            const filename = `${username}-${Date.now()}${path.extname(req.file.originalname)}`;
+            
+            // Create a stream to upload the file
+            const uploadStream = gfsBucket.openUploadStream(filename, {
+              contentType: req.file.mimetype,
+              metadata: {
+                username: username,
+                uploadDate: new Date()
+              }
+            });
+    
+            // Write the file to GridFS
+            uploadStream.write(req.file.buffer);
+            uploadStream.end();
+    
+            // Wait for the upload to complete
+            await new Promise((resolve, reject) => {
+              uploadStream.on('finish', resolve);
+              uploadStream.on('error', reject);
+            });
+    
+            // Add the file ID to the update data
+            updateData.profileImageId = uploadStream.id.toString();
+            updateData.profileImageUrl = `/users/profile-image/${uploadStream.id.toString()}`;
+          }
+    
+          console.log(updateData);
+          console.log({ username });
+          
+          // Only update if there are changes
+          if (Object.keys(updateData).length === 0) {
+            return res.status(400).json({ error: 'No update data provided' });
+          }
+          
+          const result = await client
+            .db("ReachDB")
+            .collection('Users')
+            .updateOne(
+              { username },
+              { $set: updateData }
+            );
+          
+          console.log(result);
+    
+          if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+    
+          // Get the updated user to return
+          const updatedUser = await client
+            .db("ReachDB")
+            .collection('Users')
+            .findOne({ username });
+    
+          res.status(200).send({ 
+            token, 
+            username: updatedUser.username, 
+            name: updatedUser.name, 
+            id: updatedUser._id, 
+            phoneNo: updatedUser.phoneNo, 
+            email: updatedUser.email,
+            profileImageUrl: updatedUser.profileImageUrl
+          });
+        } catch (error) {
+          console.error('Error updating user: ', error);
+          res.status(500).json({ error: 'Failed to update user' });
+        }
       }
-    })
+    );
+    //get user's profile photo
+    app.get('/users/profile-image/:id', async (req, res) => {
+      try {
+        const imageId = new ObjectId(req.params.id);
+        
+        // Check if the file exists
+        const files = await gfsBucket.find({ _id: imageId }).toArray();
+        if (!files || files.length === 0) {
+          return res.status(404).json({ error: 'Image not found' });
+        }
     
+        const file = files[0];
+        res.set('Content-Type', file.contentType);
+        
+        // Stream the file to the response
+        const downloadStream = gfsBucket.openDownloadStream(imageId);
+        downloadStream.pipe(res);
+      } catch (error) {
+        console.error('Error serving profile image:', error);
+        res.status(500).json({ error: 'Failed to get profile image' });
+      }
+    });
+
+
     //Listing Functions
     //add a listing   
     

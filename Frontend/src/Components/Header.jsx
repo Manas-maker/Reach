@@ -6,7 +6,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import Login from "./Login";
 import Register from "./Register";
-const Header =  ()=>{
+const Header =  ({forwardedRef})=>{
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('')
     const [openLogin, setOpenLogin] = useState(false)

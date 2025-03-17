@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import './reviews.css';
@@ -78,9 +78,12 @@ const Reviews = () =>{
     const [averageRating, setAverageRating] = useState(0);
     const [totalVotes, setTotalVotes] = useState(0);
     const [userid, setUserId] = useState('');
+    const loginPopup = useRef(null)
 
     const handleReviewClick = async () => {
-        navigate(`/create-review/${listingid}`);
+        console.log(loginPopup)
+        //loginPopup.click();
+        /*navigate(`/create-review/${listingid}`);*/
 
     };
         
@@ -120,7 +123,7 @@ const Reviews = () =>{
     if (reviews.length === 0) {
         return (
             <>
-            <Header />
+            <Header/>
             <p>No reviews to reach! </p>;
             </>
         )

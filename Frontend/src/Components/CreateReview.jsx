@@ -5,9 +5,12 @@ import './create-rev.css';
 import RevImageUpload from "./RevImageUpload";
 import { useAuth } from './services/AuthProvider'
 import Header from './Header'
+import Login from "./Login";
 
 const CreateReview = () => {
-    const { user } = useAuth()
+    const { user } = useAuth();
+
+    console.log(user);
     /*const user = {
         userid: "67bdd50e3579e268ca94325e",
         username: "marissa345",
@@ -24,44 +27,46 @@ const CreateReview = () => {
     const [existingReviewId, setExistingReviewId] = useState(null);
     const [alert, setAlert] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
+    const [showLoginPopup, setShowLoginPopup] = useState(false);
     
     useEffect(() => {
         const fetchListingName = async () => {
             try {
                 const res = await fetch(`http://localhost:8000/listings/${listingid}`);
-                if (!res.ok) {
-                    throw new Error(`Error! Status: ${res.status}`);
-                }
+                if (!res.ok) throw new Error(`Error! Status: ${res.status}`);
                 const data = await res.json();
-                console.log("Fetched data:", data);
                 setListingName(data.listingName);
             } catch (error) {
                 console.error("Error fetching listing name:", error);
             }
         };
-
-        const fetchUserReview = async () => {
-            try {
-                const res = await fetch(`http://localhost:8000/reviews/${listingid}/user/${user.username}`);
-                if (res.ok) {
-                    const review = await res.json();
-                    console.log("Fetched review:", review);
-                    
-                    setRating(review.rating);
-                    setHeader(review.header);
-                    setBody(review.body);
-                    setExistingReviewId(review._id);
-                    
-                    setImages(review.images || []);
-                }
-            } catch (error) {
-                console.error("Error fetching user review:", error);
-            }
-        };        
-
+    
         fetchListingName();
-        fetchUserReview();
-    }, [listingid, existingReviewId]);
+    }, [listingid]); // Runs when `listingid` changes
+    
+    const fetchUserReview = async () => {
+        if (!user) return; // Prevent running if user is not loaded
+    
+        try {
+            const res = await fetch(`http://localhost:8000/reviews/${listingid}/user/${user.id}`);
+            if (res.ok) {
+                const review = await res.json();
+                setRating(review.rating);
+                setHeader(review.header);
+                setBody(review.body);
+                setExistingReviewId(review._id);
+                setImages(review.images || []);
+            }
+        } catch (error) {
+            console.error("Error fetching user review:", error);
+        }
+    };
+    
+    useEffect(() => {
+        if (user) {
+            fetchUserReview();
+        }
+    }, [user]); // Runs when `user` is available    
     
     const Alert = ({ message, type }) => {
         return (
@@ -90,6 +95,10 @@ const CreateReview = () => {
     const handleSubmit = async (e) => {
         console.log(e)
         e.preventDefault();
+        if(!user?.id) {
+            setShowLoginPopup(true);
+            return;
+        }
         if (!agree) {
             showAlert("You must agree to the review guidelines.", "warning");
             return;
@@ -104,7 +113,6 @@ const CreateReview = () => {
             images,
             rating
         };
-    
         console.log("Final review data:", reviewData);
     
         try {
@@ -210,7 +218,6 @@ const CreateReview = () => {
                 <div className="image-upload">
                     <h3 className="cre-rev-h3">Add Images (Up to 3)</h3>
                     <RevImageUpload setImages={setImages} images={images} />
-                    
                 </div>
 
                 <div className="agreement">
@@ -226,7 +233,7 @@ const CreateReview = () => {
                         <span>
                             I certify that my review follows <span style= {{width : "1px"}}/>
                         </span>
-                        <Popup className="guide-pop" trigger= {<a href="#">Reach's review guidelines</a>} position="right center">
+                        <Popup className="guide-pop" overlayStyle={{ background: '#34333386' }} trigger= {<a href="#">Reach's review guidelines</a>} position="right center">
                             <div className="guidelines">
                                 <h2 className="rev-gui-h2">Reach's Review Guidelines: </h2>
                                 <h3 className="rev-gui-h3">1. Reach relevance!</h3>
@@ -264,6 +271,9 @@ const CreateReview = () => {
             <div className="alert-box">
                 {alert && <Alert message={alert.message} type={alert.type} onClose={() => setAlert(null)} />}
             </div>
+            <Popup open={showLoginPopup} onClose={() => setShowLoginPopup(false)} modal>
+                <Login open={showLoginPopup} setOpen={setShowLoginPopup} />
+            </Popup>
         </div>
     );
 };

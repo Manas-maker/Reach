@@ -84,8 +84,8 @@ const ImageUpload = ({ setImages, images }) => {
                 {images.map((url, index) => (
                     <div key={index} className="image-preview">
                         <img src={url} alt={`Uploaded ${index + 1}`} />
-                        <div className="listbutton remove-image-listing-button">
-                            <button onClick={() => handleDeleteImage(index)}>Remove</button>
+                        <div >
+                            <button onClick={() => handleDeleteImage(index)} className="listbutton remove-image-listing-button">Remove</button>
                         </div>
                     </div>
                 ))}

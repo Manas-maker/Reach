@@ -56,11 +56,6 @@ app.use(express.json());
 const PORT = process.env.PORT || 8000;
 
 app.use(cors({
-  origin: 'http://localhost:5173', // URL of your Vite React app
-  credentials: true, //cookies
-}));
-
-app.use(cors({
   origin: "http://localhost:5173", 
   credentials: true
 }));
@@ -532,9 +527,9 @@ async function startServer() {
     );
   
   
-    app.post('/newListing', async(req,res)=>{
+    app.post('/newListing', authenticateToken, async(req,res)=>{
       try {
-        const {name,location,address,type,hours,tags,phone,images} = req.body;
+        const {name,location,address,type,hours,tags,phone,images,id} = req.body;
         
         await client.db('ReachDB').collection('Listings').insertOne({
             name: name,
@@ -545,7 +540,9 @@ async function startServer() {
             tags: tags,
             phone: phone,
             images:images,
-            rating:0
+            creator:id,
+            rating:0,
+            verified:[id]
           });
           res.status(200).send({result:'Listing Added!'});
         
@@ -637,6 +634,43 @@ async function startServer() {
   })
 
   //update listing - verified
+
+  app.patch('/updateListing/:id', async(req,res)=>{
+    try{
+      let id = req.params['id']
+      const validID = ObjectId.isValid(id) ? ObjectId.createFromHexString(id):null;
+      console.log(req.body);
+      const {name,location,address,hours,tags,phone,images,verified} = req.body;
+      
+
+      if (validID){
+        const result = await client.db('ReachDB').collection('Listings').updateOne(
+          {"_id":validID},
+          {
+            $set: {
+              name:name,
+              location:location,
+              address:address,
+              hours:hours,
+              tags:tags,
+              phone:phone,
+              images:images,
+              verified:verified
+            }
+          }
+        ); 
+        res.status(200).send({result:"ListingUpdated!"})
+        
+      }else{
+        res.status(400).send("Invalid ID");
+      }
+      
+    } catch (err){
+      console.log('Unable to Update:',err)
+      res.status(500).json({error: 'Something went wrong!'})
+    }
+  });
+
   app.patch('/listing/:id',async (req,res)=>{
     try{
       let id = req.params['id']
@@ -695,17 +729,50 @@ async function startServer() {
     }
   })
 
+  //update the verification counter
+  app.patch('/updateVerification/:id', async(req,res)=>{
+    try{
+      let id = req.params['id']
+      const validID = ObjectId.isValid(id) ? ObjectId.createFromHexString(id):null;
+      console.log(req.body);
+      const {verified} = req.body;
+      console.log(verified)
+      console.log(validID?"true":"false")
+      console.log(id)
+      console.log(validID)
+
+      if (validID){
+        const result = await client.db('ReachDB').collection('Listings').updateOne(
+          {"_id":validID},
+          {
+            $set: {
+              verified:verified
+            }
+          }
+        ); 
+        res.status(200).send({result:"Verification Updated!"})
+        console.log(result);
+          
+      }else{
+          res.status(400).send("Invalid ID");
+      }
+        
+      } catch (err){
+        console.log('Unable to Update:',err)
+        res.status(500).json({error: 'Something went wrong!'})
+      
+      }
+
+  });
 //Review Functions
-  
   // Create Reviews
   const CreateReview =  async (req, res) => {
     try {
-      const { userid, header, body, rating, images } = req.body;
+      const { userid, username, header, body, rating, images } = req.body;
       const { listingid } = req.params;
-      if (!userid || !listingid || !rating) {
+      if (!userid || !username || !listingid || !rating) {
         return res.status(400).json({message: 'Fields must be entered!'});
       }
-
       const existingRev = await client.db('ReachDB').collection('Reviews').findOne({ listingid, userid });
 
       if (existingRev) {
@@ -718,6 +785,7 @@ async function startServer() {
       }
 
       const rev = {
+        username: username,
         userid: userid,
         listingid: listingid,
         header: header,
@@ -728,6 +796,7 @@ async function startServer() {
         downvotes: [],
         date: new Date()
       };
+
       await client.db('ReachDB').collection('Reviews').insertOne(rev);
       res.status(200).send("Review Created!");
     } catch (error){
@@ -757,6 +826,7 @@ async function startServer() {
   //Check if review for a listing by a particular user already exists
   app.get("/reviews/:listingid/user/:userid", async (req, res) => {
     const { listingid, userid } = req.params;
+    console.log(userid, listingid);
     try {
         const review = await client.db('ReachDB').collection('Reviews').findOne({ listingid: listingid, userid: userid });
         if (!review) {
@@ -807,7 +877,7 @@ async function startServer() {
     try {
       const {revid} = req.params;
       let objectrevId = "";
-      const { userid, listingid, header, body, rating, images } = req.body;
+      const { userid, username, listingid, header, body, rating, images } = req.body;
 
       if (ObjectId.isValid(revid)) {
         objectrevId = ObjectId.createFromHexString(revid);
@@ -815,12 +885,13 @@ async function startServer() {
         return res.status(400).json({ error: "Invalid review ID provided" });
       }
 
-      if (!userid || !listingid || !rating) {
+      if (!userid || !username || !listingid || !rating) {
         return res.status(400).json({error: 'Fields must be entered!'});
       }
 
       const newrev = {
         userid: userid,
+        username: username,
         listingid: listingid,
         header: header,
         body: body,
@@ -916,14 +987,14 @@ async function startServer() {
   }
 
   app.delete('/delete-review/:revid', DeleteReview);
-//Bookmark Functions
- 
+
+  //Bookmark Functions 
  app.get('/:id/bookmarks', async (req, res) => {
   try {
       const { id } = req.params;
       const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
       const allBookmarks = await bookmarksCollection.find({userid:id}).toArray();
-      allBookmarks.length!==0? res.status(200).send(allBookmarks): res.status(400).send("Not Found");
+      allBookmarks.length!==0? res.status(200).send(allBookmarks): res.status(400).send({result:"Not Found"});
   } catch (error) {
       console.error("Error fetching bookmarks:", error);
       res.status(500).json({ error: "An error occurred while retrieving bookmarks" });

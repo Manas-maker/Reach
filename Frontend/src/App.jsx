@@ -14,10 +14,10 @@ import ListingForm from './Components/ListingForm'
 import SuccessPage from './Components/SuccessPage'
 import BookmarkList from "./Components/BookmarkList"
 import BookmarkCard from "./Components/BookmarkCard"
+import ChangeListing from "./Components/ChangeListing"
 
 
 function App() {
-  const [count, setCount] = useState(0)
   const [errorMessage, setErrorMessage] = useState(null)
   return (
     <AuthProvider>
@@ -28,12 +28,13 @@ function App() {
         <Route path="/reviews/:listingid" element={<Reviews />}/>
         <Route path="/create-review/:listingid" element={<CreateReview />}/>
         <Route path="/search/:type" element={<ViewCategories/>}/>
-        <Route path="/listing/:id" element={<ViewListing/>}/>
+        <Route path="/listing/:listid" element={<ViewListing/>}/>
         <Route path="/search" element={<SearchResults/>}/>
         <Route path="/newListing" element={<ListingForm/>}/>
         <Route path="/success" element={<SuccessPage/>}/>
         <Route path="/bookmarks/:id" element={<BookmarkList/>}/>
-        <Route path="/bookmarks" element={<BookmarkCard/>}/>
+        <Route path="/:id/bookmarks" element={<BookmarkCard/>}/>
+        <Route path="/updateListing/:listid" element={<ChangeListing/>}/>
       </Routes>
     </Router>
     </AuthProvider>

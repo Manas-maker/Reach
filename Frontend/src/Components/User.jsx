@@ -18,6 +18,15 @@ const User = ({ open, setOpen }) =>{
     const [profileImage, setProfileImage] = useState(null)
     const [imagePreview, setImagePreview] = useState(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
+
+
+        // Redirect if user is null and not loading
+        useEffect(() => {
+            if (!loading && user === null) {
+                console.log("Redirecting due to null user");
+                    navigate('/'); 
+            }
+        }, [loading, user,navigate]);
     
     // Redirect if user is null and not loading
     useEffect(() => {
@@ -144,6 +153,7 @@ const User = ({ open, setOpen }) =>{
     return (
         <>
         <Header />
+
         <div className="userFormPopup" id='formPopup'>
             <form onSubmit={userUpdate}>
                 <div className="userFormCont">
@@ -198,6 +208,7 @@ const User = ({ open, setOpen }) =>{
                         {isSubmitting ? 'Updating...' : 'Update User'}
                     </button>
                     <button type="button" onClick={userDelete} disabled={isSubmitting}>Delete User</button>
+
                 </div>
             </form>
         </div>

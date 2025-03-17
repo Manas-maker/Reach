@@ -1,11 +1,13 @@
-import React, {useState} from "react";
+import React,{useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
+import { useAuth } from './services/AuthProvider'
 
 Modal.setAppElement("#root"); // Ensure accessibility
 
-const BookmarksModal = ({ collections, setCollections, listingid, userid, isOpen, onClose }) => {
-  // Handle collection click
-
+const BookmarksModal = ({ collections, setCollections, listingid, isOpen, onClose }) => {
+  const navigate = useNavigate();
+  const { user,loading } = useAuth();
 
   const handleCollectionClick = async (collid, colltitle, colllistings) => {
     if (!colllistings.includes(listingid)){
@@ -56,7 +58,7 @@ const BookmarksModal = ({ collections, setCollections, listingid, userid, isOpen
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userid: userid,
+            userid: user.id,
             title: userInput,
             listings: [listingid]
           }),

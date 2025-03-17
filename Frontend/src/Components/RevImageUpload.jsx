@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 const RevImageUpload = ({ setImages, images }) => {
     const widgetRef = useRef(null);
     const [alert, setAlert] = useState(null);
-
+    
     useEffect(() => {
         if (!window.cloudinary) return;
         widgetRef.current = window.cloudinary.createUploadWidget(
@@ -33,6 +33,7 @@ const RevImageUpload = ({ setImages, images }) => {
 
     const handleDeleteImage = (index) => {
         setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+        cloudinary.api.delete_resources(images,)
     };
 
     return (

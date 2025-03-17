@@ -4,6 +4,7 @@ const  Landing = ()=> {
     return (
         <div id="heroPage">
             <Header/>
+            <div className='floatIn'>
             <div id='hero'>
                 <h1>REACH</h1>
                 <p>spot it. reach it.</p>
@@ -29,7 +30,7 @@ const  Landing = ()=> {
             </div>
             <div className='carouselItem'>
                         <a href="/search/pg">
-                        <img src='pg.jpeg' alt='pg' className="carouselImage" />
+                        <img src='pg.jpg' alt='pg' className="carouselImage" />
                         <p className="carouselText">PGs</p>
                         </a>
             </div>
@@ -38,6 +39,7 @@ const  Landing = ()=> {
                         <img src='salon.jpg' alt='salon' className="carouselImage" />
                         <p className="carouselText">Salons</p>
                         </a>
+            </div>
             </div>
         </div>
         </div>

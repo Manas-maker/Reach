@@ -3,7 +3,11 @@
   text-align: initial;
   background-color: #FBF9EF;
 }
-  
+
+.listArticle{
+  animation: floatIn 0.5s ease-out forwards;
+}
+
 .category {
     background-color: #FBF9EF;
     box-sizing: border-box;
@@ -12,7 +16,7 @@
 }
 
 .category h2 {
-    margin: 0 0 18px 10px;
+    margin: 0px 0 18px 10px;
     font-family: "Federant", serif;
     font-size: 1.5rem;
     color: #343333;
@@ -36,9 +40,9 @@
 } 
 
 #heads {
-    margin: 100px 10px 35px 22px;
+    margin: 50px 0px 35px 0px;
     background-color: #FBF9EF;
-    font-size: 150%;
+    font-size: 180%;
     position:relative;
 }
 
@@ -53,6 +57,10 @@
     --link-icon-opacity: 1;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   }
+
+.cardBody{
+  margin-top: 10px;
+}
 
 .cardBody p{
   margin: 0 0 18px 10px;
@@ -73,11 +81,10 @@
 
 .cards {
   display: grid;
-  max-width: 1200px;
-  margin-inline: auto;
-  padding-inline: 24px;
+  max-width: 80vw;
+  padding: 0px;
   grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
+  gap: 50px;
   background-color: #FBF9EF;
   text-decoration: none;
 }
@@ -148,7 +155,6 @@
 }
 
 #listingTags{
-  margin-bottom: 30px;
   margin-top: 0px;
 
 }
@@ -264,19 +270,19 @@
   font-family: "Ysabeau Office";
   font-size: 15px;
   margin-top: 10px;
-  width: 160px;
-  height:25px
+  width: 10vw;
+  height:3.5vh
 }
 
 #bigForm{
-  width:900px;
+  width:83vw;
 }
 
 .form{
   margin-top: 20px;
   background-color: #FFC629;
   border-radius: 10px;
-  min-height: 400px;
+  min-height: 58vh;
 
 }
 
@@ -284,9 +290,9 @@
   margin-top: 10px;
 }
 
-/*.margins{
+.margins{
   margin-left: 20px;
-}*/
+}
 
 .listingInputText{
   color: #343333;
@@ -308,8 +314,8 @@
   font-size: 15px;
   padding: 3px;
   border: 1px solid #343333ed;
-  width: 500px;
-  height: 100px;
+  width: 30vw;
+  height: 15vh;
 }
 
 .listbutton{
@@ -349,6 +355,10 @@
 #formButtons{
   margin-top: 10px;
   display: flex;
+  justify-content: space-between;
+  width: 83vw;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 /*.submits{
   margin-left: 20px;
@@ -356,12 +366,10 @@
 
 .buttonNext{
   margin-top: 10px;
-  margin-left: 820px;
+  width: 5vw;
+  margin-bottom: 10px;
 }
 
-.buttonSubmit{
-  margin-left: 710px;
-}
 .listingh3{
   font-family: "Federant",serif;
   color: #343333;
@@ -488,7 +496,7 @@
 }
 
 .about {
-  /*margin-left: 180px;*/
+  margin-bottom: 0px;
   font-family: "Federant",serif;
   color: #343333;
   font-size: 30px;
@@ -519,7 +527,6 @@
   font-family: "Federant",serif;
   color: #343333;
   font-size: 60px;
-  margin-left: 20px;
 }
 
 #bookmarkName{
@@ -530,11 +537,11 @@
 
 
 .addImagesButton{
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .bookmarkButton{
-  margin-left: 850px;
+  margin-bottom: 10px;
 }
 
 .bookmarkTitle{
@@ -564,12 +571,10 @@
 }
 .listReviewButtons{
   display: flex;
-  /*margin-left: 180px;*/
-  max-width: 1150px;
+  max-width: 80vw;
   justify-content: space-between;
 
 }
-
 
 #titleRating{
   display: flex;
@@ -587,4 +592,26 @@
 .spanRating{
   font-family: "Ysabeau Office";
   color: #343333;
+}
+
+.verifyButton{
+  border-radius: 8px;
+  padding: 0.6em 1.2em;
+  color: #343333;
+  cursor: pointer;
+  background-color: #FFC629;
+  font-family: "Ysabeau Office";
+  font-size: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #343333ed;
+  transition: all 0.4s ease-in-out;
+}
+
+.verifyButton:hover{
+  color: #FBF9EF;
+  border-style: outset;
+}
+
+.changeListingSubmit {
+  margin-bottom: 10px;
 }

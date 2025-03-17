@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import './reviews.css';
@@ -128,7 +128,7 @@ const Reviews = () =>{
     if (reviews.length === 0) {
         return (
             <>
-            <Header />
+            <Header/>
             <p>No reviews to reach! </p>;
             </>
         )

@@ -15,6 +15,11 @@ const Register = ({ open, setOpen }) =>{
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(formDataObject), 
+        }).then((res)=> {
+            if (res.status === 204) {
+                window.alert("User already exists");
+                return;
+            }
         });
         if ( open !== null ){
             window.localStorage.setItem('loggedUser', JSON.stringify(user))
@@ -23,13 +28,13 @@ const Register = ({ open, setOpen }) =>{
         }
     }
     return (
-        <div id="formPopup">
+        <div id="formPopup" className="registerForm">
             <form onSubmit={ registerSubmit }>
                 <h2>Register User</h2>
                 <fieldset>
                     <input type="text" placeholder="First and Last Name*" name="name" />
                     <input type="text" placeholder="User Name*" name="username" />
-                    <input type="text" placeholder="Password*" name="password" />
+                    <input type="password" placeholder="Password*" name="password" />
                 </fieldset>
                 <fieldset>
                     <h3>Contact Info:(choose one)*</h3>

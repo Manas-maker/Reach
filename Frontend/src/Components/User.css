@@ -10,14 +10,23 @@
     display: flex;
     width: 1000px;
     justify-content: space-between;
+    column-gap: 20vw;
 }
 
-#formPopup {
-    width: 70vw;
+.userFormPopup#formPopup {
+    width: 80vw;
+    box-sizing: content-box;
+    overflow: hidden;
+    max-height: 80vh;
 }
 
 #formPopup input{
     margin-top: 0;
+}
+
+.userFormPopup#formPopup input {
+    width: 400px;
+    height: 50px;
 }
 
 #formPopup button {
@@ -31,3 +40,80 @@ label {
     font-size: 1.3rem;
     width: 100%;
 }
+
+#userFormRight{
+    margin-top: 10%
+}
+
+/*test*/
+
+.imageUploadContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .profileImagePreview {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+  }
+  
+  .profileImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .imagePlaceholder {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    border: 1px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .imagePlaceholder::after {
+    content: 'No Image';
+    color: #999;
+    font-size: 16px;
+  }
+  
+  .imageInputContainer {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  
+.imageInputLabel {
+    background-color: #4b70e2;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s;
+  }
+  
+  .imageInputLabel:hover {
+    background-color: #3a5cc0;
+  }
+  
+  .imageInput {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+  }

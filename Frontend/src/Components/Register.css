@@ -2,8 +2,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 594px;
-    height: 800px;
+    width: 36vw;
+    height: 90vh;
     background-color: #ffc629;
     border: none;
     padding: 24px;
@@ -13,8 +13,8 @@
 }
 
 .loginForm#formPopup{
-    height: 500px;
-    width: 594px;
+    height: 55vh;
+    width: 33vw;
 }
 #formPopup form {
     display: flex;
@@ -32,13 +32,13 @@
     background: #34333386;
 }
 #formPopup h2{
-    font-size: 64px;
+    font-size: 3.5vw;
     font-family: "Federant";
     color: #343333;
     margin: 0px;
 }
 #formPopup h3{
-    font-size: 36px;
+    font-size: 2.5vw;
     font-family: "Federant";
     color: #343333;
     margin: 0px;
@@ -60,8 +60,8 @@
     background-color: #fbf9ef;
     color: black;
     font-family: "Ysabeau Office";
-    width: 456px;
-    height: 59px;
+    width: 30vw;
+    height: 7vh;
     border: none;
     margin: 14px 0;
     font-size: 150%;
@@ -73,7 +73,6 @@
 }
 
 #formPopup p{
-    margin: 27px auto;
     color: black;
     width: 372px;
     text-align: center;
@@ -89,4 +88,13 @@
     border-radius: 0px;
     width: 178px;
     height: 55px;
+}
+
+.registerForm#formPopup button, .loginForm#formPopup button {
+    width: 12.5vw;
+    height: 7vh;
+}
+
+.registerForm#formPopup, .loginForm#formPopup{
+    justify-content: center;
 }

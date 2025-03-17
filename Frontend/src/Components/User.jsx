@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Navigate } from 'react-router-dom';
 import { useAuth } from './services/AuthProvider'
 import 'reactjs-popup/dist/index.css';
 import './Register.css'
@@ -199,7 +200,7 @@ const User = ({ open, setOpen }) =>{
                                     className="imageInput"
                                 />
                             </div>
-                            <button type='button'><a href={user?`/${user.id}/bookmarks`:""}>Bookmarks</a></button>
+                            <button type='button' onClick={()=>{user?navigate(`/${user.id}/bookmarks`):null}}>Bookmarks</button>
                         </div>
                     </div>
                 </div>

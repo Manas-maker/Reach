@@ -4,22 +4,27 @@ import { useAuth } from './services/AuthProvider'
 import Header from './Header'
 
 const BookmarkCard = () => {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
     const { id: userid } = useParams();
     const [data, setData] = useState([]);
-
+    const [bookmarkLoading, setBookmarkLoading] = useState(true)
     useEffect(() => {
         const fetchItems = async () => {
             try {
                 const response = await fetch(`http://localhost:8000/${userid}/bookmarks`);
                 const result = await response.json();
                 setData(result);
+                setBookmarkLoading(false)
             } catch (error) {
                 console.error('Error fetching items:', error);
             }
         };
         fetchItems();
     }, [userid]);
+    while (loading||bookmarkLoading) {
+        //return (<><div class="tenor-gif-embed" data-postid="15773490" data-share-method="host" data-aspect-ratio="0.99375" data-width="100%"><a href="https://tenor.com/view/bee-cute-adorable-fly-wings-gif-15773490">Bee Cute Sticker</a>from <a href="https://tenor.com/search/bee-stickers">Bee Stickers</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script></>)
+        return(<h1 style={{marginTop:"50vh", transform:"translateY(-50%)"}}>Loading...</h1>)
+    }
 
     return (
       <>

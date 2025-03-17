@@ -99,17 +99,12 @@ label {
 
   
 .imageInputLabel {
-    background-color: #4b70e2;
-    color: white;
     padding: 8px 16px;
-    border-radius: 4px;
     cursor: pointer;
     display: inline-block;
     transition: background-color 0.3s;
-  }
-  
-  .imageInputLabel:hover {
-    background-color: #3a5cc0;
+    border-style: solid;
+    border-color: #343333;
   }
   
   .imageInput {

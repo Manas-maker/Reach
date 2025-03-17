@@ -88,6 +88,12 @@
     border-radius: 0px;
     width: 178px;
     height: 55px;
+    cursor: pointer;
+}
+
+#formPopup button:hover, #formPopup label:hover {
+    background-color: #343333;
+    color: #fbf9ef;
 }
 
 .registerForm#formPopup button, .loginForm#formPopup button {

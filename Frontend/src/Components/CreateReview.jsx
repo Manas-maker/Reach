@@ -8,7 +8,7 @@ import Header from './Header'
 import Login from "./Login";
 
 const CreateReview = () => {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
 
     console.log(user);
     /*const user = {
@@ -16,6 +16,7 @@ const CreateReview = () => {
         username: "marissa345",
         name: "Marissa"
     };*/
+        
     const { listingid } = useParams();
     const navigate = useNavigate();
     const [listingName, setListingName] = useState('');
@@ -43,6 +44,13 @@ const CreateReview = () => {
     
         fetchListingName();
     }, [listingid]); // Runs when `listingid` changes
+    
+         // Redirect if user is null and not loading
+        useEffect(() => {
+            if (!loading && user === null) {
+                navigate('/'); // Redirect to landing page
+            }
+        }, [user, loading, navigate]);
     
     const fetchUserReview = async () => {
         if (!user) return; // Prevent running if user is not loaded

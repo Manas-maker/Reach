@@ -27,7 +27,7 @@
     justify-content: center;
     align-items: center;
     margin-top: 50px;
-
+}
 .carouselItem {
     width: 16vw;
     height: 43vh;
@@ -89,6 +89,5 @@
   }
   
   #categoryCarousel {
-    animation: floatIn 1.5s ease-out forwards;
+    animation: floatIn 1.0s ease-out forwards;
   }
-  

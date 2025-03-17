@@ -74,7 +74,6 @@ const Reviews = () =>{
     const [totalVotes, setTotalVotes] = useState(0);
     const [username, setUserName] = useState('');
 
-    
     const handleReviewClick = async () => {
         navigate(`/create-review/${listingid}`);
     };

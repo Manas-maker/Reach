@@ -1,0 +1,20 @@
+
+@keyframes dots {
+    0%, 20% { content: "Reaching"; }
+    40% { content: "Reaching."; }
+    60% { content: "Reaching.."; }
+    80%, 100% { content: "Reaching..."; }
+}
+
+#loadingReaching::after {
+    content: "Reaching";
+    animation: dots 1.5s infinite;
+    text-align: left;
+}
+
+#loadingReaching {
+    font-family: "IMPACT";
+    font-size: larger;
+    text-align: left;
+    position: relative;
+}

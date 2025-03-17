@@ -9,9 +9,11 @@ import Header from './Header'
 import Verification from './Verification';
 import Login from "./Login";
 import Popup from 'reactjs-popup';
+import LoadingScreen from './LoadingScreen';
 
 const ViewCategories = () =>{
-    
+    const [listLoading, setListLoading] = useState(true)
+    const {loading} = useAuth()
     const { type } = useParams();
 
     const [data, setData] = useState([]);
@@ -22,6 +24,9 @@ const ViewCategories = () =>{
                 const response = await fetch(`http://localhost:8000/search/${type}`);
                 const result = await response.json();
                 setData(result);
+                setTimeout(() => {
+                    setListLoading(false);
+                }, 200000);
             } catch (error) {
                 console.error('Error fetching items:', error);
             }
@@ -30,7 +35,10 @@ const ViewCategories = () =>{
         fetchItems();
     }, [type]);
  
-
+    while (loading||listLoading) {
+        //return (<><div class="tenor-gif-embed" data-postid="15773490" data-share-method="host" data-aspect-ratio="0.99375" data-width="100%"><a href="https://tenor.com/view/bee-cute-adorable-fly-wings-gif-15773490">Bee Cute Sticker</a>from <a href="https://tenor.com/search/bee-stickers">Bee Stickers</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script></>)
+        return (<LoadingScreen/>)
+    }
     return (
         <>
         <Header/>

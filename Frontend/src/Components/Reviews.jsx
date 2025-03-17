@@ -134,8 +134,9 @@ const Reviews = () =>{
         )
     } else {
         return (
+            <>
+            <Header />
             <div className='reviews-page'>
-                <Header />
                 <div className="listing-header">
                     <div className="row">
                         <h1 className='listname'>{listingName}</h1>
@@ -147,11 +148,12 @@ const Reviews = () =>{
                     </div>
                     <div className="row">
                         <h3 className='rev-h3'>{listingAddress}</h3>
-                        <p className='rev-p'>{totalVotes} votes</p>
+                        <p className='rev-p'>{totalVotes} ratings</p>
                     </div>
-                    <h2 className='rev-h2'>Reviews</h2>
+                    
                 </div>
-
+                <div className='review-cont'>
+                <h2 className='rev-h2'>Reviews</h2>
                 <div className="rating-summary">
                     <div className="rating-bar-container">
                         {Object.entries(ratings).map(([star, count]) => {
@@ -172,6 +174,7 @@ const Reviews = () =>{
                         })}
                     </div>
                     <button className="review-button" onClick={handleReviewClick}>Review your experience</button>
+                </div>
                 </div>
 
                 <div className="reviews">
@@ -229,6 +232,7 @@ const Reviews = () =>{
                     ))}
                 </div>
             </div>
+            </>
         );
     }
 };

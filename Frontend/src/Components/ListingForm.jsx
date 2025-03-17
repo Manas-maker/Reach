@@ -119,7 +119,7 @@ const ListingForm = () => {
                         <MapModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSelectLocation={handleLocationSelect} />
                         <br/>
                         <p className="listingParagraph margins">
-                            {selectedCoordinates.lat && selectedCoordinates.lng ? "Selected Coordinates are:"+
+                            {selectedCoordinates.lat && selectedCoordinates.lng ? "Selected Coordinates are: "+
                                 `${selectedCoordinates.lat}, ${selectedCoordinates.lng}` : ""}
                         </p>
                     </div>
@@ -360,9 +360,9 @@ const ListingForm = () => {
                         <>
                         {renderFormContent()}
                         {pageNumber === 1 && (
-                            <>
+                            <div style={{ width: '83vw', display: 'flex', justifyContent: 'flex-end' }}>
                             <button className="listbutton buttonNext" type="submit" onClick={submitAddress}>Next</button>
-                            </>
+                            </div>
                         )}
                         {pageNumber > 1 && (
                             <div id="formButtons">

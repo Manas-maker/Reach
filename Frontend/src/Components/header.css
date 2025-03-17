@@ -12,16 +12,19 @@
     box-sizing: content-box;
     height: 50px;
     font-size: 23px;
-    /*
-    position: fixed;
-    transform: translateX(-50%);
-    */
 }
 
 #headerContainer a{
     text-decoration: none;
     color: #343333;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+
+#headerContainer a:hover{
+    text-decoration: underline #343333;
+    font-size: 24px;
 }
 
 a:-webkit-any-link:active{

@@ -123,7 +123,7 @@ const ListingReviews = (listingid) => {
                                 <FontAwesomeIcon icon={faUser} size="2x" />
                             </div>
                             <div className='rev-cards'>
-                                <h3 className='rev-cards-h3'>{review.userid}</h3>
+                                <h3 className='rev-cards-h3'>{review.username}</h3>
                                 <p className='rev-cards-p'>{new Date(review.date).toLocaleDateString()}</p>
                                 <div className="rating-stars">
                                     {[...Array(5)].map((_, index) => (
@@ -176,7 +176,7 @@ const ListingReviews = (listingid) => {
                                 <FontAwesomeIcon icon={faUser} size="2x" />
                             </div>
                             <div className='rev-cards'>
-                                <h3 className='rev-cards-h3'>{review.userid}</h3>
+                                <h3 className='rev-cards-h3'>{review.username}</h3>
                                 <p className='rev-cards-p'>{new Date(review.date).toLocaleDateString()}</p>
                                 <div className="rating-stars">
                                     {[...Array(5)].map((_, index) => (

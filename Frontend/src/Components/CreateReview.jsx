@@ -233,7 +233,7 @@ const CreateReview = () => {
                         <span>
                             I certify that my review follows <span style= {{width : "1px"}}/>
                         </span>
-                        <Popup className="guide-pop" trigger= {<a href="#">Reach's review guidelines</a>} position="right center">
+                        <Popup className="guide-pop" overlayStyle={{ background: '#34333386' }} trigger= {<a href="#">Reach's review guidelines</a>} position="right center">
                             <div className="guidelines">
                                 <h2 className="rev-gui-h2">Reach's Review Guidelines: </h2>
                                 <h3 className="rev-gui-h3">1. Reach relevance!</h3>

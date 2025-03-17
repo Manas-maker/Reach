@@ -14,6 +14,7 @@ const ChangeListing = () => {
     const [selectedCoordinates, setSelectedCoordinates] = useState({ lat: '', lng: '' });
     const [tags, setTags] = useState('');
     const [currentBusinessHours, setCurrentBusinessHours] = useState({});
+    const [businessHoursModified, setBusinessHoursModified] = useState(false);
     const [businessHours, setBusinessHours] = useState({})
     const [phone, setPhone] = useState('');
     const [images, setImages] = useState([]);
@@ -51,14 +52,16 @@ const ChangeListing = () => {
 
     const handleBusinessHoursChange = (updatedHours) => {
         setBusinessHours(updatedHours);
+        setBusinessHoursModified(true);
     };
 
     const handleSubmit =async(e)=>{
         e.preventDefault();
-        const extractedHours = Object.entries(businessHours).map(([day, { open, close, isOpen }]) => ({
-            day,
-            time: isOpen ? `${open} - ${close || "Closing time not set"}` : "Closed"
-          }));
+        const hoursToSubmit = businessHoursModified ? Object.entries(businessHours).map(([day, { open, close, isOpen }]) => ({
+        day,
+        time: isOpen ? `${open} - ${close || "Closing time not set"}` : "Closed"
+        }))
+        : currentBusinessHours;
 
         try{
             const result = await fetch(`http://localhost:8000/updateListing/${listid}`, {
@@ -73,7 +76,7 @@ const ChangeListing = () => {
                         coordinates:[selectedCoordinates.lng, selectedCoordinates.lat]
                     },
                     address:listingAddress,
-                    hours:extractedHours,
+                    hours:hoursToSubmit,
                     tags:tags,
                     phone:phone,
                     images:images,
@@ -87,7 +90,7 @@ const ChangeListing = () => {
     }
 
     const viewBusinessHours = (hours) => {
-        if (!hours || Object.keys(hours).length === 0) return <p>No business hours set.</p>;
+        if (!hours || Object.keys(hours).length === 0) return <p className='listingParagraph margins'>No business hours set.</p>;
 
         return (
             <ol className="hoursList">
@@ -154,7 +157,7 @@ const ChangeListing = () => {
                     onChange={(e) => setTags(e.target.value)}
                 ></textarea>
                 <br />
-                <h1 className='listingLabel'>Current Business Hours</h1>
+                <h1 className='listingLabel margins'>Current Business Hours</h1>
                 {viewBusinessHours(currentBusinessHours)}
                 <BusinessHoursSelector existingBusinessHours={businessHours} onChange={handleBusinessHoursChange} />
                 <br />
@@ -175,7 +178,9 @@ const ChangeListing = () => {
                 <br />
                 <ImageUpload setImages={setImages} images={images} />
                 <br />
-                <button className="buttonSubmit listbutton" onClick={handleSubmit}>Submit</button>
+                <div style={{display:"flex", justifyContent:"flex-end", width:"83vw"}}>
+                <button className="changeListingSubmit listbutton" onClick={handleSubmit}>Submit</button>
+                </div>
             </form>
         </div>
     );

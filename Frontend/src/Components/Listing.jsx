@@ -48,7 +48,7 @@ const ViewCategories = () =>{
                     <a href="/search/salon" className="listingLink">Salons</a> 
                 </h1>
             </header>
-            <article>
+            <article className='listArticle'>
             <ul className="cards">
             {data.length > 0 ? (
                     data.map((item, index) => (
@@ -114,6 +114,9 @@ const ViewListing = () =>{
     }
 
     const businessHours=(hours)=>{
+        if (!hours || hours.length === 0) {
+            return <p className='listingParagraph'>No business hours available.</p>;
+        }
         return (
             <ol className='hoursList'>
               {hours.map(item => (
@@ -197,13 +200,14 @@ const ViewListing = () =>{
                             </div>
                         </header>
                         <div>
-                            <div style={{display:"flex", justifyContent:"space-between"}}>
+                            
                         <a id="listingAddress" href={`https://www.google.com/maps?q=${item.location.coordinates[1]},${item.location.coordinates[0]}`}
                         target='blank'>⤷ {item.address}</a>
-                        <button type="button" className="listbutton submits bookmarkButton" onClick={viewBookmarks}>Bookmark</button>
-                            </div>
                             <div style={{display:"flex", justifyContent:"space-between"}}>
                         <p id="listingTags">{item.tags}</p>
+                        <button type="button" className="listbutton submits bookmarkButton" onClick={viewBookmarks}>Bookmark</button>
+                        </div>
+                            <div style={{display:"flex", justifyContent:"space-between"}}>
                         <Verification verifiedCounter={item.verified} listingid={listid}/>
                         <button className='verifyButton' onClick={handleSuggestChange}>Suggest a change</button>
                             </div>

@@ -3,7 +3,7 @@
     font-family: "Federant";
     color: #343333;
     margin: 0px;
-    margin-top: 200px;
+    margin-top: 90px;
 }
 
 #hero p {
@@ -11,53 +11,85 @@
     font-family: "Ysabeau Office";
     font-size: 32px;
     margin-top: 0px;
-    margin-left: 10px;
 }
 
 
 #hero {
     margin-bottom: 28px;
     height: 20vh;
-    text-align: center; /* Centers text content inside */
-    margin-left: 580px;
-    width: fit-content;
+    text-align: center; 
+    width: 85vw;
+    margin-top: 0px;
 }
 #categoryCarousel {
     display: flex;
-    gap: 20px;
+    gap: 11px;
     justify-content: center;
     align-items: center;
-    width: fit-content;
-    margin: auto;
+    margin-top: 50px;
 }
 
 .carouselItem {
-    width: 18vw;
-    height: 230px;
+    width: 16vw;
+    height: 43vh;
     background-color: #343333;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 10px;
-    border-radius: 2px;
+    border-radius: 4px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    transition: all 0.4s ease-in-out;
+}
+
+.carouselItem:hover {
+    transform: scale(0.9);
 }
 
 .carouselImage {
-    width: 260px;
-    border-radius: 2px;
-    height: 135px;
+    width: 14vw;
+    border-radius: 4px;
+    height: 30vh;
 }
 
 
 .carouselText {
     margin-top: 10px;
     color: #FBF9EF;
-    font-family: "Ysabeau Office";
+    font-family: "Federant";
     font-size: 30px;
-    font-weight: 200;
     margin-bottom:20px;
 }
 
 
+@keyframes Blur {
+    from {
+        opacity: 0;
+        filter: blur(10px); /* Start with a blur */
+      }
+      to {
+        opacity: 1;
+        filter: blur(0); /* Clear the blur */
+      }
+  }
+
+ #hero {
+    animation: Blur 0.8s ease-out forwards;
+  }
+
+  @keyframes floatIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  #categoryCarousel {
+    animation: floatIn 1.5s ease-out forwards;
+  }
+  

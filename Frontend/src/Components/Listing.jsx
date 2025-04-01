@@ -24,9 +24,7 @@ const ViewCategories = () =>{
                 const response = await fetch(`http://localhost:8000/search/${type}`);
                 const result = await response.json();
                 setData(result);
-                setTimeout(() => {
-                    setListLoading(false);
-                }, 200000);
+                setListLoading(false);
             } catch (error) {
                 console.error('Error fetching items:', error);
             }

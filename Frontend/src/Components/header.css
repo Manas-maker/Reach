@@ -48,9 +48,13 @@ html .popup-content {
     height: 34px;
     font-size: 18px;
     outline: none;
-    margin-left: 100px;
+    margin-left: 0px;
 }
 
+#headerLeft {
+    display: flex;
+    align-items: center;
+}
 ul {
     list-style: none;
     display: flex;

@@ -48,7 +48,7 @@ let gfsBucket;
 
 const app = express();
 app.use(cors({
-  origin: "http://localhost:5173", // React Vite frontend
+  origin: process.env.FRONTEND_URL || "http://localhost:5173", // React Vite frontend
   methods: ["GET", "POST", "PUT", "PATCH","DELETE"],
   credentials: true
 }));

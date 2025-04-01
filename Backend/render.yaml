@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: backend-service
+    env: node
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: SECRET
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+    autoDeploy: true
+    plan: free

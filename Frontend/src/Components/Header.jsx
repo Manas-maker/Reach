@@ -30,7 +30,9 @@ const Header =  ()=>{
       }, [])*/
     return (
         <div id="headerContainer">
-            <div id="headerLeft"><input 
+            <div id="headerLeft">
+                <img src='/bee-sticker.png' style={{width: "9%", height:"auto", transform:"translateY(-0%)"}}/>
+                <input 
                             type="text" 
                             name="search" id="search" placeholder="Search" 
                             value={searchQuery} 

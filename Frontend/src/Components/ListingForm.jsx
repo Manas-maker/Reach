@@ -43,7 +43,7 @@ const ListingForm = () => {
 
         try {
 
-            const verified = await fetch("http://localhost:8000/verifyListing", {
+            const verified = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/verifyListing`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -308,7 +308,7 @@ const ListingForm = () => {
 
         try{
             const lowerType = selectedOption.toLowerCase();
-            const verified = await fetch("http://localhost:8000/newListing", {
+            const verified = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/newListing`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -82,7 +82,7 @@ const User = ({ open, setOpen }) =>{
         if (profileImage) formData.append('profileImage', profileImage);
         
         try {
-            const response = await fetch("http://localhost:8000/users", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/users`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${token}`

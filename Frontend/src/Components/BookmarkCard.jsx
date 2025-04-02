@@ -11,7 +11,7 @@ const BookmarkCard = () => {
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/${userid}/bookmarks`);
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/${userid}/bookmarks`);
                 const result = await response.json();
                 setData(result);
                 setBookmarkLoading(false)

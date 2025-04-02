@@ -11,11 +11,6 @@ const CreateReview = () => {
     const { user, loading } = useAuth();
 
     console.log(user);
-    /*const user = {
-        userid: "67bdd50e3579e268ca94325e",
-        username: "marissa345",
-        name: "Marissa"
-    };*/
         
     const { listingid } = useParams();
     const navigate = useNavigate();
@@ -33,7 +28,7 @@ const CreateReview = () => {
     useEffect(() => {
         const fetchListingName = async () => {
             try {
-                const res = await fetch(`http://localhost:8000/listings/${listingid}`);
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listings/${listingid}`);
                 if (!res.ok) throw new Error(`Error! Status: ${res.status}`);
                 const data = await res.json();
                 setListingName(data.listingName);
@@ -56,7 +51,7 @@ const CreateReview = () => {
         if (!user) return; // Prevent running if user is not loaded
     
         try {
-            const res = await fetch(`http://localhost:8000/reviews/${listingid}/user/${user.id}`);
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/reviews/${listingid}/user/${user.id}`);
             if (res.ok) {
                 const review = await res.json();
                 setRating(review.rating);
@@ -139,12 +134,12 @@ const CreateReview = () => {
     
             if (response.ok) {
                 showAlert(existingReviewId ? "Review Updated" : "Review Posted");
-                const res = await fetch(`http://localhost:8000/reviews/${listingid}`);
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/reviews/${listingid}`);
                 const data = await res.json();
                 console.log("Fetched data:", data);
                 const averageRating = calcRating(data.reviews);
 
-                const updateResponse = await fetch(`http://localhost:8000/updateRating/${listingid}`, {
+                const updateResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/updateRating/${listingid}`, {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
@@ -172,7 +167,7 @@ const CreateReview = () => {
     const confirmDelete = async () => {
         setShowPopup(false);
         try {
-            const response = await fetch(`http://localhost:8000/delete-review/${existingReviewId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/delete-review/${existingReviewId}`, {
                 method: "DELETE",
             });
     

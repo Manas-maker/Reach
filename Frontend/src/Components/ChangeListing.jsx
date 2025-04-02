@@ -23,7 +23,7 @@ const ChangeListing = () => {
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/listing/${listid}`);
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listing/${listid}`);
                 const result = await response.json();
                 setListingName(result[0].name);
                 setListingAddress(result[0].address);
@@ -64,7 +64,7 @@ const ChangeListing = () => {
         : currentBusinessHours;
 
         try{
-            const result = await fetch(`http://localhost:8000/updateListing/${listid}`, {
+            const result = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/updateListing/${listid}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"

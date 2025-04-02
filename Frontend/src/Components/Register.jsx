@@ -9,7 +9,7 @@ const Register = ({ open, setOpen }) =>{
             formDataObject[key] = value;
         });
 
-        const user = await fetch("http://localhost:8000/Register", {
+        const user = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/Register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

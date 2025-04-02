@@ -29,7 +29,7 @@ const Verification = ({ verifiedCounter, listingid }) => {
         try {
             const updatedVerified = [...verifiedList, user.id];
 
-            await fetch(`http://localhost:8000/updateVerification/${listingid}`, {
+            await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/updateVerification/${listingid}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

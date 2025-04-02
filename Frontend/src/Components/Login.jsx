@@ -14,7 +14,7 @@ const Login = ({ open, setOpen }) => {
     const loginSubmit = async (e) => {
         e.preventDefault();
         try {
-            const user = await fetch("http://localhost:8000/Login", {
+            const user = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/Login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

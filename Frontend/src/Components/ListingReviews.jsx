@@ -26,7 +26,7 @@ const calcStar = (reviews) => {
 // Modified Vote function to handle API call
 const submitVote = async (reviewId, voteType, userId, setReviews) => {
     try {
-        const res = await fetch(`http://localhost:8000/${reviewId}/update-votes`, {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/${reviewId}/update-votes`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userid: userId, votetype: voteType }),
@@ -90,7 +90,7 @@ const ListingReviews = (listingid) => {
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                const res = await fetch(`http://localhost:8000/reviews/${listid}`);
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/reviews/${listid}`);
                 const data = await res.json();
                 setReviews(data.reviews);
 

@@ -24,7 +24,7 @@ const calcStar = (reviews) => {
 
 const Vote = async (reviewId, voteType, username, setReviews) => {
     try {
-        const res = await fetch(`http://localhost:8000/${reviewId}/update-votes`, {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/${reviewId}/update-votes`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: username, votetype: voteType }),
@@ -94,7 +94,7 @@ const Reviews = () =>{
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                const res = await fetch(`http://localhost:8000/reviews/${listingid}`);
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/reviews/${listingid}`);
                 const data = await res.json();
                 console.log("Fetched data:", data);
     

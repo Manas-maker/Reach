@@ -39,7 +39,7 @@ const AddImage = ({ listingid, onUploadSuccess }) => {
 
     const updateListingImages = async (newImageUrl) => {
         try {
-            const fetchResponse = await fetch(`http://localhost:8000/listing/${listingid}`);
+            const fetchResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listing/${listingid}`);
             if (!fetchResponse.ok) {
                 throw new Error("Failed to fetch existing images.");
             }
@@ -47,7 +47,7 @@ const AddImage = ({ listingid, onUploadSuccess }) => {
             const existingImages = listingData[0].images;
             const updatedImages = [...existingImages, newImageUrl];
             console.log(updatedImages);
-            const updateResponse = await fetch(`http://localhost:8000/listing/${listingid}`, {
+            const updateResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listing/${listingid}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

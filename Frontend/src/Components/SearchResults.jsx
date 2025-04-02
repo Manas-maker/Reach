@@ -12,7 +12,7 @@ const SearchResults = () =>{
         useEffect(() => {
             const fetchItems = async () => {
                 try {
-                    const response = await fetch(`http://localhost:8000/search?query=${query}`);
+                    const response = await fetch(`${import.meta.env.BACKEND_URL || "http://localhost:8000"}/search?query=${query}`);
                     const result = await response.json();
                     setData(result);
                 } catch (error) {

@@ -13,7 +13,7 @@ const BookmarksModal = ({ collections, setCollections, listingid, isOpen, onClos
     if (!colllistings.includes(listingid)){
         const updatedListings = [...colllistings, listingid];
         try {
-            const response = await fetch(`http://localhost:8000/bookmarks/${collid}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/bookmarks/${collid}`, {
             method: "PATCH",
             headers: {
           "Content-Type": "application/json",

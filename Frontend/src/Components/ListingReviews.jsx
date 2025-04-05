@@ -110,7 +110,7 @@ const ListingReviews = (listingid) => {
 
     // Render when no reviews
     if (reviews.length === 0) {
-        return <p className='listingParagraph' style={{ marginLeft: "180px" }}>No reviews to reach! </p>;
+        return <p className='listingParagraph' style={{ marginTop: "0px" }}>No reviews to reach! </p>;
     } 
     // Render for 3 or fewer reviews
     else if (reviews.length <= 3) {

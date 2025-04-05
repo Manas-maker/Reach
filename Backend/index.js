@@ -225,7 +225,7 @@ async function startServer() {
             
               res
                 .status(200)
-                .send({ token, username: user.username, name: user.name , id:user._id, phoneNo:user.phoneNo, email: user.email})
+                .send({ token, username: user.username, name: user.name , id:user._id, phoneNo:user.phoneNo, email: user.email, role: user.role})
             } catch (error) {
                 console.error('Error logging user in: ', error)
                 res.status(500).json({error: 'Failed to login'})

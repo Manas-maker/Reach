@@ -9,13 +9,10 @@
 }
 
 .rev-h3{
-  font-family: "Federant", serif;
-  margin: 0;
-  padding: 0;
-  background-color: #fbf9ef;
-  color: #333;
+  color: #343333;
   margin-top: 1%;
-  font-size: 200%;
+  font-family: "Ysabeau Office";
+  font-size: larger;
 }
 
 .rev-h2{
@@ -328,4 +325,12 @@
 .listing-review-card{
   margin-top: 20px;
   width: 80vw;
+}
+
+.no-rev-p{
+  font-size: 45px;
+  text-align: center;
+  font-family: "Ysabeau", serif;
+  color: #333;
+  margin-top: 200px;
 }

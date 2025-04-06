@@ -1,0 +1,65 @@
+#headerContainer{
+    top:0;
+    left: 50%;
+    margin: 16px auto;
+    display: flex;
+    width: 80vw;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background-color: #FFC629;
+    font-family: "Ysabeau Office";
+    box-sizing: content-box;
+    height: 50px;
+    font-size: 23px;
+}
+
+#headerContainer a{
+    text-decoration: none;
+    color: #343333;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+
+#headerContainer a:hover{
+    text-decoration: underline #343333;
+    font-size: 24px;
+}
+
+a:-webkit-any-link:active{
+    color: #343333;
+}
+html .popup-content {
+    background-color: transparent;
+    border: none;
+    width: fit-content;
+
+}
+#search {
+    width:430px;
+    border-radius: 50px;
+    background-color: #FBF9EF;
+    color: #343333;
+    border-style: none;
+    padding-left: 10px;
+    box-sizing: content-box;
+    font-family: inherit;
+    height: 34px;
+    font-size: 18px;
+    outline: none;
+    margin-left: 0px;
+}
+
+#headerLeft {
+    display: flex;
+    align-items: center;
+}
+ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+    color: #343333;
+}

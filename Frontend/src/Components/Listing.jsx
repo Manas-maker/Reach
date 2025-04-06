@@ -33,10 +33,8 @@ const ViewCategories = () =>{
         
     }, [type]);
  
-    while (listLoading){
-        return (
-            <p className='listloading'>Loading...</p>
-        )
+    while (listLoading) {
+        return (<img src='bee-cute.gif' style={{marginTop:"50vh", transform:"translateY(-50%)"}}/>)
     }
     return (
         <>

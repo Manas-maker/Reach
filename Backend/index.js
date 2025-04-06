@@ -1088,17 +1088,28 @@ try {
 }
 });
 
-app.delete('/bookmarks/:id', async(req, res) => {
-try {
-    const bookmarkId = parseInt(req.params.id, 10);
-    if (bookmarks[bookmarkId]) {
-      delete bookmarks[bookmarkId];
-      return res.status(200).json({ message: "Bookmark deleted" });
+app.delete('/bookmarks/:userid/:id', async (req, res) => {
+  try {
+    const { userid, id } = req.params;
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid bookmark ID" });
     }
-    res.status(404).json({ error: "Bookmark not found" });
-} catch (error) {
+    const validId = new ObjectId(id);
+
+    const result = await client.db("ReachDB")
+      .collection('Bookmarks')
+      .deleteOne({ _id: validId, userid: userid });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Bookmark not found or unauthorized" });
+    }
+
+    res.status(200).json({ message: "Bookmark deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting bookmark:", error);
     res.status(500).json({ error: "An error occurred while deleting the bookmark" });
-}
+  }
 });
 } catch (error) {
 console.error('Failed to connect to MongoDB:', error);

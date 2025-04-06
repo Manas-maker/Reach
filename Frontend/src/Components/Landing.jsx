@@ -1,10 +1,11 @@
 import Header from './Header'
 import './Landing.css'
 import { useAuth } from './services/AuthProvider'
+import LoadingScreen from './LoadingScreen'
 const  Landing = ()=> {
     const {loading} = useAuth()
     while (loading) {
-        return (<img src='bee-cute.gif' style={{marginTop:"50vh", transform:"translateY(-50%)"}}/>)
+        return (<LoadingScreen/>)
     }
     return (
         <div id="heroPage">

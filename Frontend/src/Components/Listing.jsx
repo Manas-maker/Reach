@@ -9,6 +9,7 @@ import Header from './Header'
 import Verification from './Verification';
 import Login from "./Login";
 import Popup from 'reactjs-popup';
+import LoadingScreen from './LoadingScreen';
 
 const ViewCategories = () =>{
     
@@ -34,7 +35,7 @@ const ViewCategories = () =>{
     }, [type]);
  
     while (listLoading) {
-        return (<img src='bee-cute.gif' style={{marginTop:"50vh", transform:"translateY(-50%)"}}/>)
+        return (<LoadingScreen/>)
     }
     return (
         <>
@@ -88,6 +89,7 @@ const ViewCategories = () =>{
 const ViewListing = () =>{
     const navigate = useNavigate();
     const { user,loading } = useAuth();
+    const [listLoading, setListLoading] = useState(true);
     const { listid } = useParams();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImages, setSelectedImages] = useState([]);
@@ -105,6 +107,7 @@ const ViewListing = () =>{
                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listing/${listid}`);
                 const result = await response.json();
                 console.log(result)
+                setListLoading(false);
                 setData(result);
             } catch (error) {
                 console.error('Error fetching items:', error);
@@ -113,6 +116,10 @@ const ViewListing = () =>{
 
         fetchItems();
     },[]);
+
+    while (listLoading) {
+        return (<LoadingScreen/>)
+    }
 
     const viewMore=(images)=>{
         setSelectedImages(images);

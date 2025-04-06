@@ -20,7 +20,7 @@ const ViewCategories = () =>{
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/search/${type}`);
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/search/${type}`);
                 const result = await response.json();
                 setData(result);
                 setListLoading(false)
@@ -104,7 +104,7 @@ const ViewListing = () =>{
         console.log(typeof(listid));
         const fetchItems = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/listing/${listid}`);
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listing/${listid}`);
                 const result = await response.json();
                 console.log(result)
                 setData(result);
@@ -142,7 +142,7 @@ const ViewListing = () =>{
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8000/${user.id}/bookmarks`);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/${user.id}/bookmarks`);
             const result = await response.json();
             setBookmarkResult(result);
             setIsBookmarkModalOpen(true);
@@ -197,7 +197,7 @@ const ViewListing = () =>{
     const deleteListing = async() => {
         if (window.confirm("Do you want to delete this listing?")) {
             try {
-                const response = await fetch(`http://localhost:8000/listing/${listid}`, {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listing/${listid}`, {
                     method: "DELETE",
                 });
         
@@ -254,7 +254,7 @@ const ViewListing = () =>{
                             </div>
                         </div>
                         <AddImage listingid={listid} onUploadSuccess={() => {
-                                fetch(`http://localhost:8000/listing/${listid}`)
+                                fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listing/${listid}`)
                                 .then(response => response.json())
                                 .then(result => setData(result))
                                 .catch(error => console.error("Error refetching listing", error))

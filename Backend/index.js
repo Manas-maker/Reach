@@ -206,6 +206,7 @@ async function startServer() {
         try {
           const { username, password } = req.body
           const user = await client.db("ReachDB").collection('Users').findOne({ username })
+          console.log(user)
           const passwordCorrect = user === null
             ? false
             : await bcrypt.compare(password, user.passwordHash)

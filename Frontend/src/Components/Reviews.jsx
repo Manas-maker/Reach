@@ -128,7 +128,7 @@ const Reviews = () =>{
         return (
             <>
             <Header/>
-            <p>No reviews to reach! </p>;
+            <p className='no-rev-p'>No reviews to reach! </p>
             </>
         )
     } else {
@@ -232,7 +232,7 @@ const Reviews = () =>{
                 </div>
             </div>
             </>
-        );
+        )
     }
 };
 export default Reviews

@@ -33,7 +33,7 @@ const BookmarkList = () => {
                           <li className="card" key={index}>
                               <a href={`/listing/${encodeURIComponent(item._id)}`} id={item._id}>
                                   <figure className='listingFigure'>
-                                      <img src='/restaurant.jpg' alt="image" />
+                                      <img src={item.images[0]} alt="image" />
                                   </figure>
                                   <div className="cardBody">
                                       <h2 className="listingh2">{item.name}</h2>

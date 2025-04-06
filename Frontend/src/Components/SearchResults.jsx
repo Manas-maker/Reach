@@ -36,7 +36,7 @@ const SearchResults = () =>{
                     <li className="card" key={index}>
                     <a href={`/listing/${encodeURIComponent(item._id)}`}  id={item._id}>
                         <figure className='listingFigure'>
-                            <img src="/restaurant.jpg"/>
+                            <img src={item.images[0]}/>
                         </figure>
                         <div className="cardBody">
                         <div className='listingTop'>

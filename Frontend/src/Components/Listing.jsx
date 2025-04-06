@@ -9,33 +9,34 @@ import Header from './Header'
 import Verification from './Verification';
 import Login from "./Login";
 import Popup from 'reactjs-popup';
-import LoadingScreen from './LoadingScreen';
 
 const ViewCategories = () =>{
-    const [listLoading, setListLoading] = useState(true)
-    const {loading} = useAuth()
+    
     const { type } = useParams();
 
     const [data, setData] = useState([]);
+    const [listLoading, setListLoading] = useState(true);
 
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/search/${type}`);
+                const response = await fetch(`http://localhost:8000/search/${type}`);
                 const result = await response.json();
                 setData(result);
-                setListLoading(false);
+                setListLoading(false)
             } catch (error) {
                 console.error('Error fetching items:', error);
             }
         };
 
         fetchItems();
+        
     }, [type]);
  
-    while (loading||listLoading) {
-        //return (<><div class="tenor-gif-embed" data-postid="15773490" data-share-method="host" data-aspect-ratio="0.99375" data-width="100%"><a href="https://tenor.com/view/bee-cute-adorable-fly-wings-gif-15773490">Bee Cute Sticker</a>from <a href="https://tenor.com/search/bee-stickers">Bee Stickers</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script></>)
-        return (<LoadingScreen/>)
+    while (listLoading){
+        return (
+            <p className='listloading'>Loading...</p>
+        )
     }
     return (
         <>
@@ -61,7 +62,7 @@ const ViewCategories = () =>{
                         <li className="card" key={index}>
                         <a href={`/listing/${encodeURIComponent(item._id)}`}  id={item._id}>
                             <figure className='listingFigure'>
-                                <img src='/restaurant.jpg'/>
+                                <img src={item.images[0]}/>
                             </figure>
                             <div className="cardBody">
                                 <div className='listingTop'>
@@ -97,12 +98,13 @@ const ViewListing = () =>{
     const [isBookmarkModalOpen, setIsBookmarkModalOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false)
     
-
+    console.log(user);
+    console.log("check")
     useEffect(()=>{
         console.log(typeof(listid));
         const fetchItems = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listing/${listid}`);
+                const response = await fetch(`http://localhost:8000/listing/${listid}`);
                 const result = await response.json();
                 console.log(result)
                 setData(result);
@@ -140,7 +142,7 @@ const ViewListing = () =>{
             return;
         }
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/${user.id}/bookmarks`);
+            const response = await fetch(`http://localhost:8000/${user.id}/bookmarks`);
             const result = await response.json();
             setBookmarkResult(result);
             setIsBookmarkModalOpen(true);
@@ -151,6 +153,9 @@ const ViewListing = () =>{
     
 
     const getRatingColour = (rating) => {
+        if (!rating){
+            return 'hsl(0, 0%, 60%)'; 
+        }
         const stops = [
             [0, 0, 36],   // Red
             [2, 25, 50],  // Orange
@@ -189,6 +194,27 @@ const ViewListing = () =>{
         }
     }
 
+    const deleteListing = async() => {
+        if (window.confirm("Do you want to delete this listing?")) {
+            try {
+                const response = await fetch(`http://localhost:8000/listing/${listid}`, {
+                    method: "DELETE",
+                });
+        
+                if (response.ok) {
+                    window.alert("Listing deleted!");
+                    navigate('/')
+                } else {
+                    window.alert("Failed to delete listing!");
+                }
+            } catch (error) {
+                console.error("Error deleting review:", error);
+            }
+            console.log("Action executed!");
+        }
+        
+    }
+
     return (
         <div id="listing">
             <Header/>
@@ -201,7 +227,7 @@ const ViewListing = () =>{
                                 {item.name}
                             </h1>
                             <span className="rating-box" style={{ backgroundColor: getRatingColour(item.rating) }}>
-                                {item.rating}
+                                {item.rating? item.rating:"--"}
                             </span>
                             </div>
                         </header>
@@ -228,7 +254,7 @@ const ViewListing = () =>{
                             </div>
                         </div>
                         <AddImage listingid={listid} onUploadSuccess={() => {
-                                fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/listing/${listid}`)
+                                fetch(`http://localhost:8000/listing/${listid}`)
                                 .then(response => response.json())
                                 .then(result => setData(result))
                                 .catch(error => console.error("Error refetching listing", error))
@@ -239,7 +265,7 @@ const ViewListing = () =>{
                         <h2 className='listingh2'>Business Hours</h2>
                         {businessHours(item.hours)}
                         <h2 className='listingh2'>Business Contact</h2>
-                        <p className="listingParagraph phone">+91 {item.phone}</p>
+                        <p className="listingParagraph phone">{item.phone? "+91 "+item.phone:"No business contact provided."}</p>
                         <h2 className='listingh2'>Reviews</h2>
                         <ListingReviews listingid={listid}/>
                         <br/>
@@ -248,7 +274,9 @@ const ViewListing = () =>{
                         onClick={handleAddReviewClick}>Add a review</button>
                         <button type='button' className='listbutton' 
                         onClick={() => window.open(`/reviews/${listid}`, '_blank')}>Reach more reviews</button>
+                        {user && user.role=="admin"?<button type='button' className='listbutton delListingButton' onClick={deleteListing}>Delete Listing</button>:console.log("hehe")}
                         </div>
+                        
                         </div>
                         
                     ))

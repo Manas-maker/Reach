@@ -44,7 +44,7 @@ const BookmarkList = () => {
                           </li>
                       ))
                     ) : (
-                        <h1 id='notFound'>No results found!</h1>
+                        <h1 id='notFound'>You haven't bookmarked anything yet!</h1>
                     )}
                 </ul>
             </article>

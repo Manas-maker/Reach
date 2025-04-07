@@ -7,7 +7,7 @@ const RevImageUpload = ({ setImages, images }) => {
     useEffect(() => {
         if (!window.cloudinary) return;
         widgetRef.current = window.cloudinary.createUploadWidget(
-            {cloudName: import.meta.env.VITE_CLOUDINARY_CLOUDNAME, uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOADPRESET},
+            {cloudName: import.meta.env.VITE_APP_CLOUDNAME, uploadPreset: import.meta.env.VITE_APP_UPLOADPRESET},
             (error, result) => {
                 if (error) {
                     console.error("Upload Error:", error);

@@ -3,7 +3,6 @@
     left: 50%;
     margin: 16px auto;
     display: flex;
-    width: 80vw;
     align-items: stretch;
     justify-content: space-between;
     padding: 16px 24px;
@@ -60,6 +59,7 @@ html .popup-content {
 #headerLeft {
     display: flex;
     align-items: center;
+    width: min-content;
 }
 ul {
     list-style: none;

@@ -13,38 +13,37 @@
     margin-bottom: -800px;*/
 }
 
-.loginForm#formPopup{
-    width: 33vw;
-}
 #formPopup form {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    overflow-x: hidden;
 }
 
 #formPopup {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-x: hidden;
 }
 .popup-overlay {
     background: #34333386;
 }
 #formPopup h2{
-    font-size: 3.5vw;
-    font-family: "Federant";
-    color: #343333;
-    margin: 0px;
-}
-#formPopup h3{
     font-size: 2.5vw;
     font-family: "Federant";
     color: #343333;
     margin: 0px;
 }
+#formPopup h3{
+    font-size: 1.8vw;
+    font-family: "Federant";
+    color: #343333;
+    margin: 0px;
+}
 #formPopup h4{
-    font-size: 28px;
+    font-size: 1.2vw;
     font-family: "Federant";
     color: #343333;
     margin: 0px;

@@ -198,6 +198,7 @@ const User = ({ open, setOpen }) =>{
                                     accept="image/*" 
                                     onChange={handleImageChange} 
                                     className="imageInput"
+                                    style={{width:"0px"}}
                                 />
                             </div>
                             <button type='button' onClick={()=>{user?navigate(`/${user.id}/bookmarks`):null}}>Bookmarks</button>

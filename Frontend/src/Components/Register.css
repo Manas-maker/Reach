@@ -3,7 +3,7 @@
     flex-direction: column;
     overflow-y: auto;
     align-items: center;
-    width: 36vw;
+    width: auto;
     height: fit-content;
     background-color: #ffc629;
     border: none;
@@ -60,10 +60,10 @@
     color: black;
     font-family: "Ysabeau Office";
     width: 30vw;
-    height: 7vh;
+    padding: 1% 0%;
     border: none;
     margin: 14px 0;
-    font-size: 150%;
+    font-size: 120%;
     padding-left: 6px;
 }
 
@@ -75,6 +75,7 @@
     color: black;
     width: 372px;
     text-align: center;
+    margin: 0px;
 }
 
 #formPopup button{

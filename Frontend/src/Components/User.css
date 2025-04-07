@@ -16,8 +16,6 @@
 .userFormPopup#formPopup {
     width: 80vw;
     box-sizing: content-box;
-    overflow: hidden;
-    max-height: 80vh;
 }
 
 #formPopup input{

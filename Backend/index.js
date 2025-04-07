@@ -1030,8 +1030,8 @@ try {
   });
     console.log(listingIds);
     if (listingIds.length === 0) {
-        return res.json({ listings: [] });
-    }
+      return res.json({ title: bookmarkTitle, listings: [] });
+  }
 
     const listings = await client
         .db('ReachDB')
@@ -1087,6 +1087,31 @@ try {
   res.status(500).json({ error: "An error occurred while updating the bookmark" });
 }
 });
+
+app.patch('/bookmarks/saved/:userid', async(req,res)=>{
+  try{
+    const {userid} = req.params;
+    const {listingid} = req.body;
+    const bookmarksCollection = await client.db('ReachDB').collection('Bookmarks');
+
+    const updatedBookmark = await bookmarksCollection.updateMany(
+      {
+        userid: userid,
+        listings: listingid 
+      },
+      {
+        $pull: { listings: listingid }
+      }
+    );
+    
+
+    res.status(200).json(updatedBookmark.value);
+  }catch (error){
+    console.error("Error deleting from Saved:", error);
+    res.status(500).json({ error: "An error occurred while deleting from Saved" });
+  }
+
+})
 
 app.delete('/bookmarks/:userid/:id', async (req, res) => {
   try {

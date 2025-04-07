@@ -1,7 +1,7 @@
 #formPopup {
     display: flex;
     flex-direction: column;
-    overflow: scroll;
+    overflow-y: auto;
     align-items: center;
     width: 36vw;
     height: fit-content;

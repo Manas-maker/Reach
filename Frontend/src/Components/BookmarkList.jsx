@@ -1,55 +1,82 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import Header from './Header';
-import BookmarksModal from "./BookmarkModal"; 
-import { useAuth } from "./services/AuthProvider"; 
-import { Bookmark } from "lucide-react"; // lucide-react icon
+import { useParams } from "react-router-dom";
+import Header from "./Header";
+import { Bookmark } from "lucide-react"; 
+import { useAuth } from "./services/AuthProvider";
 
 const BookmarkList = () => {
+  const { id } = useParams(); 
   const { user } = useAuth();
-  const { id } = useParams();
-  const [data, setData] = useState([]);
-  const [collections, setCollections] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedListingId, setSelectedListingId] = useState(null);
+
+  const [data, setData] = useState([]); 
+  const [bookmarkedListings, setBookmarkedListings] = useState({}); 
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const fetchCollection = async () => {
       try {
         const response = await fetch(`http://localhost:8000/bookmarks/${id}`);
         const result = await response.json();
         setData(result);
+        const inCollection = {};
+        if (result && result.listings) {
+          result.listings.forEach((listing) => {
+            inCollection[listing._id] = true;
+          });
+        }
+        setBookmarkedListings(inCollection);
       } catch (error) {
-        console.error('Error fetching items:', error);
+        console.error("Error fetching items:", error);
       }
     };
-    fetchItems();
+    fetchCollection();
   }, [id]);
 
-  useEffect(() => {
-    const fetchCollections = async () => {
+  const handleToggleBookmark = async (listing) => {
+    const listingId = listing._id;
+    const isCurrentlyBookmarked = bookmarkedListings[listingId] === true;
+
+    if (!isCurrentlyBookmarked) {
       try {
-        const response = await fetch(`http://localhost:8000/${user.id}/bookmarks`);
-        const result = await response.json();
-        setCollections(result);
+        const updatedListings = [...(data.listings || []), listingId];
+        await fetch(`http://localhost:8000/bookmarks/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ 
+            title: data.title,
+            listings: updatedListings 
+          }),
+        });
+
+        setBookmarkedListings((prev) => ({ ...prev, [listingId]: true }));
       } catch (error) {
-        console.error("Error fetching collections:", error);
+        console.error("Error bookmarking listing:", error);
       }
-    };
+    } else {
+      const confirmRemove = window.confirm("Do you want to remove this bookmark?");
+      if (!confirmRemove) return;
 
-    if (user && modalOpen) {
-      fetchCollections();
+      try {
+        const updatedListings = (data.listings || [])
+          .filter((l) => l._id !== listingId && l !== listingId); 
+
+        await fetch(`http://localhost:8000/bookmarks/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: data.title,
+            listings: updatedListings,
+          }),
+        });
+
+        setBookmarkedListings((prev) => ({ ...prev, [listingId]: false }));
+      } catch (error) {
+        console.error("Error removing bookmark:", error);
+      }
     }
-  }, [user, modalOpen]);
-
-  const openBookmarkModal = (listingId) => {
-    setSelectedListingId(listingId);
-    setModalOpen(true);
-  };
-
-  const closeBookmarkModal = () => {
-    setModalOpen(false);
-    setSelectedListingId(null);
   };
 
   return (
@@ -58,43 +85,65 @@ const BookmarkList = () => {
       <header id="heads">
         {data.title && <h1 id="bookmarkName">{data.title}</h1>}
       </header>
+
       <article>
         <ul className="cards">
           {data.listings && data.listings.length > 0 ? (
-            data.listings.map((item, index) => (
-              <li className="card" key={index}>
-                <a href={`/listing/${encodeURIComponent(item._id)}`} id={item._id}>
-                  <figure className='listingFigure'>
-                    <img src='/restaurant.jpg' alt="image" />
-                  </figure>
-                  <div className="cardBody">
-                    <h2 className="listingh2">{item.name}</h2>
-                    <p className="listingParagraph"> {item.tags} </p>
+            data.listings.map((item, index) => {
+              const listingId = item._id;
+              const isBookmarked = bookmarkedListings[listingId] === true;
+
+              return (
+                <li className="card" key={index} style={{ position: "relative" }}>
+                  <a
+                    href={`/listing/${encodeURIComponent(listingId)}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <figure className="listingFigure">
+                      <img src={item.images[0]} alt="listing" />
+                    </figure>
+                    <div className="cardBody">
+                      <h2 className="listingh2">{item.name}</h2>
+                      <p className="listingParagraph">{item.tags}</p>
+                    </div>
+                  </a>
+
+                  <div
+                    style={{
+                      margin: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <button
+                      onClick={() => handleToggleBookmark(item)}
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                      title={
+                        isBookmarked
+                          ? "Click to remove bookmark"
+                          : "Click to bookmark"
+                      }
+                    >
+                      <Bookmark
+                        size={24}
+                        color={isBookmarked ? "#e93a36" : "#343333"}
+                        fill={isBookmarked ? "#e93a36" : "none"}
+                      />
+                    </button>
                   </div>
-                </a>
-                <button
-                  className="bookmark-icon"
-                  onClick={() => openBookmarkModal(item._id)}
-                  title="Save to bookmarks"
-                >
-                  <Bookmark size={20} />
-                </button>
-              </li>
-            ))
+                </li>
+              );
+            })
           ) : (
-            <h1 id='notFound'>No results found!</h1>
+            <h1 id="notFound">You ain't bookmarked nothin</h1>
           )}
         </ul>
       </article>
-
-      {/* Bookmark Modal */}
-      <BookmarksModal
-        collections={collections}
-        setCollections={setCollections}
-        listingid={selectedListingId}
-        isOpen={modalOpen}
-        onClose={closeBookmarkModal}
-      />
     </div>
   );
 };

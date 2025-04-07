@@ -90,7 +90,7 @@
     cursor: pointer;
 }
 
-#formPopup button:hover, #formPopup label:hover {
+#formPopup button:hoverr {
     background-color: #343333;
     color: #fbf9ef;
 }

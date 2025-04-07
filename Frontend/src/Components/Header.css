@@ -40,6 +40,7 @@ html .popup-content {
     overflow: hidden;
     flex-wrap: nowrap;
     margin: 0px;
+    align-items: center;
 }
 #search {
     width:430px;

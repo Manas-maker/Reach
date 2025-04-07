@@ -133,7 +133,6 @@ label {
     padding: 8px 16px;
     cursor: pointer;
     display: inline-block;
-    transition: background-color 0.3s;
     border-style: solid;
     border-color: #343333;
     color: #343333

@@ -91,7 +91,7 @@
     cursor: pointer;
 }
 
-#formPopup button:hoverr {
+#formPopup button:hover, .imageInputLabel:hover {
     background-color: #343333;
     color: #fbf9ef;
 }

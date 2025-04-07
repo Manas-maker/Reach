@@ -23,7 +23,9 @@
 
 #headerContainer a:hover{
     text-decoration: underline #343333;
-    font-size: 24px;
+}
+#headerContainer a{
+    transition: 0.4s;
 }
 
 a:-webkit-any-link:active{

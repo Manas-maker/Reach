@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Header from './Header'
+import LoadingScreen from './LoadingScreen';
 
 const SearchResults = () =>{
 
@@ -8,6 +9,7 @@ const SearchResults = () =>{
     const query = searchParams.get("query");
     
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
     
         useEffect(() => {
             const fetchItems = async () => {
@@ -15,6 +17,7 @@ const SearchResults = () =>{
                     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/search?query=${query}`);
                     const result = await response.json();
                     setData(result);
+                    setLoading(false);
                 } catch (error) {
                     console.error('Error fetching items:', error);
                 }
@@ -22,6 +25,10 @@ const SearchResults = () =>{
     
             fetchItems();
         }, [query]);
+
+    while (loading){
+        return <LoadingScreen/>
+    }    
 
     return (
         <div className="category">

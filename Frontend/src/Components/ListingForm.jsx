@@ -88,7 +88,7 @@ const ListingForm = () => {
                     <div className="form">
                         <br/>
                         <br/>
-                        <label htmlFor="listingFormName" className="listingLabel margins">Enter {selectedOption} name:</label>
+                        <label htmlFor="listingFormName" className="listingLabel margins">Enter {selectedOption} name: *</label>
                         <br/>
                         <input 
                             type="text" 
@@ -102,7 +102,7 @@ const ListingForm = () => {
                         />
                         <br/>
                         <br/>
-                        <label htmlFor="listingFormAddress" className="listingLabel margins">Enter Address:</label>
+                        <label htmlFor="listingFormAddress" className="listingLabel margins">Enter Address: *</label>
                         <br/>
                         <textarea 
                             id="listingFormAddress" 
@@ -129,7 +129,7 @@ const ListingForm = () => {
                     <div className="form">
                         <br/>
                         <br/>
-                        <label htmlFor="restaurantTags" className="listingLabel margins">Enter Tags:</label>
+                        <label htmlFor="restaurantTags" className="listingLabel margins">Enter Tags: *</label>
                         <br/>
                         <textarea 
                             id="restaurantTags" 
@@ -341,7 +341,7 @@ const ListingForm = () => {
             <Header />
             <h1 id='listingFormTitle'>Create a Listing</h1>
             <form id="bigForm" onSubmit={handleSubmit}>
-                <label htmlFor="listingType" className="listingLabel">Select type of listing: </label>
+                <label htmlFor="listingType" className="listingLabel">Select type of listing: *</label>
                 <br/>
                 <select 
                     id="listingType" 

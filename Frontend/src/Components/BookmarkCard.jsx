@@ -11,7 +11,7 @@ const BookmarkCard = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/${userid}/bookmarks`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/${userid}/bookmarks`);
       const result = await response.json();
       setData(result);
     } catch (error) {
@@ -29,7 +29,7 @@ const BookmarkCard = () => {
     if (!window.confirm("Are you sure you want to delete this collection?")) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/bookmarks/${userid}/${collid}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/bookmarks/${userid}/${collid}`, {
         method: 'DELETE',
       });
 
@@ -59,7 +59,7 @@ const BookmarkCard = () => {
   return (
     <>
       <Header />
-      <div className="category">
+      <div className="bookmarkCategory">
         <header>
           <h1 id="bookmarksTitle">Bookmarks</h1>
         </header>
@@ -72,12 +72,9 @@ const BookmarkCard = () => {
                     <figure className="listingFigure">
                       <img src='/restaurant.jpg' alt="Bookmark" />
                     </figure>
-                    <div className="cardBody">
+                    <div className="bookmarkCardBody" style={{ display: 'flex', justifyContent: 'space-between', alignItems:'center' }}>
                       <h2 className='listingh2'>{item.title}</h2>
-                    </div>
-                  </a>
-
-                  {/* show Delete Collection button if the title is not "Saved" */}
+                      {/* show Delete Collection button if the title is not "Saved" */}
                   {item.title.toLowerCase() !== "saved" && (
                     <button
                       className="deleteCollectionButton"
@@ -86,6 +83,10 @@ const BookmarkCard = () => {
                       Delete Collection
                     </button>
                   )}
+                    </div>
+                  </a>
+
+                  
                 </li>
               ))
             ) : (

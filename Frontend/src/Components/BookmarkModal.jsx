@@ -10,7 +10,7 @@ const BookmarksModal = ({ collections, setCollections, listingid, isOpen, onClos
   const { user } = useAuth();
 
   const updateCollection = async (collid, title, updatedListings) => {
-    const response = await fetch(`http://localhost:8000/bookmarks/${collid}`, {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/bookmarks/${collid}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const BookmarksModal = ({ collections, setCollections, listingid, isOpen, onClos
     }
 
     try {
-      const response = await fetch("http://localhost:8000/bookmarks", {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/bookmarks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

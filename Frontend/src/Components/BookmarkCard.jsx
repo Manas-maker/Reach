@@ -22,13 +22,15 @@ const BookmarkCard = () => {
     }
   };
 
-  while (loading2){
-    return <LoadingScreen/>
-  }
 
   useEffect(() => {
     fetchItems();
   }, [userid]);
+
+  
+  while (loading2){
+    return <LoadingScreen/>
+  }
 
   const handleDeleteCollection = async (collid) => {
     if (!window.confirm("Are you sure you want to delete this collection?")) return;

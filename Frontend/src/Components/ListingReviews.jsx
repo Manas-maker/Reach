@@ -119,9 +119,18 @@ const ListingReviews = (listingid) => {
                 {reviews.map((review) => (
                     <div key={`${review._id}-${review.upvotes.length}-${review.downvotes.length}`} className="listing-review-card review-card">
                         <div className="user-info">
-                            <div className="user-avatar">
+                        <div className="user-avatar">
+                            {review.profileImageUrl ? (
+                                <img 
+                                    src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}${review.profileImageUrl}`} 
+                                    alt={`${review.username}'s profile`} 
+                                    className="user-avatar-img"
+                                />
+
+                            ) : (
                                 <FontAwesomeIcon icon={faUser} size="2x" />
-                            </div>
+                                )}
+                        </div>
                             <div className='rev-cards'>
                                 <h3 className='rev-cards-h3'>{review.username}</h3>
                                 <p className='rev-cards-p'>{new Date(review.date).toLocaleDateString()}</p>

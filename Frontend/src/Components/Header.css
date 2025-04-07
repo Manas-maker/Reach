@@ -4,7 +4,7 @@
     margin: 16px auto;
     display: flex;
     width: 80vw;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
     padding: 16px 24px;
     background-color: #FFC629;
@@ -35,6 +35,12 @@ html .popup-content {
     border: none;
     width: fit-content;
 
+}
+
+#headerRight {
+    overflow: hidden;
+    flex-wrap: nowrap;
+    margin: 0px;
 }
 #search {
     width:430px;

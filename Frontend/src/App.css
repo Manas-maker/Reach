@@ -586,12 +586,13 @@
 .listingTop{
   display: flex;
   justify-content: space-between;
-  padding-right: 20px;
+  padding-right: 2%;
 }
 
 .spanRating{
   font-family: "Ysabeau Office";
   color: #343333;
+  margin-top: 2%;
 }
 
 .verifyButton{

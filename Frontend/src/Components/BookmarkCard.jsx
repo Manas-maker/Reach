@@ -22,7 +22,7 @@ const BookmarkCard = () => {
     }
   };
 
-  if (loading2){
+  while (loading2){
     return <LoadingScreen/>
   }
 

@@ -42,7 +42,7 @@ const BookmarkList = () => {
       fetchCollection();
     }, [id]);
 
-    if (loading){
+    while (loading){
       return <LoadingScreen/>
     }
 

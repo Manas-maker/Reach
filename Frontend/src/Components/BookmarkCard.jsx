@@ -24,7 +24,7 @@ const BookmarkCard = () => {
     }
   };
 
-  if (loading2){
+  if (loading || loading2){
     return <LoadingScreen/>
   }
 
@@ -55,13 +55,6 @@ const BookmarkCard = () => {
     }
   };
 
-  if (loading || bookmarkLoading) {
-    return (
-      <h1 style={{ marginTop: "50vh", transform: "translateY(-50%)" }}>
-        Loading...
-      </h1>
-    );
-  }
 
   return (
     <>

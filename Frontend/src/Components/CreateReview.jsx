@@ -110,6 +110,7 @@ const CreateReview = () => {
         const reviewData = {
             userid: user.id,
             username: user.username,
+            profileImageUrl: user.profileImageUrl,
             listingid: listingid,
             header,
             body,

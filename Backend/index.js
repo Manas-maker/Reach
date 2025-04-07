@@ -765,7 +765,7 @@ async function startServer() {
   // Create Reviews
   const CreateReview =  async (req, res) => {
     try {
-      const { userid, username, header, body, rating, images } = req.body;
+      const { userid, username, profileImageUrl, header, body, rating, images } = req.body;
       const { listingid } = req.params;
       if (!userid || !username || !listingid || !rating) {
         return res.status(400).json({message: 'Fields must be entered!'});
@@ -775,7 +775,7 @@ async function startServer() {
       if (existingRev) {
         const updatedRev = await client.db('ReachDB').collection('Reviews').updateOne(
             { _id: existingRev._id },
-            { $set: { header, body, rating, images: images || [], date: new Date() } }
+            { $set: { header, body, rating, images: images || [], date: new Date(), profileImageUrl } }
         );
         console.log("Review Updated:", updatedRev);
         return res.status(200).json({ message: "Review updated successfully!" });
@@ -784,6 +784,7 @@ async function startServer() {
       const rev = {
         username: username,
         userid: userid,
+        profileImageUrl: profileImageUrl,
         listingid: listingid,
         header: header,
         body: body,
@@ -874,7 +875,7 @@ async function startServer() {
     try {
       const {revid} = req.params;
       let objectrevId = "";
-      const { userid, username, listingid, header, body, rating, images } = req.body;
+      const { userid, username, profileImageUrl, listingid, header, body, rating, images } = req.body;
 
       if (ObjectId.isValid(revid)) {
         objectrevId = ObjectId.createFromHexString(revid);
@@ -889,6 +890,7 @@ async function startServer() {
       const newrev = {
         userid: userid,
         username: username,
+        profileImageUrl: profileImageUrl,
         listingid: listingid,
         header: header,
         body: body,

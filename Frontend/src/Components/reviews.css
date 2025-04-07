@@ -211,6 +211,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border-bottom: 100%;
+}
+
+.rev-profileImagePreview {
+  width: fit-content;
+  height: fit-content;
+  border-radius: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 2%;
 }
 
 .review-cont {
@@ -266,7 +280,7 @@
 .review-card .user-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
 }
 
 .review-card .user-info img {
@@ -333,4 +347,25 @@
   font-family: "Ysabeau", serif;
   color: #333;
   margin-top: 200px;
+}
+
+.rev-header{
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  gap: 1rem;
+}
+
+.rev-user-det{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.1rem;
+}
+
+.rev-user-det h3,
+.rev-user-det p {
+  margin: 0;
+  line-height: 1.5;
 }

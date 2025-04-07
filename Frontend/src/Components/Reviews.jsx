@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import './reviews.css';
 import Header from './Header'
+import { useAuth } from './services/AuthProvider';
 
 const calcRating = (reviews) => {
     const totalVotes = reviews.length;
@@ -90,7 +91,8 @@ const Reviews = () =>{
         }
         if (filter === "most-recent") return new Date(b.date) - new Date(a.date);
     });    
-        
+
+    
     useEffect(() => {
         const fetchReviews = async () => {
             try {
@@ -187,20 +189,36 @@ const Reviews = () =>{
                         </select>
                     </div>
 
-                    {sortedReviews.map(review => (
+                    {sortedReviews.map(review => {
+                        console.log('Profile image URL:', review.profileImageUrl);
+                        return(
                         <div key={`${review._id}-${review.upvotes.length}-${review.downvotes.length}`} className="review-card">
                             <div className="user-info">
-                                <div className="user-avatar">
-                                    <FontAwesomeIcon icon={faUser} size="2x" />
-                                </div>
                                 <div className='rev-cards'>
-                                    <h3 className='rev-cards-h3'>{review.username}</h3>
-                                    <p className='rev-cards-p'>{new Date(review.date).toLocaleDateString()}</p>
-                                    <div className="rating-stars">
-                                        {[...Array(5)].map((_, index) => (
-                                            <span key={index} className={index < review.rating ? 'filled-star' : 'empty-star'}> ★ </span>
-                                        ))}
+                                    <div className='rev-header'>
+                                        <div className="user-avatar">
+                                            {review.profileImageUrl ? (
+                                                <img 
+                                                    src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}${review.profileImageUrl}`} 
+                                                    alt={`${review.username}'s profile`} 
+                                                    className="user-avatar-img"
+                                                />
+
+                                            ) : (
+                                                <FontAwesomeIcon icon={faUser} size="2x" />
+                                            )}
+                                        </div>
+                                        <div className='rev-user-det'>
+                                            <h3 className='rev-cards-h3'>{review.username}</h3>
+                                            <p className='rev-cards-p'>{new Date(review.date).toLocaleDateString()}</p>
+                                            <div className="rating-stars">
+                                                {[...Array(5)].map((_, index) => (
+                                                    <span key={index} className={index < review.rating ? 'filled-star' : 'empty-star'}> ★ </span>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
+                                    
                                     <div className='review-box'>
                                         <h4 className='rev-cards-h4'>{review.header || ""}</h4>
                                         <p className='rev-cards-p'>{review.body || ""}</p>
@@ -228,7 +246,8 @@ const Reviews = () =>{
                                 </button>
                             </div>
                         </div>
-                    ))}
+                        );
+    })}
                 </div>
             </div>
             </>

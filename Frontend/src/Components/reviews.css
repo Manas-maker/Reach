@@ -13,6 +13,10 @@
   margin-top: 1%;
   font-family: "Ysabeau Office";
   font-size: larger;
+  width: 50%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .rev-h2{

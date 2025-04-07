@@ -1,9 +1,10 @@
 #formPopup {
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
     align-items: center;
-    width: 36vw;
-    height: 90vh;
+    width: auto;
+    height: fit-content;
     background-color: #ffc629;
     border: none;
     padding: 24px;
@@ -12,39 +13,37 @@
     margin-bottom: -800px;*/
 }
 
-.loginForm#formPopup{
-    height: 55vh;
-    width: 33vw;
-}
 #formPopup form {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    overflow-x: hidden;
 }
 
 #formPopup {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-x: hidden;
 }
 .popup-overlay {
     background: #34333386;
 }
 #formPopup h2{
-    font-size: 3.5vw;
-    font-family: "Federant";
-    color: #343333;
-    margin: 0px;
-}
-#formPopup h3{
     font-size: 2.5vw;
     font-family: "Federant";
     color: #343333;
     margin: 0px;
 }
+#formPopup h3{
+    font-size: 1.8vw;
+    font-family: "Federant";
+    color: #343333;
+    margin: 0px;
+}
 #formPopup h4{
-    font-size: 28px;
+    font-size: 1.2vw;
     font-family: "Federant";
     color: #343333;
     margin: 0px;
@@ -61,10 +60,10 @@
     color: black;
     font-family: "Ysabeau Office";
     width: 30vw;
-    height: 7vh;
+    padding: 1% 0%;
     border: none;
     margin: 14px 0;
-    font-size: 150%;
+    font-size: 120%;
     padding-left: 6px;
 }
 
@@ -76,6 +75,7 @@
     color: black;
     width: 372px;
     text-align: center;
+    margin: 0px;
 }
 
 #formPopup button{
@@ -91,7 +91,7 @@
     cursor: pointer;
 }
 
-#formPopup button:hover, #formPopup label:hover {
+#formPopup button:hover, .imageInputLabel:hover {
     background-color: #343333;
     color: #fbf9ef;
 }

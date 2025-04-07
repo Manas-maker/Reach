@@ -7,17 +7,19 @@
 }
 
 .userFormCont {
+    width: 100%;
     display: flex;
-    width: 1000px;
     justify-content: space-between;
     column-gap: 20vw;
 }
 
 .userFormPopup#formPopup {
-    width: 80vw;
+    width: auto;
     box-sizing: content-box;
-    overflow: hidden;
-    max-height: 80vh;
+}
+
+.userFormPopup form{
+  width: 100%;
 }
 
 #formPopup input{
@@ -25,10 +27,29 @@
 }
 
 .userFormPopup#formPopup input {
-    width: 400px;
-    height: 50px;
+    width: 80%;
+    height: fit-content;
+    font-size: 100%;
 }
 
+.userFormPopup#formPopup button {
+  font-size: 120%;
+  height: fit-content;
+  padding: 4px 0px;
+}
+
+.userFormPopup#formPopup fieldset{
+  align-items: flex-start;
+}
+.userFormPopup#formPopup .imageInputLabel{
+  font-family: "Federant";
+  text-align: center;
+  width: 100%;
+}
+
+#userFormLeft{
+  width: 100%;
+}
 #formPopup button {
     width: 200px;
     margin-top: 20px;
@@ -41,8 +62,18 @@ label {
     width: 100%;
 }
 
+.userFormPopup#formPopup label {
+  width: 80%;
+}
+
+.userFormPopup label{
+  font-size: 1rem;
+}
+
 #userFormRight{
-    margin-top: 10%
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 /*test*/
@@ -102,9 +133,9 @@ label {
     padding: 8px 16px;
     cursor: pointer;
     display: inline-block;
-    transition: background-color 0.3s;
     border-style: solid;
     border-color: #343333;
+    color: #343333
   }
   
   .imageInput {

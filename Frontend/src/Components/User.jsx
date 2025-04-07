@@ -47,7 +47,7 @@ const User = ({ open, setOpen }) =>{
             if (user.profileImageUrl) {
                 // For images served from our backend
                 // We add a timestamp to prevent caching when the image is updated
-                setImagePreview(`http://localhost:8000${user.profileImageUrl}?t=${new Date().getTime()}`);
+                setImagePreview(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}${user.profileImageUrl}`);
             }
         }
     }, [user]);
@@ -158,7 +158,7 @@ const User = ({ open, setOpen }) =>{
         <div className="userFormPopup" id='formPopup'>
             <form onSubmit={userUpdate}>
                 <div className="userFormCont">
-                    <div>
+                    <div id='userFormLeft'>
                         <h2>{user ? user.username : "Loading..."}</h2>
                         <fieldset>
                             <label htmlFor="userFullName">First and Last Name</label>
@@ -169,7 +169,7 @@ const User = ({ open, setOpen }) =>{
                             <input type="text" placeholder="Phone No." value={phoneNo} onChange={({target}) => setPhoneNo(target.value)} name="userPhone" />
                         </fieldset>
                         <fieldset>
-                            <h4>Change Password</h4>
+                            <h3>Change Password</h3>
                             <label htmlFor="currentPassword">Current Password</label>
                             <input type="password" name="currentPassword" value={currentPassword} onChange={({target}) => setCurrentPassword(target.value)} id="currentPassword" />
                             <label htmlFor="newPassword">New Password</label>
@@ -198,6 +198,7 @@ const User = ({ open, setOpen }) =>{
                                     accept="image/*" 
                                     onChange={handleImageChange} 
                                     className="imageInput"
+                                    style={{width:"0px"}}
                                 />
                             </div>
                             <button type='button' onClick={()=>{user?navigate(`/${user.id}/bookmarks`):null}}>Bookmarks</button>

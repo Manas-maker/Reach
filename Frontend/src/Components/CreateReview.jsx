@@ -122,8 +122,8 @@ const CreateReview = () => {
         try {
 
             const url = existingReviewId
-                ? `http://localhost:8000/update-review/${existingReviewId}`
-                : `http://localhost:8000/create-review/${listingid}`;
+                ? `${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/update-review/${existingReviewId}`
+                : `${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/create-review/${listingid}`;
     
             const method = existingReviewId ? "PATCH" : "POST";
     

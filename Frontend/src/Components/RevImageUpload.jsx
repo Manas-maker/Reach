@@ -47,7 +47,7 @@ const RevImageUpload = ({ setImages, images }) => {
                         showAlert("A maximum of 3 images can be uploaded.", "warning");
                     }
                 }}
-                className="cloudinary-button"
+                className="cloudinary-button-rev cloudinary-button"
                 disabled={images.length >= 3}
             >
                 Upload

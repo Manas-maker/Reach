@@ -47,7 +47,7 @@ const User = ({ open, setOpen }) =>{
             if (user.profileImageUrl) {
                 // For images served from our backend
                 // We add a timestamp to prevent caching when the image is updated
-                setImagePreview(`http://localhost:8000${user.profileImageUrl}?t=${new Date().getTime()}`);
+                setImagePreview(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}${user.profileImageUrl}`);
             }
         }
     }, [user]);

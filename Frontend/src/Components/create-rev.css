@@ -134,7 +134,7 @@
 .guidelines{
     top:10%;
     width:40em;
-    height:35em;
+    height: fit-content;
     margin-top: -3em;
     margin-left: -26em;
     border: 1px solid #343333;

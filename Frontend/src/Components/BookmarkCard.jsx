@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuth } from './services/AuthProvider';
 import Header from './Header';
 import LoadingScreen from './LoadingScreen';
 
 const BookmarkCard = () => {
-  const { user, loading } = useAuth();
   const { id: userid } = useParams();
   const [data, setData] = useState([]);
   const [bookmarkLoading, setBookmarkLoading] = useState(true);
@@ -24,13 +22,15 @@ const BookmarkCard = () => {
     }
   };
 
-  if (loading || loading2){
-    return <LoadingScreen/>
-  }
 
   useEffect(() => {
     fetchItems();
   }, [userid]);
+
+  
+  while (loading2){
+    return <LoadingScreen/>
+  }
 
   const handleDeleteCollection = async (collid) => {
     if (!window.confirm("Are you sure you want to delete this collection?")) return;

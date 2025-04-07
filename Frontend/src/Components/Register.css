@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     width: 36vw;
-    height: 90vh;
+    height: fit-content;
     background-color: #ffc629;
     border: none;
     padding: 24px;
@@ -13,7 +13,6 @@
 }
 
 .loginForm#formPopup{
-    height: 55vh;
     width: 33vw;
 }
 #formPopup form {

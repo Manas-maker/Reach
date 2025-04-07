@@ -2,24 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from './services/AuthProvider';
 import Header from './Header';
+import LoadingScreen from './LoadingScreen';
 
 const BookmarkCard = () => {
   const { user, loading } = useAuth();
   const { id: userid } = useParams();
   const [data, setData] = useState([]);
   const [bookmarkLoading, setBookmarkLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
 
   const fetchItems = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/${userid}/bookmarks`);
       const result = await response.json();
       setData(result);
+      setLoading2(false);
     } catch (error) {
       console.error('Error fetching items:', error);
     } finally {
       setBookmarkLoading(false);
     }
   };
+
+  if (loading2){
+    return <LoadingScreen/>
+  }
 
   useEffect(() => {
     fetchItems();

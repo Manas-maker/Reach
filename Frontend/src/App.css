@@ -630,3 +630,48 @@
   color: #FBF9EF;
   border: 2px solid #e93a36;
 }
+
+.bookmarkCardBody {
+  margin: 10px 10px 0px 10px;
+  height: 8vh;
+}
+
+.bookmarkCategory h2 {
+  margin: 0px;
+  font-family: "Federant", serif;
+  font-size: 1.5rem;
+  color: #343333;
+  transition: color 0.3s ease-out;
+}
+
+.bookmarkCategory {
+  background-color: #FBF9EF;
+  box-sizing: border-box;
+  overflow:hidden;
+  transition: all 0.4s ease-in-out;
+}
+
+.bookmarkCategory img{
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+  transform: scale(var(--img-scale));
+  transition: transform 0.4s ease-in-out;
+
+} 
+
+.deleteCollectionButton {
+  background-color: #e93a36;
+  color: #FBF9EF;
+  border: 1px solid #1F1F1F;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0.5em 1em;
+  transition: 0.3s ease-in-out;
+}
+
+.deleteCollectionButton:hover {
+  background-color: #1F1F1F;
+  color: #FBF9EF;
+  border: 1px solid #e93a36;
+}

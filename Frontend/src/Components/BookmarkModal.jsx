@@ -1,65 +1,57 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
-import { useAuth } from './services/AuthProvider';
+import { useAuth } from "./services/AuthProvider";
 
-Modal.setAppElement("#root"); // Ensure accessibility
+Modal.setAppElement("#root"); 
 
 const BookmarksModal = ({ collections, setCollections, listingid, isOpen, onClose }) => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
+
+  const updateCollection = async (collid, title, updatedListings) => {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/bookmarks/${collid}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        listings: updatedListings,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    await response.text();
+  };
   const handleCollectionClick = async (collid, colltitle, colllistings) => {
     if (!colllistings.includes(listingid)) {
       const updatedListings = [...colllistings, listingid];
       try {
-        const response = await fetch(`http://localhost:8000/bookmarks/${collid}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ 
-            title: colltitle,
-            listings: updatedListings
-          })
-        });
+        await updateCollection(collid, colltitle, updatedListings);
+        window.alert(`Listing successfully saved to ${colltitle}!`);
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        const savedCollection = collections.find(coll => coll.title === "Saved");
+        if (savedCollection && !savedCollection.listings.includes(listingid)) {
+          const updatedSavedListings = [...savedCollection.listings, listingid];
+          await updateCollection(savedCollection._id, savedCollection.title, updatedSavedListings);
+          setCollections(prev =>
+            prev.map(coll =>
+              coll.title === "Saved" ? { ...coll, listings: updatedSavedListings } : coll
+            )
+          );
         }
-
-        const text = await response.text();
-        const result = text ? JSON.parse(text) : {};
-
-        window.alert("Listing successfully saved!");
       } catch (error) {
         console.error("Error sending request:", error);
         window.alert("Failed to add listing to collection.");
       }
     } else {
-      window.alert("Listing already in collection!");
+      window.alert("Listing already in this collection!");
     }
   };
-  const handleDeleteCollection = async (collid) => {
-    if (!window.confirm("Are you sure you want to delete this collection?")) return;
 
-    try {
-      const response = await fetch(`http://localhost:8000/bookmarks/${user.id}/${collid}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        window.alert(`Error: ${errorData.error}`);
-        return;
-      }
-
-      window.alert("Collection deleted successfully!");
-      setCollections(prev => prev.filter(coll => coll._id !== collid));
-    } catch (error) {
-      console.error("Error deleting collection:", error);
-      window.alert("Failed to delete collection.");
-    }
-  };
+  // Create a new collection
   const handleAddCollection = async () => {
     const userInput = window.prompt("Enter collection name:");
     if (!userInput) {
@@ -68,7 +60,7 @@ const BookmarksModal = ({ collections, setCollections, listingid, isOpen, onClos
     }
 
     try {
-      const response = await fetch("http://localhost:8000/bookmarks", {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"}/bookmarks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +68,7 @@ const BookmarksModal = ({ collections, setCollections, listingid, isOpen, onClos
         body: JSON.stringify({
           userid: user.id,
           title: userInput,
-          listings: [listingid]
+          listings: [listingid],
         }),
       });
 
@@ -88,8 +80,18 @@ const BookmarksModal = ({ collections, setCollections, listingid, isOpen, onClos
 
       const newCollection = await response.json();
       setCollections(prevCollections => [...prevCollections, newCollection]);
+      alert(`Collection "${userInput}" created! Listing successfully added!`);
 
-      alert("Collection created! Listing successfully added!");
+      const savedCollection = collections.find(coll => coll.title === "Saved");
+      if (savedCollection && !savedCollection.listings.includes(listingid)) {
+        const updatedSavedListings = [...savedCollection.listings, listingid];
+        await updateCollection(savedCollection._id, savedCollection.title, updatedSavedListings);
+        setCollections(prev =>
+          prev.map(coll =>
+            coll.title === "Saved" ? { ...coll, listings: updatedSavedListings } : coll
+          )
+        );
+      }
     } catch (error) {
       console.error("Error sending request:", error);
       alert("Failed to create collection.");
@@ -111,16 +113,15 @@ const BookmarksModal = ({ collections, setCollections, listingid, isOpen, onClos
             <li key={collection._id} className="collection-item">
               <button 
                 className="listbutton bookmarkTitle" 
-                onClick={() => handleCollectionClick(collection._id, collection.title, collection.listings)}
+                onClick={() =>
+                  handleCollectionClick(
+                    collection._id,
+                    collection.title,
+                    collection.listings
+                  )
+                }
               >
                 {collection.title}
-              </button>
-              {/* Delete button for the collection */}
-              <button 
-                className="listbutton delete-btn" 
-                onClick={() => handleDeleteCollection(collection._id)}
-              >
-                Delete Collection
               </button>
               <br/><br/>
             </li>

@@ -9,6 +9,7 @@ const Login = ({ open, setOpen }) => {
     const [password, setPassword] = useState('')
     const [username, setUserName] = useState('')
     const [showRegister, setShowRegister] = useState(false)
+    const [alert, setAlert] = useState(null);
     const { login } = useAuth();
 
     const loginSubmit = async (e) => {
@@ -21,6 +22,11 @@ const Login = ({ open, setOpen }) => {
                 },
                 body: JSON.stringify({username, password}), 
             }).then((res) => res.json());
+            if (user.error) {
+                showAlert(user.error, "error")
+            } else {
+                showAlert("Login Successfull")
+            }
             if ((open !== null) && (user.username != null)) {
                 login(user)
                 setOpen(false);
@@ -31,6 +37,19 @@ const Login = ({ open, setOpen }) => {
         }
     }
     
+    const Alert = ({ message, type }) => {
+        return (
+          <div className={`alert ${type}`}>
+            <span>{message}</span>
+          </div>
+        );
+    };
+
+    const showAlert = (message, type = "success") => {
+        setAlert({ message, type });
+        setTimeout(() => setAlert(null), 30000);
+    };
+
     if (showRegister) {
         return <Register open={open} setOpen={setOpen} />
     }
@@ -52,6 +71,9 @@ const Login = ({ open, setOpen }) => {
                     </p>
                 </fieldset>
                 <p className="formDisclaimer">By signing up, confirm that you've read and accepted our <span className="redLink"><a>terms of service</a></span> and <span className="redLink"><a>privacy policy</a></span></p>
+                <div className="alert-box">
+                    {alert && <Alert message={alert.message} type={alert.type} onClose={() => setAlert(null)} />}
+                </div>
                 <button type="submit">Login</button>
             </form>
         </div>

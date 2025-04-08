@@ -18,7 +18,7 @@ const Privacy = () => {
     return (
         <div>
             <iframe 
-        src="/privacy.html" 
+        src="/tos.html" 
         title="Privacy Policy" 
         style={{
           width: '80vw', 

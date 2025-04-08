@@ -15,6 +15,7 @@ import SuccessPage from './Components/SuccessPage'
 import BookmarkList from "./Components/BookmarkList"
 import BookmarkCard from "./Components/BookmarkCard"
 import ChangeListing from "./Components/ChangeListing"
+import {TOS, Privacy} from "./Components/TOS"
 
 
 function App() {
@@ -35,6 +36,8 @@ function App() {
         <Route path="/bookmarks/:id" element={<BookmarkList/>}/>
         <Route path="/:id/bookmarks" element={<BookmarkCard/>}/>
         <Route path="/updateListing/:listid" element={<ChangeListing/>}/>
+        <Route path="/privacy" element={<Privacy/>}/>
+        <Route path="/tos" element={<TOS/>}/>
       </Routes>
     </Router>
     </AuthProvider>

@@ -70,7 +70,7 @@ const Login = ({ open, setOpen }) => {
                         </a>
                     </p>
                 </fieldset>
-                <p className="formDisclaimer">By signing up, confirm that you've read and accepted our <span className="redLink"><a>terms of service</a></span> and <span className="redLink"><a>privacy policy</a></span></p>
+                <p className="formDisclaimer">By signing up, confirm that you've read and accepted our <span className="redLink"><a href='/tos' target='_blank'>terms of service</a></span> and <span className="redLink"><a href='/privacy' target='_blank'>privacy policy</a></span></p>
                 <div className="alert-box">
                     {alert && <Alert message={alert.message} type={alert.type} onClose={() => setAlert(null)} />}
                 </div>

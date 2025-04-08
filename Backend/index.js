@@ -398,7 +398,7 @@ async function startServer() {
     
             // Add the file ID to the update data
             updateData.profileImageId = uploadStream.id.toString();
-            updateData.profileImageUrl = `/users/profile-image/${uploadStream.id.toString()}`;
+            updateData.profileImageUrl = `/users/profile-image/${user._id}`;
           }
     
           console.log(updateData);
@@ -447,8 +447,12 @@ async function startServer() {
     //get user's profile photo
     app.get('/users/profile-image/:id', async (req, res) => {
       try {
-        const imageId = new ObjectId(req.params.id);
-        
+        const userId = new ObjectId(req.params.id);
+        const user = await client
+          .db("ReachDB")
+          .collection('Users')
+          .findOne({ _id:userId });
+        const imageId = new ObjectId(user.profileImageId);
         // Check if the file exists
         const files = await gfsBucket.find({ _id: imageId }).toArray();
         if (!files || files.length === 0) {

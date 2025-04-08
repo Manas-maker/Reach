@@ -2,8 +2,8 @@ const TOS = ()=>{
     return (
         <div>
                   <iframe 
-        src="/privacy.html" 
-        title="Privacy Policy" 
+        src="/tos.html" 
+        title="Terms of Service" 
         style={{
           width: '80vw', 
           height: '800px', 
@@ -18,7 +18,7 @@ const Privacy = () => {
     return (
         <div>
             <iframe 
-        src="/tos.html" 
+        src="/privacy.html" 
         title="Privacy Policy" 
         style={{
           width: '80vw', 
